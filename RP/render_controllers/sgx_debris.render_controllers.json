@@ -1,0 +1,38 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.singularity.sgx_debris": {
+      "arrays": {
+        "textures": {
+          "Array.kind": [
+            "Texture.k00",
+            "Texture.k01",
+            "Texture.k02",
+            "Texture.k03",
+            "Texture.k04",
+            "Texture.k05",
+            "Texture.k06",
+            "Texture.k07",
+            "Texture.k08",
+            "Texture.k09",
+            "Texture.k10",
+            "Texture.k11",
+            "Texture.k12",
+            "Texture.k13",
+            "Texture.k14",
+            "Texture.k15"
+          ]
+        }
+      },
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.kind[q.property('singularity:kind')]"
+      ]
+    }
+  }
+}

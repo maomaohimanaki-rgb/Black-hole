@@ -1,0 +1,17 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.singularity.sgx_spike_bb_rot.face": {
+      "loop": true,
+      "bones": {
+        "panel": {
+          "rotation": [
+            "q.rotation_to_camera(0)",
+            "q.rotation_to_camera(1) - q.body_y_rotation",
+            0
+          ]
+        }
+      }
+    }
+  }
+}

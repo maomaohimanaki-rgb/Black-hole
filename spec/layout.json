@@ -1,0 +1,186 @@
+{
+  "units": "blocos (1 bloco = 16 unidades de geometria)",
+  "frame": {
+    "G": "centro do topo do bloco mirado (chão)",
+    "F": "direção horizontal jogador → G (frente)",
+    "R": "direita de F (F × U)",
+    "U": "cima (0,1,0)",
+    "O": "G + 14·U — centro do buraco negro (e centro de massa do par)",
+    "camera_orbit": "posição de câmera {around, r, az, el}: az 0 = do lado do jogador (O − r·F), az cresce para +R; el = elevação acima do plano horizontal de 'around'"
+  },
+  "O_height": 14,
+  "physics_scale_note": "Escala artística: as razões (sombra = 2,6 r_s, órbita ∝ τ^1/4, f ∝ τ^-3/8) são reais; os tamanhos absolutos são para caber num mundo de Minecraft.",
+  "binary": {
+    "mass_A": 36,
+    "mass_B": 29,
+    "mass_final": 62,
+    "mass_radiated": 3,
+    "final_spin": 0.67,
+    "reference": "GW150914 (LIGO, 14/09/2015): 36 + 29 M☉ → 62 M☉, 3 M☉ em ondas gravitacionais, spin final 0,67",
+    "t_start": 60,
+    "t_merge": 240,
+    "tau": "τ(t) = (240 − t)/20 s ; τ0 = 9 s",
+    "f_gw": "f(t) = 35 · (τ/τ0)^(−3/8) Hz   (35 Hz no tick 60 → ~245 Hz no 239)",
+    "separation": "d(t) = 8 · (τ/τ0)^(1/4) blocos   (8,0 no 60 → 2,18 no 239: as sombras se tocam)",
+    "visual_slowdown_S": 24,
+    "orbit_phase": "φ(t) = φ0 + 2π · (35/(2S)) · τ0^(3/8) · (8/5) · (τ0^(5/8) − τ^(5/8))  — fórmula fechada, avaliada NO CLIENTE (Molang) e no sintetizador de áudio; o servidor só informa o tick de início",
+    "orbit_plane": "horizontal (eixo de spin = U); sentido anti-horário visto de cima",
+    "positions": "A = O − d·(m_B/M)·ê(φ) ; B = O + d·(m_A/M)·ê(φ) ; ê(φ) = cos φ·R + sin φ·F",
+    "half_orbit_ticks": [
+      74,
+      87,
+      99,
+      112,
+      124,
+      135,
+      146,
+      156,
+      166,
+      176,
+      185,
+      194,
+      202,
+      209,
+      216,
+      222,
+      227,
+      232,
+      236
+    ],
+    "half_orbit_note": "meias-órbitas com espaçamento ≥ 4 ticks (S = 24): momentos das ondulações no chão e dos acentos do chirp"
+  },
+  "black_hole": {
+    "r_s_final": 0.8,
+    "shadow_radius": "2,6 · r_s (sombra de Schwarzschild ≈ 2,6 r_s)",
+    "shadow_final": 2.08,
+    "shadow_A": 1.21,
+    "shadow_B": 0.97,
+    "photon_ring_radius": "= raio da sombra (anel fino, 4–6 % do raio)",
+    "scale_curve": [
+      {
+        "t": 240,
+        "s": 1.0
+      },
+      {
+        "t": 420,
+        "s": 1.0
+      },
+      {
+        "t": 539,
+        "s": 1.35,
+        "ease": "inQuad",
+        "why": "come o mundo"
+      },
+      {
+        "t": 620,
+        "s": 0.6,
+        "why": "corte escondido no preto"
+      },
+      {
+        "t": 699,
+        "s": 0.05,
+        "ease": "inExpo"
+      },
+      {
+        "t": 700,
+        "s": 0.0
+      }
+    ],
+    "ringdown": "escala(t) = 1 + 0,15 · e^(−(t−241)/10) · sin(2π · (t−241)/12)  para t ∈ [241, 279] (ticks)"
+  },
+  "disk": {
+    "inner": 2.4,
+    "outer": 12.0,
+    "rings": [
+      [
+        2.4,
+        4.0
+      ],
+      [
+        4.0,
+        5.8
+      ],
+      [
+        5.8,
+        7.8
+      ],
+      [
+        7.8,
+        9.9
+      ],
+      [
+        9.9,
+        12.0
+      ]
+    ],
+    "keplerian": "ω(r) = ω_in · (r/2,4)^(−3/2) ; ω_in = 180°/s",
+    "temperature_K": "T(r) ∝ r^(−3/4): anel 1 ≈ 9 000 K (branco-azulado) … anel 5 ≈ 2 600 K (laranja-escuro)",
+    "ignite_ticks": {
+      "ring5": 280,
+      "ring4": 286,
+      "ring3": 292,
+      "ring2": 298,
+      "ring1": 304
+    },
+    "doppler": "lado que se aproxima da câmera: ×(1+β cosθ)^3 de brilho e mais azul; β visual = 0,45 no anel interno",
+    "thickness_note": "anéis de cubos finos (0,1 unidade), NUNCA espessura zero (ver PITFALLS P-30)"
+  },
+  "jets": {
+    "t_on": 360,
+    "t_fade": [
+      400,
+      419
+    ],
+    "up_length": 180,
+    "down_to": "G − 28·U (fundo da cratera)",
+    "core_width": 1.2,
+    "sheath_width": 5.0,
+    "knot_speed": 8
+  },
+  "gw_shell": {
+    "t0": 240,
+    "speed_blocks_per_tick": 6,
+    "max_radius": 200,
+    "camera_hit_tick_at_r40": 247
+  },
+  "crater": {
+    "shape": "esfera",
+    "center": "G + 2·U",
+    "radius": 30,
+    "depth_approx": 28,
+    "rim_glow_radius": 31,
+    "lining": [
+      "minecraft:obsidian",
+      "minecraft:crying_obsidian",
+      "minecraft:black_stained_glass",
+      "minecraft:magma (só na borda)"
+    ],
+    "light_sources": "esparsas (≤ 1 a cada 10 blocos de borda) — PITFALLS P-33",
+    "shaft_at_360": {
+      "radius": 3,
+      "from": "G",
+      "depth": 28
+    }
+  },
+  "debris": {
+    "max_alive": 48,
+    "spawn_ring": [
+      8,
+      30
+    ],
+    "tc_seconds": [
+      1.5,
+      3.0
+    ],
+    "stretch": "escala y até ×6 e xz até ×0,3 perto do disco",
+    "kinds": 16
+  },
+  "hero_chunk": {
+    "t": [
+      460,
+      539
+    ],
+    "start": "G + 12·R + 0,5·U",
+    "path": "espiral até cruzar o plano do disco no tick 500, depois mergulho radial até a sombra"
+  }
+}

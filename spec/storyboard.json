@@ -1,0 +1,2456 @@
+{
+  "meta": {
+    "title": "SINGULARITY (buraco negro)",
+    "tick_rate": 20,
+    "film_ticks": 720,
+    "outro_ticks": 20,
+    "source_of_truth": "Este JSON manda no TEMPO; o docs/STORYBOARD.md manda na DIREÇÃO.",
+    "camera_conventions": "spec/layout.json → frame.camera_orbit; ease = nomes do camera_engine.js; cut = chegada seca; stutter = segura a pose N ticks"
+  },
+  "acts": [
+    {
+      "id": "I",
+      "name": "ANOMALIA",
+      "ticks": [
+        0,
+        79
+      ]
+    },
+    {
+      "id": "II",
+      "name": "INSPIRAL",
+      "ticks": [
+        80,
+        239
+      ]
+    },
+    {
+      "id": "III",
+      "name": "FUSÃO",
+      "ticks": [
+        240,
+        279
+      ]
+    },
+    {
+      "id": "IV",
+      "name": "DISCO",
+      "ticks": [
+        280,
+        419
+      ]
+    },
+    {
+      "id": "V",
+      "name": "O PUXÃO",
+      "ticks": [
+        420,
+        539
+      ]
+    },
+    {
+      "id": "VI",
+      "name": "HORIZONTE",
+      "ticks": [
+        540,
+        619
+      ]
+    },
+    {
+      "id": "VII",
+      "name": "EVAPORAÇÃO",
+      "ticks": [
+        620,
+        719
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "B01",
+      "act": "I",
+      "name": "O SILÊNCIO ERRADO",
+      "ticks": [
+        0,
+        19
+      ],
+      "audio": [
+        "sgx_void_in"
+      ],
+      "camera": [
+        {
+          "t": 0,
+          "pos": {
+            "rel": "G",
+            "f": -10,
+            "r": 0,
+            "u": 0.6
+          },
+          "look": {
+            "rel": "G",
+            "f": 0,
+            "r": 0,
+            "u": 3
+          },
+          "ease": "linear",
+          "fov": 50
+        },
+        {
+          "t": 19,
+          "pos": {
+            "rel": "G",
+            "f": -8,
+            "r": 0,
+            "u": 0.6
+          },
+          "look": {
+            "rel": "G",
+            "f": 0,
+            "r": 0,
+            "u": 6
+          },
+          "ease": "inOutSine",
+          "fov": 48
+        }
+      ],
+      "vfx": [
+        {
+          "t": 0,
+          "fx": "dust_inflow",
+          "to": "O",
+          "rate": "baixa",
+          "note": "poeira e pólen derivam devagar para um ponto vazio 14 blocos acima do chão"
+        },
+        {
+          "t": 12,
+          "fx": "grass_lean",
+          "note": "partículas de folha/grama inclinam para O junto com o sub-grave"
+        }
+      ],
+      "hud": [
+        {
+          "t": 4,
+          "ch": "SB",
+          "text": "ANOMALY DETECTED",
+          "clear": 30
+        },
+        {
+          "t": 8,
+          "ch": "HD",
+          "text": "GRAV. GRADIENT +0.003 g",
+          "clear": 19
+        }
+      ],
+      "flash": [],
+      "shake": [
+        {
+          "t": 12,
+          "level": 1
+        }
+      ],
+      "intent": "Algo está errado e ainda não se vê. Noite, chão, poeira indo para o lugar errado."
+    },
+    {
+      "id": "B02",
+      "act": "I",
+      "name": "O PONTO",
+      "ticks": [
+        20,
+        39
+      ],
+      "audio": [
+        "sgx_point"
+      ],
+      "camera": [
+        {
+          "t": 20,
+          "pos": {
+            "rel": "G",
+            "f": -8,
+            "r": 0,
+            "u": 0.6
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 48
+        },
+        {
+          "t": 39,
+          "pos": {
+            "rel": "G",
+            "f": -14,
+            "r": 3,
+            "u": 6
+          },
+          "look": "O",
+          "ease": "outCubic",
+          "fov": 42
+        }
+      ],
+      "vfx": [
+        {
+          "t": 20,
+          "fx": "bh_spawn",
+          "body": "A",
+          "scale": 0.12,
+          "note": "um ponto de PRETO absoluto com um fio de anel de fótons"
+        },
+        {
+          "t": 24,
+          "fx": "lens_glint",
+          "body": "A"
+        },
+        {
+          "t": 28,
+          "fx": "lens_glint",
+          "body": "A"
+        },
+        {
+          "t": 32,
+          "fx": "lens_glint",
+          "body": "A"
+        },
+        {
+          "t": 20,
+          "fx": "dust_inflow",
+          "rate": "média"
+        },
+        {
+          "t": 26,
+          "fx": "bh_grow",
+          "body": "A",
+          "to": 1.0,
+          "dur": 12,
+          "ease": "outExpo"
+        }
+      ],
+      "hud": [
+        {
+          "t": 20,
+          "ch": "SB",
+          "text": "SINGULARITY · A",
+          "clear": 39
+        },
+        {
+          "t": 22,
+          "ch": "HD",
+          "text": "MASS 36 M☉",
+          "clear": 39
+        }
+      ],
+      "flash": [
+        {
+          "t": 20,
+          "level": "N2",
+          "kind": "negative_micro",
+          "color": "#000000"
+        }
+      ],
+      "shake": [
+        {
+          "t": 20,
+          "level": 2
+        },
+        {
+          "t": 24,
+          "level": 1
+        }
+      ],
+      "intent": "O ponto nasce. Primeiro é menor que um pixel; os brilhos de lente mostram que ele dobra a luz."
+    },
+    {
+      "id": "B03",
+      "act": "I",
+      "name": "O GÊMEO",
+      "ticks": [
+        40,
+        59
+      ],
+      "audio": [
+        "sgx_twin"
+      ],
+      "camera": [
+        {
+          "t": 40,
+          "pos": {
+            "rel": "G",
+            "f": -14,
+            "r": 3,
+            "u": 6
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 42
+        },
+        {
+          "t": 42,
+          "pos": {
+            "rel": "G",
+            "f": -14,
+            "r": 3,
+            "u": 6
+          },
+          "look": "B",
+          "ease": "outExpo",
+          "fov": 50,
+          "note": "whip-pan de 2 ticks para revelar B"
+        },
+        {
+          "t": 59,
+          "pos": {
+            "around": "O",
+            "r": 16,
+            "az": 20,
+            "el": 15
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 55
+        }
+      ],
+      "vfx": [
+        {
+          "t": 40,
+          "fx": "bh_spawn",
+          "body": "B",
+          "scale": 0.12
+        },
+        {
+          "t": 46,
+          "fx": "bh_grow",
+          "body": "B",
+          "to": 1.0,
+          "dur": 10,
+          "ease": "outExpo"
+        },
+        {
+          "t": 48,
+          "fx": "binary_orbit_start",
+          "note": "A e B começam a girar (fórmula de layout.binary, avaliada no cliente)"
+        },
+        {
+          "t": 50,
+          "fx": "dust_spiral",
+          "arms": 2
+        }
+      ],
+      "hud": [
+        {
+          "t": 40,
+          "ch": "HD",
+          "text": "SECOND BODY · 29 M☉",
+          "clear": 59
+        },
+        {
+          "t": 50,
+          "ch": "SB",
+          "text": "BINARY LOCKED",
+          "clear": 79
+        }
+      ],
+      "flash": [
+        {
+          "t": 40,
+          "level": "N2",
+          "kind": "negative_micro",
+          "color": "#000000"
+        }
+      ],
+      "shake": [
+        {
+          "t": 40,
+          "level": 2
+        }
+      ],
+      "letterbox": "fecha 16:9 → 2,39:1 entre 48 e 79",
+      "intent": "Não é um. São dois. O enquadramento começa a ser puxado (as barras fecham)."
+    },
+    {
+      "id": "B04",
+      "act": "I",
+      "name": "A DANÇA COMEÇA",
+      "ticks": [
+        60,
+        79
+      ],
+      "audio": [
+        "sgx_chirp"
+      ],
+      "camera": [
+        {
+          "t": 60,
+          "pos": {
+            "around": "O",
+            "r": 16,
+            "az": 20,
+            "el": 15
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 55
+        },
+        {
+          "t": 79,
+          "pos": {
+            "around": "O",
+            "r": 22,
+            "az": 40,
+            "el": 50
+          },
+          "look": "O",
+          "ease": "inOutCubic",
+          "fov": 60
+        }
+      ],
+      "vfx": [
+        {
+          "t": 74,
+          "fx": "ground_ripple",
+          "note": "1ª ondulação no chão (meia-órbita)"
+        }
+      ],
+      "hud": [
+        {
+          "t": 60,
+          "ch": "HD",
+          "text": "INSPIRAL · f 35 Hz · d 8.0",
+          "clear": 79
+        }
+      ],
+      "flash": [],
+      "shake": [
+        {
+          "t": 60,
+          "level": 1
+        }
+      ],
+      "intent": "Grua sobe e mostra a dança de cima. O chirp começa grave, quase sentido no peito."
+    },
+    {
+      "id": "B05",
+      "act": "II",
+      "name": "ESPIRAL",
+      "ticks": [
+        80,
+        139
+      ],
+      "audio": [
+        "sgx_chirp"
+      ],
+      "camera": [
+        {
+          "t": 80,
+          "pos": {
+            "around": "O",
+            "r": 22,
+            "az": 40,
+            "el": 50
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 60
+        },
+        {
+          "t": 139,
+          "pos": {
+            "around": "O",
+            "r": 16,
+            "az": -60,
+            "el": 25
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 58,
+          "note": "órbita no sentido CONTRÁRIO ao par: o par parece mais rápido"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 87,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 99,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 112,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 124,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 135,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 80,
+          "fx": "mini_disks",
+          "note": "cada corpo com um disquinho de poeira (impostor pequeno)"
+        },
+        {
+          "t": 90,
+          "fx": "leaf_vortex",
+          "note": "folhas e pétalas sobem em funil embaixo do par"
+        }
+      ],
+      "hud": [
+        {
+          "t": 80,
+          "ch": "HD",
+          "text": "f 37 Hz · d 7.8",
+          "clear": 99
+        },
+        {
+          "t": 100,
+          "ch": "HD",
+          "text": "f 39 Hz · d 7.5",
+          "clear": 119
+        },
+        {
+          "t": 120,
+          "ch": "HD",
+          "text": "f 41 Hz · d 7.2",
+          "clear": 139
+        }
+      ],
+      "flash": [],
+      "shake": [
+        {
+          "t": 80,
+          "level": 1
+        },
+        {
+          "t": 120,
+          "level": 2
+        }
+      ],
+      "intent": "Hipnótico. A imagem gira, o som quase não muda: a tensão vem do ritmo das ondulações."
+    },
+    {
+      "id": "B06",
+      "act": "II",
+      "name": "ACELERAÇÃO",
+      "ticks": [
+        140,
+        199
+      ],
+      "audio": [
+        "sgx_chirp"
+      ],
+      "camera": [
+        {
+          "t": 140,
+          "pos": {
+            "around": "O",
+            "r": 16,
+            "az": -60,
+            "el": 25
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 58
+        },
+        {
+          "t": 199,
+          "pos": {
+            "around": "O",
+            "r": 12,
+            "az": -170,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 66,
+          "handheld": 0.15,
+          "note": "desce para o plano da órbita"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 146,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 156,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 166,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 176,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 185,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 194,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 150,
+          "fx": "eclipse_glints",
+          "note": "quando um corpo passa na frente do outro (calculado pela fase e pela câmera): brilho de lente N1"
+        },
+        {
+          "t": 160,
+          "fx": "dust_spiral",
+          "arms": 2,
+          "tight": true
+        }
+      ],
+      "hud": [
+        {
+          "t": 140,
+          "ch": "HD",
+          "text": "f 44 Hz · d 6.9",
+          "clear": 169
+        },
+        {
+          "t": 170,
+          "ch": "HD",
+          "text": "f 50 Hz · d 6.3",
+          "clear": 199
+        }
+      ],
+      "flash": [],
+      "shake": [
+        {
+          "t": 140,
+          "level": 2
+        },
+        {
+          "t": 180,
+          "level": 3
+        }
+      ],
+      "intent": "A câmera entra no plano: os corpos passam rente à lente. O mundo começa a se mexer junto."
+    },
+    {
+      "id": "B07",
+      "act": "II",
+      "name": "O GRITO",
+      "ticks": [
+        200,
+        239
+      ],
+      "audio": [
+        "sgx_chirp",
+        "sgx_merge"
+      ],
+      "camera": [
+        {
+          "t": 200,
+          "pos": {
+            "around": "O",
+            "r": 12,
+            "az": -170,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 66
+        },
+        {
+          "t": 202,
+          "pos": {
+            "around": "O",
+            "r": 12.0,
+            "az": -170,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 63,
+          "cut": true,
+          "note": "snap-zoom"
+        },
+        {
+          "t": 209,
+          "pos": {
+            "around": "O",
+            "r": 11.1,
+            "az": -174,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 60,
+          "cut": true,
+          "note": "snap-zoom"
+        },
+        {
+          "t": 216,
+          "pos": {
+            "around": "O",
+            "r": 10.3,
+            "az": -178,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 57,
+          "cut": true,
+          "note": "snap-zoom"
+        },
+        {
+          "t": 222,
+          "pos": {
+            "around": "O",
+            "r": 9.4,
+            "az": -182,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 54,
+          "cut": true,
+          "note": "snap-zoom"
+        },
+        {
+          "t": 227,
+          "pos": {
+            "around": "O",
+            "r": 8.6,
+            "az": -186,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 51,
+          "cut": true,
+          "note": "snap-zoom"
+        },
+        {
+          "t": 232,
+          "pos": {
+            "around": "O",
+            "r": 7.7,
+            "az": -190,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 48,
+          "cut": true,
+          "note": "snap-zoom"
+        },
+        {
+          "t": 236,
+          "pos": {
+            "around": "O",
+            "r": 6.9,
+            "az": -194,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 45,
+          "cut": true,
+          "note": "snap-zoom"
+        },
+        {
+          "t": 239,
+          "pos": {
+            "around": "O",
+            "r": 6.0,
+            "az": -198,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 42,
+          "cut": true,
+          "note": "snap-zoom"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 202,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 209,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 216,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 222,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 227,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 232,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 236,
+          "fx": "ground_ripple"
+        },
+        {
+          "t": 220,
+          "fx": "photon_rings_merge",
+          "note": "os dois anéis de fótons se deformam num 8"
+        },
+        {
+          "t": 230,
+          "fx": "dust_sheet",
+          "note": "a espiral de poeira vira uma lâmina"
+        }
+      ],
+      "hud": [
+        {
+          "t": 200,
+          "ch": "HD",
+          "text": "f 62 Hz · d 5.5",
+          "clear": 229
+        },
+        {
+          "t": 230,
+          "ch": "HD",
+          "text": "f 103 Hz · d 3.9",
+          "clear": 235
+        },
+        {
+          "t": 236,
+          "ch": "HD",
+          "text": "f 146 Hz · d 3.1",
+          "clear": 238
+        },
+        {
+          "t": 239,
+          "ch": "HD",
+          "text": "f 245 Hz",
+          "clear": 240
+        }
+      ],
+      "flash": [
+        {
+          "t": 202,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        },
+        {
+          "t": 209,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        },
+        {
+          "t": 216,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        },
+        {
+          "t": 222,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        },
+        {
+          "t": 227,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        },
+        {
+          "t": 232,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        },
+        {
+          "t": 236,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        },
+        {
+          "t": 239,
+          "level": "N1",
+          "kind": "white",
+          "color": "#F2F6FF"
+        }
+      ],
+      "shake": [
+        {
+          "t": 200,
+          "level": 3
+        },
+        {
+          "t": 222,
+          "level": 4
+        },
+        {
+          "t": 232,
+          "level": 5
+        },
+        {
+          "t": 236,
+          "level": 6
+        }
+      ],
+      "intent": "O chirp sobe de verdade. Snap-zooms nos acentos. Termina colado nos dois corpos."
+    },
+    {
+      "id": "B08",
+      "act": "III",
+      "name": "FUSÃO / RINGDOWN",
+      "ticks": [
+        240,
+        259
+      ],
+      "audio": [
+        "sgx_merge",
+        "sgx_ringdown"
+      ],
+      "camera": [
+        {
+          "t": 240,
+          "pos": {
+            "around": "O",
+            "r": 6,
+            "az": -198,
+            "el": 6
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 40,
+          "impact_frame": 2
+        },
+        {
+          "t": 242,
+          "pos": {
+            "around": "O",
+            "r": 40,
+            "az": -200,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 70,
+          "cut": true,
+          "note": "corte seco para o plano aberto"
+        },
+        {
+          "t": 247,
+          "pos": {
+            "around": "O",
+            "r": 40,
+            "az": -200,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "outSine",
+          "fov": 76,
+          "note": "a onda gravitacional passa pela câmera: FOV respira (+ e ×)"
+        },
+        {
+          "t": 250,
+          "pos": {
+            "around": "O",
+            "r": 40,
+            "az": -200,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 66
+        },
+        {
+          "t": 253,
+          "pos": {
+            "around": "O",
+            "r": 40,
+            "az": -200,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 73
+        },
+        {
+          "t": 256,
+          "pos": {
+            "around": "O",
+            "r": 40,
+            "az": -200,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 68
+        },
+        {
+          "t": 259,
+          "pos": {
+            "around": "O",
+            "r": 39,
+            "az": -200,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 70
+        }
+      ],
+      "vfx": [
+        {
+          "t": 240,
+          "fx": "merge",
+          "note": "A+B → um só; sombra final (raio 2,08)"
+        },
+        {
+          "t": 241,
+          "fx": "ringdown_wobble",
+          "formula": "layout.black_hole.ringdown"
+        },
+        {
+          "t": 241,
+          "fx": "gw_shell",
+          "note": "casca esférica de ar 'tremido' + anel no chão a 6 blocos/tick"
+        },
+        {
+          "t": 241,
+          "fx": "leaf_burst"
+        }
+      ],
+      "hud": [
+        {
+          "t": 241,
+          "ch": "SB",
+          "text": "THEY BECAME ONE",
+          "clear": 262
+        },
+        {
+          "t": 241,
+          "ch": "HD",
+          "text": "MERGER · 62 M☉",
+          "clear": 245
+        },
+        {
+          "t": 246,
+          "ch": "HD",
+          "text": "ΔM = 3.0 M☉ → GRAVITATIONAL WAVES",
+          "clear": 262
+        }
+      ],
+      "flash": [
+        {
+          "t": 240,
+          "level": "N4",
+          "kind": "impact_negative",
+          "dur": 2,
+          "note": "negativo: o buraco negro BRANCO num mundo preto"
+        },
+        {
+          "t": 242,
+          "level": "N3",
+          "kind": "white",
+          "color": "#FFFFFF"
+        }
+      ],
+      "shake": [
+        {
+          "t": 241,
+          "level": 10
+        },
+        {
+          "t": 247,
+          "level": 6
+        },
+        {
+          "t": 250,
+          "level": 3
+        }
+      ],
+      "letterbox": "rebote 2,39 → 2,7 → 2,39 entre 240 e 246",
+      "intent": "O clímax da primeira metade. O impacto é ao contrário (negativo) e depois o espaço inteiro respira."
+    },
+    {
+      "id": "B09",
+      "act": "III",
+      "name": "O VAZIO RESPIRA",
+      "ticks": [
+        260,
+        279
+      ],
+      "audio": [
+        "sgx_ringdown"
+      ],
+      "camera": [
+        {
+          "t": 260,
+          "pos": {
+            "around": "O",
+            "r": 39,
+            "az": -200,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 70
+        },
+        {
+          "t": 279,
+          "pos": {
+            "around": "O",
+            "r": 26,
+            "az": -205,
+            "el": 8
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 64
+        }
+      ],
+      "vfx": [
+        {
+          "t": 260,
+          "fx": "dust_settle",
+          "note": "a poeira cai de volta"
+        },
+        {
+          "t": 272,
+          "fx": "first_sparks",
+          "note": "primeiras faíscas de matéria começam a orbitar"
+        }
+      ],
+      "hud": [],
+      "flash": [],
+      "shake": [],
+      "silence": [
+        268,
+        279
+      ],
+      "intent": "Silêncio quase total. Um buraco negro sozinho, com o anel fino. A calma antes da fome."
+    },
+    {
+      "id": "B10",
+      "act": "IV",
+      "name": "IGNIÇÃO DO DISCO",
+      "ticks": [
+        280,
+        309
+      ],
+      "audio": [
+        "sgx_disk_ignite"
+      ],
+      "camera": [
+        {
+          "t": 280,
+          "pos": {
+            "around": "O",
+            "r": 26,
+            "az": -205,
+            "el": 8
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 64
+        },
+        {
+          "t": 309,
+          "pos": {
+            "around": "O",
+            "r": 20,
+            "az": -145,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 60
+        }
+      ],
+      "vfx": [
+        {
+          "t": 280,
+          "fx": "matter_streams",
+          "count": 5,
+          "note": "5 fluxos de poeira e detritos sobem do chão em espiral para o plano do disco"
+        },
+        {
+          "t": 280,
+          "fx": "disk_ring_ignite",
+          "ring": 5
+        },
+        {
+          "t": 286,
+          "fx": "disk_ring_ignite",
+          "ring": 4
+        },
+        {
+          "t": 292,
+          "fx": "disk_ring_ignite",
+          "ring": 3
+        },
+        {
+          "t": 298,
+          "fx": "disk_ring_ignite",
+          "ring": 2
+        },
+        {
+          "t": 304,
+          "fx": "disk_ring_ignite",
+          "ring": 1
+        }
+      ],
+      "hud": [
+        {
+          "t": 280,
+          "ch": "SB",
+          "text": "ACCRETION",
+          "clear": 309
+        },
+        {
+          "t": 300,
+          "ch": "HD",
+          "text": "T 10⁷ K",
+          "clear": 330
+        }
+      ],
+      "flash": [
+        {
+          "t": 304,
+          "level": "N3",
+          "kind": "white",
+          "color": "#DDE6FF"
+        }
+      ],
+      "shake": [
+        {
+          "t": 280,
+          "level": 2
+        },
+        {
+          "t": 292,
+          "level": 3
+        },
+        {
+          "t": 304,
+          "level": 4
+        }
+      ],
+      "intent": "O disco acende de FORA para DENTRO: vermelho-escuro → laranja → branco-azulado no anel interno."
+    },
+    {
+      "id": "B11",
+      "act": "IV",
+      "name": "O ANEL",
+      "ticks": [
+        310,
+        349
+      ],
+      "audio": [
+        "sgx_disk_loop"
+      ],
+      "camera": [
+        {
+          "t": 310,
+          "pos": {
+            "around": "O",
+            "r": 20,
+            "az": -145,
+            "el": 12
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 60
+        },
+        {
+          "t": 349,
+          "pos": {
+            "around": "O",
+            "r": 14,
+            "az": -135,
+            "el": 9
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 52,
+          "note": "plano-herói: disco quase de lado"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 310,
+          "fx": "impostor_hero",
+          "note": "arco do disco por cima e por baixo da sombra (lente), anel de fótons nítido, Doppler: lado esquerdo azul-branco e forte, direito laranja e fraco"
+        },
+        {
+          "t": 310,
+          "fx": "lensed_starfield",
+          "note": "anel de Einstein com as estrelas da NASA em volta da sombra"
+        },
+        {
+          "t": 310,
+          "fx": "disk_turbulence",
+          "note": "flipbook de turbulência girando (Kepler)"
+        }
+      ],
+      "hud": [
+        {
+          "t": 315,
+          "ch": "HD",
+          "text": "SPIN a* = 0.67",
+          "clear": 329
+        },
+        {
+          "t": 330,
+          "ch": "HD",
+          "text": "ISCO 3 r_s",
+          "clear": 349
+        }
+      ],
+      "flash": [],
+      "shake": [],
+      "intent": "O plano que todo mundo vai printar. Contemplativo: shake 0, empurrão lento."
+    },
+    {
+      "id": "B12",
+      "act": "IV",
+      "name": "JATOS",
+      "ticks": [
+        350,
+        389
+      ],
+      "audio": [
+        "sgx_jet"
+      ],
+      "camera": [
+        {
+          "t": 350,
+          "pos": {
+            "around": "O",
+            "r": 14,
+            "az": -135,
+            "el": 9
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 52
+        },
+        {
+          "t": 360,
+          "pos": {
+            "around": "O",
+            "r": 30,
+            "az": -120,
+            "el": -10
+          },
+          "look": {
+            "pitch": -35,
+            "yaw_rel": 0
+          },
+          "ease": "step",
+          "fov": 70,
+          "cut": true,
+          "note": "contra-plongée a partir do chão"
+        },
+        {
+          "t": 380,
+          "pos": {
+            "around": "O",
+            "r": 30,
+            "az": -120,
+            "el": -10
+          },
+          "look": {
+            "pitch": -80,
+            "yaw_rel": 0
+          },
+          "ease": "inOutCubic",
+          "fov": 74,
+          "note": "segue o jato até as nuvens"
+        },
+        {
+          "t": 389,
+          "pos": {
+            "around": "O",
+            "r": 26,
+            "az": -110,
+            "el": 4
+          },
+          "look": "G",
+          "ease": "inOutSine",
+          "fov": 70,
+          "note": "desce e mostra o jato de baixo furando o chão"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 358,
+          "fx": "jet_precharge",
+          "note": "polos brilham 2 ticks antes"
+        },
+        {
+          "t": 360,
+          "fx": "jets_on",
+          "note": "dois jatos (lookat_y), violeta-azul; nós de plasma sobem a 8 blocos/tick"
+        },
+        {
+          "t": 360,
+          "fx": "ground_hit_glow",
+          "at": "G"
+        }
+      ],
+      "destruction": [
+        {
+          "t": 360,
+          "op": "shaft",
+          "radius": 3,
+          "depth": 28,
+          "hidden_by": "flash N4"
+        }
+      ],
+      "hud": [
+        {
+          "t": 362,
+          "ch": "SB",
+          "text": "RELATIVISTIC JETS",
+          "clear": 389
+        },
+        {
+          "t": 365,
+          "ch": "HD",
+          "text": "v = 0.99 c",
+          "clear": 389
+        }
+      ],
+      "flash": [
+        {
+          "t": 360,
+          "level": "N4",
+          "kind": "white",
+          "color": "#E9E4FF"
+        },
+        {
+          "t": 361,
+          "level": "N3",
+          "kind": "white",
+          "color": "#C9C2FF"
+        }
+      ],
+      "shake": [
+        {
+          "t": 360,
+          "level": 10
+        },
+        {
+          "t": 362,
+          "level": 6
+        },
+        {
+          "t": 366,
+          "level": 3
+        }
+      ],
+      "intent": "A primeira violência contra o mundo: o jato de baixo fura o chão."
+    },
+    {
+      "id": "B13",
+      "act": "IV",
+      "name": "O OLHO DO MUNDO",
+      "ticks": [
+        390,
+        419
+      ],
+      "audio": [
+        "sgx_jet",
+        "sgx_disk_loop",
+        "sgx_pad"
+      ],
+      "camera": [
+        {
+          "t": 390,
+          "pos": {
+            "around": "O",
+            "r": 26,
+            "az": -110,
+            "el": 4
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 70
+        },
+        {
+          "t": 419,
+          "pos": {
+            "around": "O",
+            "r": 60,
+            "az": -100,
+            "el": 20
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 60,
+          "note": "plano geral, grua subindo"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 390,
+          "fx": "ground_glow",
+          "note": "decalques no chão com a cor do disco (a paisagem 'iluminada' por ele)"
+        },
+        {
+          "t": 400,
+          "fx": "jets_fade",
+          "until": 419
+        }
+      ],
+      "hud": [],
+      "flash": [],
+      "shake": [
+        {
+          "t": 390,
+          "level": 1
+        }
+      ],
+      "intent": "Respiro. O buraco negro como um olho sobre a paisagem. Coral grave entra."
+    },
+    {
+      "id": "B14",
+      "act": "V",
+      "name": "MARÉ",
+      "ticks": [
+        420,
+        459
+      ],
+      "audio": [
+        "sgx_tidal"
+      ],
+      "camera": [
+        {
+          "t": 420,
+          "pos": {
+            "around": "O",
+            "r": 34,
+            "az": -100,
+            "el": -8
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 66,
+          "cut": true,
+          "note": "rente ao chão, olhando para cima através do terreno"
+        },
+        {
+          "t": 459,
+          "pos": {
+            "around": "O",
+            "r": 28,
+            "az": -95,
+            "el": -6
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 66
+        }
+      ],
+      "vfx": [
+        {
+          "t": 420,
+          "fx": "debris_rise",
+          "max_alive": 48,
+          "note": "blocos do próprio terreno (texturas do bioma) sobem em espiral e esticam"
+        },
+        {
+          "t": 420,
+          "fx": "ground_ripple_up"
+        }
+      ],
+      "destruction": [
+        {
+          "t": 422,
+          "op": "crater_slice",
+          "slice": 1,
+          "hidden_by": "poeira + debris"
+        },
+        {
+          "t": 432,
+          "op": "crater_slice",
+          "slice": 2
+        },
+        {
+          "t": 440,
+          "op": "crater_slice",
+          "slice": 3
+        },
+        {
+          "t": 448,
+          "op": "crater_slice",
+          "slice": 4
+        }
+      ],
+      "hud": [
+        {
+          "t": 420,
+          "ch": "SB",
+          "text": "TIDAL FORCES",
+          "clear": 459
+        },
+        {
+          "t": 430,
+          "ch": "HD",
+          "text": "STRAIN 10⁹ g",
+          "clear": 459
+        }
+      ],
+      "flash": [
+        {
+          "t": 446,
+          "level": "N1",
+          "kind": "white",
+          "color": "#FFE2C4"
+        },
+        {
+          "t": 452,
+          "level": "N1",
+          "kind": "white",
+          "color": "#FFE2C4"
+        },
+        {
+          "t": 457,
+          "level": "N2",
+          "kind": "white",
+          "color": "#FFD2A8"
+        }
+      ],
+      "shake": [
+        {
+          "t": 420,
+          "level": 3
+        },
+        {
+          "t": 430,
+          "level": 4
+        },
+        {
+          "t": 438,
+          "level": 5
+        },
+        {
+          "t": 446,
+          "level": 6
+        },
+        {
+          "t": 452,
+          "level": 7
+        },
+        {
+          "t": 457,
+          "level": 8
+        }
+      ],
+      "intent": "O mundo é que cai para cima. Cada estalo de madeira/pedra é um pedaço de chão se soltando."
+    },
+    {
+      "id": "B15",
+      "act": "V",
+      "name": "ESPAGUETE",
+      "ticks": [
+        460,
+        499
+      ],
+      "audio": [
+        "sgx_fall"
+      ],
+      "camera": [
+        {
+          "t": 460,
+          "pos": {
+            "follow": "hero_chunk",
+            "back": 3,
+            "up": 1
+          },
+          "look": "hero_chunk",
+          "ease": "step",
+          "fov": 66,
+          "cut": true,
+          "note": "smash-cut para o ponto de vista do pedaço de chão"
+        },
+        {
+          "t": 499,
+          "pos": {
+            "follow": "hero_chunk",
+            "back": 3,
+            "up": 0.5
+          },
+          "look": "O",
+          "ease": "inQuad",
+          "fov": 90
+        }
+      ],
+      "vfx": [
+        {
+          "t": 460,
+          "fx": "hero_chunk",
+          "note": "um bloco de grama em espiral; estica (y ×6, xz ×0,3) conforme se aproxima"
+        },
+        {
+          "t": 460,
+          "fx": "speed_lines"
+        },
+        {
+          "t": 470,
+          "fx": "debris_streaks"
+        }
+      ],
+      "hud": [
+        {
+          "t": 470,
+          "ch": "HD",
+          "text": "r = 6 r_s",
+          "clear": 484
+        },
+        {
+          "t": 485,
+          "ch": "HD",
+          "text": "r = 3 r_s",
+          "clear": 494
+        },
+        {
+          "t": 495,
+          "ch": "HD",
+          "text": "r = 1.5 r_s · PHOTON SPHERE",
+          "clear": 504
+        }
+      ],
+      "flash": [],
+      "shake": [
+        {
+          "t": 460,
+          "level": 4
+        },
+        {
+          "t": 480,
+          "level": 6
+        },
+        {
+          "t": 495,
+          "level": 7
+        }
+      ],
+      "letterbox": "aperta 2,39 → 2,8 entre 460 e 499",
+      "intent": "A gente vira o pedaço de chão. Esticado, rápido, sem volta."
+    },
+    {
+      "id": "B16",
+      "act": "V",
+      "name": "A QUEDA",
+      "ticks": [
+        500,
+        539
+      ],
+      "audio": [
+        "sgx_fall"
+      ],
+      "camera": [
+        {
+          "t": 500,
+          "pos": {
+            "follow": "hero_chunk",
+            "back": 3,
+            "up": 0.5
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 90,
+          "note": "cruza o plano do disco (clarão)"
+        },
+        {
+          "t": 539,
+          "pos": {
+            "along": "O",
+            "dist_to_shadow": 6
+          },
+          "look": "O",
+          "ease": "inCubic",
+          "fov": 120,
+          "note": "FOV abre: o anel de fótons vira um círculo gigante"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 500,
+          "fx": "disk_plane_cross"
+        },
+        {
+          "t": 505,
+          "fx": "aberration_ring",
+          "note": "o universo de fora comprime num anel (overlay assado)"
+        },
+        {
+          "t": 510,
+          "fx": "redshift_grade",
+          "from": 0.0,
+          "to": 0.5,
+          "until": 539
+        },
+        {
+          "t": 520,
+          "fx": "chunk_to_thread"
+        }
+      ],
+      "hud": [
+        {
+          "t": 505,
+          "ch": "HD",
+          "text": "r → r_s",
+          "clear": 524
+        },
+        {
+          "t": 525,
+          "ch": "HD",
+          "text": "z = 9.0",
+          "clear": 539
+        }
+      ],
+      "flash": [
+        {
+          "t": 500,
+          "level": "N3",
+          "kind": "white",
+          "color": "#FFF2DD"
+        }
+      ],
+      "shake": [
+        {
+          "t": 500,
+          "level": 7
+        },
+        {
+          "t": 515,
+          "level": 5
+        },
+        {
+          "t": 530,
+          "level": 3
+        }
+      ],
+      "letterbox": "aperta 2,8 → 3,2 entre 500 e 539",
+      "intent": "Mergulho. O tempo começa a ficar mole (o som afunda)."
+    },
+    {
+      "id": "B17",
+      "act": "VI",
+      "name": "O ÚLTIMO OLHAR",
+      "ticks": [
+        540,
+        579
+      ],
+      "audio": [
+        "sgx_horizon"
+      ],
+      "camera": [
+        {
+          "t": 540,
+          "pos": {
+            "along": "O",
+            "dist_to_shadow": 6
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 120
+        },
+        {
+          "t": 579,
+          "pos": {
+            "along": "O",
+            "dist_to_shadow": 2.5
+          },
+          "look": "O",
+          "ease": "outSine",
+          "fov": 100,
+          "stutter": [
+            1,
+            1,
+            2,
+            2,
+            3,
+            4,
+            6,
+            8
+          ],
+          "note": "dilatação: a pose segura por cada vez mais ticks"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 540,
+          "fx": "redshift_grade",
+          "from": 0.5,
+          "to": 0.95,
+          "until": 579
+        },
+        {
+          "t": 540,
+          "fx": "aberration_ring_shrink"
+        }
+      ],
+      "hud": [
+        {
+          "t": 545,
+          "ch": "HD",
+          "text": "t → ∞",
+          "clear": 559
+        },
+        {
+          "t": 560,
+          "ch": "HD",
+          "text": "SIGNAL LOST",
+          "clear": 579
+        },
+        {
+          "t": 560,
+          "ch": "HT",
+          "text": "3"
+        }
+      ],
+      "flash": [],
+      "shake": [
+        {
+          "t": 540,
+          "level": 2
+        },
+        {
+          "t": 560,
+          "level": 1
+        }
+      ],
+      "intent": "Congelamento. Tudo fica vermelho, lento, distante."
+    },
+    {
+      "id": "B18",
+      "act": "VI",
+      "name": "CRUZAMENTO",
+      "ticks": [
+        580,
+        599
+      ],
+      "audio": [
+        "sgx_horizon"
+      ],
+      "camera": [
+        {
+          "t": 580,
+          "pos": {
+            "along": "O",
+            "dist_to_shadow": 2.5
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 100,
+          "stutter": [
+            8
+          ]
+        },
+        {
+          "t": 599,
+          "pos": {
+            "along": "O",
+            "dist_to_shadow": 0.5
+          },
+          "look": "O",
+          "ease": "inSine",
+          "fov": 96
+        }
+      ],
+      "vfx": [
+        {
+          "t": 580,
+          "fx": "iris_close",
+          "until": 590
+        },
+        {
+          "t": 590,
+          "fx": "last_photon",
+          "until": 599,
+          "note": "um ponto de luz no centro que encolhe"
+        }
+      ],
+      "hud": [],
+      "flash": [],
+      "shake": [],
+      "letterbox": "3,2 → fechado (preto) entre 580 e 590",
+      "intent": "As barras se encontram. Sobra um fóton."
+    },
+    {
+      "id": "B19",
+      "act": "VI",
+      "name": "SILÊNCIO ABSOLUTO",
+      "ticks": [
+        600,
+        619
+      ],
+      "audio": [],
+      "camera": [
+        {
+          "t": 600,
+          "pos": {
+            "around": "O",
+            "r": 70,
+            "az": -100,
+            "el": 35
+          },
+          "look": "O",
+          "ease": "step",
+          "fov": 55,
+          "cut": true,
+          "note": "teleporte escondido no preto"
+        }
+      ],
+      "vfx": [
+        {
+          "t": 600,
+          "fx": "screen_black",
+          "until": 619
+        },
+        {
+          "t": 601,
+          "fx": "despawn_debris"
+        },
+        {
+          "t": 602,
+          "fx": "spawn_remnant",
+          "scale": 0.6
+        },
+        {
+          "t": 604,
+          "fx": "crater_rim_glow"
+        }
+      ],
+      "destruction": [
+        {
+          "t": 600,
+          "op": "crater_bulk",
+          "budget_ms": 25,
+          "hidden_by": "tela preta (20 ticks)"
+        }
+      ],
+      "hud": [],
+      "flash": [],
+      "shake": [],
+      "silence": [
+        600,
+        619
+      ],
+      "intent": "Um segundo de NADA: preto e mudo. O melhor momento do filme."
+    },
+    {
+      "id": "B20",
+      "act": "VII",
+      "name": "DE FORA",
+      "ticks": [
+        620,
+        659
+      ],
+      "audio": [
+        "sgx_hawking"
+      ],
+      "camera": [
+        {
+          "t": 620,
+          "pos": {
+            "around": "O",
+            "r": 70,
+            "az": -100,
+            "el": 35
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 55
+        },
+        {
+          "t": 659,
+          "pos": {
+            "around": "O",
+            "r": 55,
+            "az": -95,
+            "el": 30
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 55
+        }
+      ],
+      "vfx": [
+        {
+          "t": 620,
+          "fx": "fade_in_from_black",
+          "dur": 12
+        },
+        {
+          "t": 620,
+          "fx": "hawking_sparkles",
+          "rate": "baixa"
+        }
+      ],
+      "hud": [],
+      "flash": [],
+      "shake": [],
+      "letterbox": "abre para 16:9 entre 620 e 630 (a respiração)",
+      "intent": "Do lado de fora, o tempo é normal: uma cratera perfeita e um buraco negro pequeno pairando."
+    },
+    {
+      "id": "B21",
+      "act": "VII",
+      "name": "HAWKING",
+      "ticks": [
+        660,
+        699
+      ],
+      "audio": [
+        "sgx_hawking"
+      ],
+      "camera": [
+        {
+          "t": 660,
+          "pos": {
+            "around": "O",
+            "r": 55,
+            "az": -95,
+            "el": 30
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 55
+        },
+        {
+          "t": 699,
+          "pos": {
+            "around": "O",
+            "r": 30,
+            "az": -90,
+            "el": 18
+          },
+          "look": "O",
+          "ease": "inOutSine",
+          "fov": 50
+        }
+      ],
+      "vfx": [
+        {
+          "t": 660,
+          "fx": "bh_shrink",
+          "to": 0.05,
+          "until": 699,
+          "ease": "inExpo"
+        },
+        {
+          "t": 660,
+          "fx": "hawking_sparkles",
+          "rate": "crescente"
+        },
+        {
+          "t": 660,
+          "fx": "hawking_flicker"
+        },
+        {
+          "t": 672,
+          "fx": "hawking_flicker"
+        },
+        {
+          "t": 682,
+          "fx": "hawking_flicker"
+        },
+        {
+          "t": 690,
+          "fx": "hawking_flicker"
+        },
+        {
+          "t": 696,
+          "fx": "hawking_flicker"
+        },
+        {
+          "t": 699,
+          "fx": "hawking_flicker"
+        }
+      ],
+      "hud": [],
+      "flash": [
+        {
+          "t": 660,
+          "level": "N1",
+          "kind": "white",
+          "color": "#E8FBFF"
+        },
+        {
+          "t": 672,
+          "level": "N1",
+          "kind": "white",
+          "color": "#E8FBFF"
+        },
+        {
+          "t": 682,
+          "level": "N1",
+          "kind": "white",
+          "color": "#E8FBFF"
+        },
+        {
+          "t": 690,
+          "level": "N2",
+          "kind": "white",
+          "color": "#E8FBFF"
+        },
+        {
+          "t": 696,
+          "level": "N2",
+          "kind": "white",
+          "color": "#E8FBFF"
+        },
+        {
+          "t": 699,
+          "level": "N2",
+          "kind": "white",
+          "color": "#E8FBFF"
+        }
+      ],
+      "shake": [],
+      "intent": "Evapora. Quanto menor, mais quente e mais rápido pisca (é física: a temperatura de Hawking sobe quando a massa cai)."
+    },
+    {
+      "id": "B22",
+      "act": "VII",
+      "name": "O ÚLTIMO CLARÃO",
+      "ticks": [
+        700,
+        719
+      ],
+      "audio": [
+        "sgx_burst"
+      ],
+      "camera": [
+        {
+          "t": 700,
+          "pos": {
+            "around": "O",
+            "r": 30,
+            "az": -90,
+            "el": 18
+          },
+          "look": "O",
+          "ease": "linear",
+          "fov": 50
+        },
+        {
+          "t": 719,
+          "pos": {
+            "around": "O",
+            "r": 40,
+            "az": -90,
+            "el": 22
+          },
+          "look": "O",
+          "ease": "outSine",
+          "fov": 52
+        }
+      ],
+      "vfx": [
+        {
+          "t": 700,
+          "fx": "final_burst",
+          "note": "casca de luz limpa que se expande devagar e lava a cratera"
+        },
+        {
+          "t": 704,
+          "fx": "stars_twinkle"
+        }
+      ],
+      "hud": [
+        {
+          "t": 704,
+          "ch": "TT",
+          "text": "SINGULARITY",
+          "clear": 719
+        },
+        {
+          "t": 706,
+          "ch": "TT2",
+          "text": "黑洞",
+          "clear": 719
+        }
+      ],
+      "flash": [
+        {
+          "t": 700,
+          "level": "N4",
+          "kind": "white_soft",
+          "color": "#FFFFFF",
+          "note": "o único branco de paz do filme — SEM shake"
+        }
+      ],
+      "shake": [],
+      "intent": "Perdão. Luz, sem violência. O mundo fica: a cratera sob as estrelas."
+    }
+  ],
+  "letterbox_curve": [
+    {
+      "t": 0,
+      "ratio": 1.78
+    },
+    {
+      "t": 47,
+      "ratio": 1.78
+    },
+    {
+      "t": 79,
+      "ratio": 2.39,
+      "ease": "inOutSine"
+    },
+    {
+      "t": 240,
+      "ratio": 2.39
+    },
+    {
+      "t": 242,
+      "ratio": 2.7,
+      "ease": "outQuad"
+    },
+    {
+      "t": 246,
+      "ratio": 2.39,
+      "ease": "outBack"
+    },
+    {
+      "t": 459,
+      "ratio": 2.39
+    },
+    {
+      "t": 499,
+      "ratio": 2.8,
+      "ease": "inOutSine"
+    },
+    {
+      "t": 539,
+      "ratio": 3.2,
+      "ease": "inOutSine"
+    },
+    {
+      "t": 580,
+      "ratio": 3.2
+    },
+    {
+      "t": 590,
+      "ratio": "closed",
+      "ease": "inCubic"
+    },
+    {
+      "t": 619,
+      "ratio": "closed"
+    },
+    {
+      "t": 620,
+      "ratio": "closed"
+    },
+    {
+      "t": 630,
+      "ratio": 1.78,
+      "ease": "outSine"
+    },
+    {
+      "t": 719,
+      "ratio": 1.78
+    }
+  ],
+  "grade_curve": [
+    {
+      "t": 0,
+      "redshift": 0.0
+    },
+    {
+      "t": 509,
+      "redshift": 0.0
+    },
+    {
+      "t": 539,
+      "redshift": 0.5,
+      "ease": "inQuad"
+    },
+    {
+      "t": 579,
+      "redshift": 0.95,
+      "ease": "inOutSine"
+    },
+    {
+      "t": 599,
+      "redshift": 1.0
+    },
+    {
+      "t": 600,
+      "redshift": 0.0,
+      "note": "zera no preto"
+    }
+  ],
+  "continuity": [
+    {
+      "item": "Letterbox",
+      "rule": "16:9 (0–47) → 2,39 (79–459) → aperta até 3,2 (539) → fecha (590) → preto (600–619) → 16:9 (630–fim)"
+    },
+    {
+      "item": "HUD",
+      "rule": "Plex Mono branco-gelo. Existe de 4 a 579. Nunca depois do 580. Título só no 704."
+    },
+    {
+      "item": "Shake 10",
+      "rule": "Só no 241 (fusão) e no 360 (jatos)."
+    },
+    {
+      "item": "Shake 0 obrigatório",
+      "rule": "B11 (plano-herói), B19 (silêncio), B20–B22 (lado de fora / evaporação)."
+    },
+    {
+      "item": "Silêncios",
+      "rule": "268–279 (quase) e 600–619 (absoluto: nenhum som, nenhuma imagem)."
+    },
+    {
+      "item": "Paleta",
+      "rule": "noite fria → prata (ondas) → corpo negro do disco (laranja → branco-azul) → violeta (jatos) → âmbar → vermelho (desvio para o vermelho) → preto → branco-gelo (Hawking)"
+    },
+    {
+      "item": "Flash branco de paz",
+      "rule": "Só o do 700. Todos os outros flashes são de energia (com shake ou de lente)."
+    },
+    {
+      "item": "Impacto negativo",
+      "rule": "Só no 240: o buraco negro vira branco e o mundo preto por 2 ticks."
+    },
+    {
+      "item": "Escala do buraco negro",
+      "rule": "layout.black_hole.scale_curve — nunca encolhe antes do 600 (no preto)."
+    },
+    {
+      "item": "Destruição",
+      "rule": "Todo corte de bloco fica embaixo de algo que já cobre a tela: flash 360, poeira 420–459, preto 600–619."
+    }
+  ],
+  "flash_levels": {
+    "N0": "sem flash",
+    "N1": "brilho suave +0,5 EV, shake ≤1",
+    "N2": "pulso/halo +1 EV, shake ≤3",
+    "N3": "flash cheio 2–3 ticks, +2 EV, shake ≤6",
+    "N4": "white-out/impacto 1–2 ticks, +4 EV"
+  },
+  "hud_channels": {
+    "SB": "legenda (canto inferior esquerdo, dentro da barra)",
+    "HD": "linha de HUD técnica",
+    "HT": "tremor do HUD (1–3)",
+    "TT": "título",
+    "TT2": "subtítulo CJK"
+  }
+}

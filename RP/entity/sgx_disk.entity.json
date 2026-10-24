@@ -1,0 +1,33 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "singularity:sgx_disk",
+      "materials": {
+        "default": "entity_emissive",
+        "glow": "entity_beam_additive"
+      },
+      "textures": {
+        "cold": "textures/sgx/disk/disk_cold",
+        "lit": "textures/sgx/disk/disk_lit"
+      },
+      "geometry": {
+        "default": "geometry.singularity.sgx_disk"
+      },
+      "animations": {
+        "kepler": "animation.singularity.sgx_disk.kepler"
+      },
+      "scripts": {
+        "pre_animation": [
+          "v.ang = (v.ang ?? 0) + q.delta_time * 180;"
+        ],
+        "animate": [
+          "kepler"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.singularity.sgx_disk"
+      ]
+    }
+  }
+}

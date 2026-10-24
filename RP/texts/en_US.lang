@@ -1,0 +1,76 @@
+pack.name=Dooms Day (RP)
+pack.description=Dooms Day resources: black hole impostors (Schwarzschild ray tracer), accretion disk, jets, magnetar field lines, synthesized audio, NASA starfield.
+item.singularity:core=§5Singularity Core
+sgx.menu.title=§l§4DOOMS DAY§r
+sgx.menu.subtitle=§8SINGULARITY CORE
+sgx.menu.body=§7Aim at the ground 40–128 blocks away.
+sgx.menu.play=§5BLACK HOLE
+sgx.menu.play.sub=§7Binary, merger, disk, jets, the fall
+sgx.menu.magnetar=§bMAGNETAR
+sgx.menu.magnetar.sub=§7SGR 1806-20 · the flare of 2004
+sgx.menu.options=§5OPTIONS
+sgx.menu.options.sub=§7Destruction, damage, protections, quality, camera
+sgx.menu.cancel=§8Cancel
+sgx.msg.too_close=§cToo close. Aim at the ground at least %1 blocks away.
+sgx.msg.busy=§8Another cinematic is already playing.
+sgx.msg.loaded=§8[Dooms Day] §7Loaded. /give @s singularity:core
+## F0/F1
+sgx.menu.soon=§8Coming in a later version.
+sgx.menu.options.body=§7Options arrive with the full film. For now: /scriptevent sgx:spike 1…10, sgx:play blackhole, sgx:stop.
+sgx.msg.no_target=§cAim at the ground (40–128 blocks away).
+sgx.msg.too_far=§cToo far. Aim at the ground at most %1 blocks away.
+sgx.msg.stopped=§8[Dooms Day] Stopped.
+sgx.msg.auto_target=§8[Dooms Day] No ground 40–128 blocks away in your aim: using the ground 60 blocks ahead.
+sgx.msg.restored=§8[Dooms Day] Restored the world settings after an interrupted cinematic.
+sgx.msg.film_done=§8[Dooms Day] Animatic finished (%1 ticks, %2 skipped, script %3 ms avg / %4 ms peak).
+sgx.spike.unknown=§cUnknown test. Use /scriptevent sgx:spike 1…10
+sgx.spike.end=§8[S-%1] Test finished. Camera back to normal.
+sgx.spike.1=§e[S-01] Depth: §f3D disk (numbered rings) + black particle in the center. Camera orbits for 12 s. §7Look: is the black disk IN FRONT of the back part of the rings and BEHIND the front part?
+sgx.spike.2=§e[S-02] Billboards: §ftop = q.camera_rotation, bottom = q.rotation_to_camera. Cutscene camera orbits. §7Look: does each panel turn WITH the camera (even if facing the wrong side)?
+sgx.spike.3=§e[S-03] Thin cubes: §fonly the outer disk ring (0.1-unit thick cubes, entity_emissive). §7Look: is the ring visible, solid and bright (tablet AND phone)?
+sgx.spike.4=§e[S-04] Debris: §f20 numbered blocks spiral in and stretch (bones moved up to 30 blocks by Molang). §7Look: do any blocks vanish when you turn away from the center? Do they stretch toward the center?
+sgx.spike.5=§e[S-05] Stereo: §fa 2D sound pans LEFT → RIGHT in 4 s (twice). §7Listen on the phone speaker AND headphones: does it move from left to right?
+sgx.spike.6=§e[S-06] Atlas: §f4 particles with v.incl 0…3 (rows I0–I3) animating frames F0→F3, plus 1 impostor (F0…F7). §7Look: each one shows its own row and the frame numbers change?
+sgx.spike.7=§e[S-07] poly_mesh: §fa smooth orange ring ("MESH") spinning. §7Look: does it appear at all, on tablet AND phone?
+sgx.spike.8=§e[S-08] Letterbox: §fbars sweep 16:9 → 2.39 → 3.2 → closed → open, then flashes (white, ice, warm, violet, black). §7Look: are the bars clean on 20:9? Does anything stick out at the edges?
+sgx.spike.9=§e[S-09] FOV breathing: §ffixed camera, FOV ±5° every 3 ticks (6 s), then every 6 ticks (6 s). §7Look: smooth or jerky?
+sgx.spike.10=§e[S-10] Pull: §f10 cows are pulled to the gold marker every 4 ticks for 8 s. §7Look: smooth, or do they "teleport"?
+sgx.spike.10.after=§8[S-10] Cows removed.
+sgx.spike.busy=§8A test or cinematic is already running. /scriptevent sgx:stop
+## GERADO do spec/storyboard.json (HUD)
+sgx.hud.b01.0=ANOMALY DETECTED
+sgx.hud.b01.1=GRAV. GRADIENT +0.003 g
+sgx.hud.b02.0=SINGULARITY · A
+sgx.hud.b02.1=MASS 36 M☉
+sgx.hud.b03.0=SECOND BODY · 29 M☉
+sgx.hud.b03.1=BINARY LOCKED
+sgx.hud.b04.0=INSPIRAL · f 35 Hz · d 8.0
+sgx.hud.b05.0=f 37 Hz · d 7.8
+sgx.hud.b05.1=f 39 Hz · d 7.5
+sgx.hud.b05.2=f 41 Hz · d 7.2
+sgx.hud.b06.0=f 44 Hz · d 6.9
+sgx.hud.b06.1=f 50 Hz · d 6.3
+sgx.hud.b07.0=f 62 Hz · d 5.5
+sgx.hud.b07.1=f 103 Hz · d 3.9
+sgx.hud.b07.2=f 146 Hz · d 3.1
+sgx.hud.b07.3=f 245 Hz
+sgx.hud.b08.0=THEY BECAME ONE
+sgx.hud.b08.1=MERGER · 62 M☉
+sgx.hud.b08.2=ΔM = 3.0 M☉ → GRAVITATIONAL WAVES
+sgx.hud.b10.0=ACCRETION
+sgx.hud.b10.1=T 10⁷ K
+sgx.hud.b11.0=SPIN a* = 0.67
+sgx.hud.b11.1=ISCO 3 r_s
+sgx.hud.b12.0=RELATIVISTIC JETS
+sgx.hud.b12.1=v = 0.99 c
+sgx.hud.b14.0=TIDAL FORCES
+sgx.hud.b14.1=STRAIN 10⁹ g
+sgx.hud.b15.0=r = 6 r_s
+sgx.hud.b15.1=r = 3 r_s
+sgx.hud.b15.2=r = 1.5 r_s · PHOTON SPHERE
+sgx.hud.b16.0=r → r_s
+sgx.hud.b16.1=z = 9.0
+sgx.hud.b17.0=t → ∞
+sgx.hud.b17.1=SIGNAL LOST
+sgx.hud.b22.0=SINGULARITY
+sgx.hud.b22.1=黑洞
