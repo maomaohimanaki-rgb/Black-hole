@@ -1,0 +1,28 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "singularity:sgx_spike_bb_rot",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/sgx/spike/bb_rot"
+      },
+      "geometry": {
+        "default": "geometry.singularity.sgx_spike_bb_rot"
+      },
+      "render_controllers": [
+        "controller.render.singularity.sgx_simple"
+      ],
+      "scripts": {
+        "animate": [
+          "face"
+        ]
+      },
+      "animations": {
+        "face": "animation.singularity.sgx_spike_bb_rot.face"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+pack.name=Dooms Day (RP)
+pack.description=Recursos do Dooms Day: impostores do buraco negro (traçado de raios de Schwarzschild), disco de acreção, jatos, linhas de campo do magnetar, áudio sintetizado, céu da NASA.
+item.singularity:core=§5Núcleo da Singularidade
+sgx.menu.title=§l§4DOOMS DAY§r
+sgx.menu.subtitle=§8NÚCLEO DA SINGULARIDADE
+sgx.menu.body=§7Mire no chão a 40–128 blocos.
+sgx.menu.play=§5BURACO NEGRO
+sgx.menu.play.sub=§7Par, fusão, disco, jatos, a queda
+sgx.menu.magnetar=§bMAGNETAR
+sgx.menu.magnetar.sub=§7SGR 1806-20 · a erupção de 2004
+sgx.menu.options=§5OPÇÕES
+sgx.menu.options.sub=§7Destruição, dano, proteções, qualidade, câmera
+sgx.menu.cancel=§8Cancelar
+sgx.msg.too_close=§cPerto demais. Mire no chão a pelo menos %1 blocos.
+sgx.msg.busy=§8Já tem uma cinemática tocando.
+sgx.msg.loaded=§8[Dooms Day] §7Carregado. /give @s singularity:core

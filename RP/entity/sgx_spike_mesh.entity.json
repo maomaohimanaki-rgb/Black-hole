@@ -1,0 +1,28 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "singularity:sgx_spike_mesh",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/sgx/spike/polymesh"
+      },
+      "geometry": {
+        "default": "geometry.singularity.sgx_spike_mesh"
+      },
+      "render_controllers": [
+        "controller.render.singularity.sgx_simple"
+      ],
+      "scripts": {
+        "animate": [
+          "spin"
+        ]
+      },
+      "animations": {
+        "spin": "animation.singularity.sgx_spike_mesh.spin"
+      }
+    }
+  }
+}

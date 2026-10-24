@@ -1,0 +1,329 @@
+{
+  "format_version": "1.20.20",
+  "sound_definitions": {
+    "singularity:sgx2d_void_in": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_void_in",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_void_in": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_void_in_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_point": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_point",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_point": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_point_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_twin": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_twin",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_twin": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_twin_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_chirp": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_chirp",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_chirp": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_chirp_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_merge": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_merge",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_merge": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_merge_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_ringdown": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_ringdown",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_ringdown": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_ringdown_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_disk_ignite": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_disk_ignite",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_disk_ignite": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_disk_ignite_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_disk_loop": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_disk_loop",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_disk_loop_ext": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_disk_loop_ext_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_jet": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_jet",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_jet": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_jet_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_pad": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_pad",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx2d_tidal": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_tidal",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_tidal": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_tidal_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_fall": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_fall",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx2d_horizon": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_horizon",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx2d_hawking": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_hawking",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_hawking": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_hawking_m",
+          "stream": false
+        }
+      ]
+    },
+    "singularity:sgx2d_burst": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_burst",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx_burst": {
+      "__use_legacy_max_distance": "true",
+      "category": "neutral",
+      "max_distance": 256,
+      "min_distance": 1,
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_burst_m",
+          "stream": false
+        }
+      ]
+    }
+  }
+}

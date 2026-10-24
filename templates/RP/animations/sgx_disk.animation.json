@@ -1,0 +1,48 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.singularity.sgx_disk.kepler": {
+      "loop": true,
+      "bones": {
+        "root": {
+          "scale": "q.property('singularity:scale')"
+        },
+        "ring_1": {
+          "rotation": [
+            0,
+            "v.ang * 0.6495",
+            0
+          ]
+        },
+        "ring_2": {
+          "rotation": [
+            0,
+            "v.ang * 0.3428",
+            0
+          ]
+        },
+        "ring_3": {
+          "rotation": [
+            0,
+            "v.ang * 0.2097",
+            0
+          ]
+        },
+        "ring_4": {
+          "rotation": [
+            0,
+            "v.ang * 0.1412",
+            0
+          ]
+        },
+        "ring_5": {
+          "rotation": [
+            0,
+            "v.ang * 0.1026",
+            0
+          ]
+        }
+      }
+    }
+  }
+}

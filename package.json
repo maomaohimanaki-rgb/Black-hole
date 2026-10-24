@@ -1,0 +1,13 @@
+{
+  "name": "doomsday-bedrock",
+  "private": true,
+  "type": "module",
+  "description": "Dooms Day — addon de Minecraft Bedrock (buraco negro + magnetar). Só para testes e tipos; o jogo não usa este arquivo.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@minecraft/server": "2.10.0",
+    "@minecraft/server-ui": "2.2.0"
+  }
+}

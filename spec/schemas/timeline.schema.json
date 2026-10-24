@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "build/timeline.json — saída do sintetizador (tools/synth) e entrada do tools/build_timeline.py",
+  "type": "object",
+  "required": [
+    "meta",
+    "events",
+    "audio_library"
+  ],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "name",
+        "tick_rate",
+        "audio_end_tick"
+      ],
+      "properties": {
+        "tick_rate": {
+          "const": 20
+        },
+        "audio_end_tick": {
+          "type": "integer"
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "sound",
+          "file",
+          "tick",
+          "end_tick",
+          "volume",
+          "pitch",
+          "mode",
+          "heard_in_cutscene",
+          "heard_outside_cutscene",
+          "onsets_abs"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "sound": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "tick": {
+            "type": "number"
+          },
+          "end_tick": {
+            "type": "number"
+          },
+          "volume": {
+            "type": "number"
+          },
+          "pitch": {
+            "type": "number"
+          },
+          "mode": {
+            "enum": [
+              "both",
+              "cutscene",
+              "outside"
+            ]
+          },
+          "heard_in_cutscene": {
+            "type": "boolean"
+          },
+          "heard_outside_cutscene": {
+            "type": "boolean"
+          },
+          "analysis_ref": {
+            "type": "string"
+          },
+          "onsets_abs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "tick",
+                "time_s",
+                "strength",
+                "rms_norm"
+              ],
+              "properties": {
+                "tick": {
+                  "type": "number"
+                },
+                "time_s": {
+                  "type": "number"
+                },
+                "strength": {
+                  "type": "number"
+                },
+                "rms_norm": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "audio_library": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "duration_s",
+          "sample_rate",
+          "onsets",
+          "envelope_rms_norm_20fps",
+          "envelope_centroid_hz_20fps"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number"
+          },
+          "sample_rate": {
+            "type": "integer"
+          },
+          "rms_peak": {
+            "type": "number"
+          },
+          "dominant_hz": {
+            "type": "number"
+          },
+          "spectral_centroid_hz": {
+            "type": "number"
+          },
+          "onsets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "t_local_s",
+                "strength",
+                "rms_norm"
+              ]
+            }
+          },
+          "envelope_rms_norm_20fps": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "envelope_dominant_hz_20fps": {
+            "type": "array",
+            "items": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "envelope_centroid_hz_20fps": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  }
+}

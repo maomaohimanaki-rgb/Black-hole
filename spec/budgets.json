@@ -1,0 +1,27 @@
+{
+  "source": "Metas medidas num projeto anterior de cutscene no mesmo tablet (2304×1440, render 12, simulação 8): valem como ponto de partida e se confirmam com o profiler na F1.",
+  "script_ms_per_tick": {
+    "alto": 14,
+    "equilibrio": 12,
+    "leve": 10,
+    "typical_goal": 8,
+    "frozen_or_black_frames": 25
+  },
+  "particle_calls_per_tick": {
+    "avg_max": 60,
+    "peak_max": 120
+  },
+  "camera_and_title_packets_per_second": {
+    "max": 5,
+    "note": "câmera por tick = 20/s é aceito (é o modo padrão); títulos só quando o valor muda + reenvio a cada 100 ticks"
+  },
+  "tps_during_film_min": 16,
+  "post_film_dig_seconds_goal": 5,
+  "debris_entities_alive_max": 48,
+  "client_particles_alive_soft_cap": 1100,
+  "texture_limits": {
+    "max_side": 2048,
+    "note": "atlas de 8192 não é seguro em todo aparelho; HUD/impacto ≤ Full HD; overlays suaves ≤ 1152×720"
+  },
+  "commands_per_tick_soft_cap": 8
+}

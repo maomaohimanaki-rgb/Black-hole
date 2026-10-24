@@ -1,0 +1,45 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.singularity.sgx_disk": {
+      "arrays": {
+        "textures": {
+          "Array.tex": [
+            "Texture.cold",
+            "Texture.lit"
+          ]
+        }
+      },
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.tex[q.property('singularity:lit') > 0]"
+      ],
+      "ignore_lighting": true,
+      "part_visibility": [
+        {
+          "*": true
+        },
+        {
+          "ring_1": "q.property('singularity:lit') >= 5"
+        },
+        {
+          "ring_2": "q.property('singularity:lit') >= 4"
+        },
+        {
+          "ring_3": "q.property('singularity:lit') >= 3"
+        },
+        {
+          "ring_4": "q.property('singularity:lit') >= 2"
+        },
+        {
+          "ring_5": "q.property('singularity:lit') >= 1"
+        }
+      ]
+    }
+  }
+}

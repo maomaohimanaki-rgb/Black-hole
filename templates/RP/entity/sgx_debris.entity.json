@@ -1,0 +1,46 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "singularity:sgx_debris",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "k00": "textures/sgx/debris/k00",
+        "k01": "textures/sgx/debris/k01",
+        "k02": "textures/sgx/debris/k02",
+        "k03": "textures/sgx/debris/k03",
+        "k04": "textures/sgx/debris/k04",
+        "k05": "textures/sgx/debris/k05",
+        "k06": "textures/sgx/debris/k06",
+        "k07": "textures/sgx/debris/k07",
+        "k08": "textures/sgx/debris/k08",
+        "k09": "textures/sgx/debris/k09",
+        "k10": "textures/sgx/debris/k10",
+        "k11": "textures/sgx/debris/k11",
+        "k12": "textures/sgx/debris/k12",
+        "k13": "textures/sgx/debris/k13",
+        "k14": "textures/sgx/debris/k14",
+        "k15": "textures/sgx/debris/k15"
+      },
+      "geometry": {
+        "default": "geometry.singularity.sgx_debris"
+      },
+      "animations": {
+        "spiral": "animation.singularity.sgx_debris.spiral"
+      },
+      "scripts": {
+        "pre_animation": [
+          "v.u = math.clamp(q.life_time / q.property('singularity:tc'), 0, 1);v.r = q.property('singularity:r0') * math.pow(1 - v.u, 0.6667);v.ang = q.property('singularity:phi0') + 900 * v.u * v.u;v.y = q.property('singularity:y0') * (1 - v.u) + 14 * (v.u * v.u * (3 - 2 * v.u));v.st = 1 + 5 * math.pow(v.u, 3);"
+        ],
+        "animate": [
+          "spiral"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.singularity.sgx_debris"
+      ]
+    }
+  }
+}

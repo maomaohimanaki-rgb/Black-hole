@@ -1,0 +1,47 @@
+{
+  "note": "Cores em sRGB. 'temperature' = cor de corpo negro (para o disco e Hawking).",
+  "night": {
+    "sky": "#05070F",
+    "ground_tint": "#0E1420"
+  },
+  "void": "#000000",
+  "photon_ring": "#FFE7B0",
+  "lens_glint": "#F2F6FF",
+  "gw_ripple": "#D8E2F0",
+  "disk_temperature": {
+    "2000K": "#FF6A1E",
+    "2600K": "#FF8A3D",
+    "4000K": "#FFB46B",
+    "6500K": "#FFF4EA",
+    "9000K": "#DCE4FF",
+    "approach_tint": "#9BB7FF",
+    "recede_tint": "#FF7A2E"
+  },
+  "jets": {
+    "core": "#F0EEFF",
+    "sheath": "#8FA8FF",
+    "knots": "#C9C2FF"
+  },
+  "tidal": {
+    "dust": "#B8A48C",
+    "glow": "#FFD2A8"
+  },
+  "redshift_grade": {
+    "0.0": "#FFFFFF",
+    "0.5": "#FF7A3D",
+    "0.8": "#C2290F",
+    "1.0": "#2A0000"
+  },
+  "hawking": "#E8FBFF",
+  "burst": "#FFFFFF",
+  "crater": {
+    "rim_glow": "#FF5A1A",
+    "glass": "#1A1426"
+  },
+  "hud": {
+    "text": "#EAF6FF",
+    "dim": "#8FA6B8",
+    "alert": "#FF5A4A"
+  },
+  "title": "#F4F8FF"
+}

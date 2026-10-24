@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "title": "MAGNETAR · SGR 1806-20",
+    "tick_rate": 20,
+    "film_ticks": 600,
+    "outro_ticks": 20,
+    "status": "esboço por blocos (docs/MAGNETAR.md). Keyframes e receitas de áudio entram na F9.",
+    "M_height": 24,
+    "rotation_period_ticks": 151.2,
+    "rotation_period_s": 7.56,
+    "magnetic_tilt_deg": 35
+  },
+  "acts": [
+    {
+      "id": "I",
+      "name": "O ÍMÃ",
+      "ticks": [
+        0,
+        119
+      ]
+    },
+    {
+      "id": "II",
+      "name": "TENSÃO",
+      "ticks": [
+        120,
+        299
+      ]
+    },
+    {
+      "id": "III",
+      "name": "A ERUPÇÃO",
+      "ticks": [
+        300,
+        339
+      ]
+    },
+    {
+      "id": "IV",
+      "name": "A CAUDA",
+      "ticks": [
+        340,
+        539
+      ]
+    },
+    {
+      "id": "V",
+      "name": "ECO",
+      "ticks": [
+        540,
+        599
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "M01",
+      "act": "I",
+      "name": "A BÚSSOLA",
+      "ticks": [
+        0,
+        29
+      ]
+    },
+    {
+      "id": "M02",
+      "act": "I",
+      "name": "A ESTRELA",
+      "ticks": [
+        30,
+        69
+      ]
+    },
+    {
+      "id": "M03",
+      "act": "I",
+      "name": "AS LINHAS",
+      "ticks": [
+        70,
+        119
+      ]
+    },
+    {
+      "id": "M04",
+      "act": "II",
+      "name": "O ESTRESSE",
+      "ticks": [
+        120,
+        199
+      ]
+    },
+    {
+      "id": "M05",
+      "act": "II",
+      "name": "TERREMOTO ESTELAR",
+      "ticks": [
+        200,
+        269
+      ]
+    },
+    {
+      "id": "M06",
+      "act": "II",
+      "name": "O SEGUNDO ANTES",
+      "ticks": [
+        270,
+        299
+      ]
+    },
+    {
+      "id": "M07",
+      "act": "III",
+      "name": "0,2 SEGUNDO",
+      "ticks": [
+        300,
+        303
+      ]
+    },
+    {
+      "id": "M08",
+      "act": "III",
+      "name": "A BOLA DE FOGO",
+      "ticks": [
+        304,
+        339
+      ]
+    },
+    {
+      "id": "M09",
+      "act": "IV",
+      "name": "A PULSAÇÃO",
+      "ticks": [
+        340,
+        419
+      ]
+    },
+    {
+      "id": "M10",
+      "act": "IV",
+      "name": "IONOSFERA",
+      "ticks": [
+        420,
+        499
+      ]
+    },
+    {
+      "id": "M11",
+      "act": "IV",
+      "name": "LIMALHA",
+      "ticks": [
+        500,
+        539
+      ]
+    },
+    {
+      "id": "M12",
+      "act": "V",
+      "name": "O FAROL",
+      "ticks": [
+        540,
+        599
+      ]
+    }
+  ],
+  "rotation_pulses": [
+    38,
+    189,
+    340,
+    491
+  ],
+  "precursor_bursts": [
+    133,
+    151,
+    176,
+    188,
+    197
+  ],
+  "flare": {
+    "white_ticks": [
+      300,
+      303
+    ],
+    "time_of_day_noon": [
+      300,
+      303
+    ],
+    "shake10": 300,
+    "letterbox_opens": [
+      300,
+      303
+    ]
+  },
+  "silence": [
+    284,
+    299
+  ],
+  "title": {
+    "ticks": [
+      556,
+      592
+    ],
+    "text": "MAGNETAR · SGR 1806-20",
+    "cjk": "磁星"
+  },
+  "facts": {
+    "diameter_km": 20,
+    "mass_solar": 1.4,
+    "field_gauss": "2e15",
+    "flare_date": "2004-12-27",
+    "spike_brighter_than_full_moon_s": 0.2,
+    "spike_energy_erg": "2e46",
+    "distance_ly": 50000,
+    "tail": "~6 min, ~50 pulsos de 7,56 s",
+    "ionosphere": "ionizada até ~20 km no lado diurno; elétrons ×10^6 a 60 km",
+    "sources": [
+      "https://ar5iv.arxiv.org/html/astro-ph/0503030",
+      "https://www.sciencedaily.com/releases/2006/02/060221084628.htm",
+      "https://vlfstanford.ku.edu.tr/?p=580"
+    ]
+  }
+}

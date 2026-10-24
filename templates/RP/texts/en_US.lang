@@ -1,0 +1,16 @@
+pack.name=Dooms Day (RP)
+pack.description=Dooms Day resources: black hole impostors (Schwarzschild ray tracer), accretion disk, jets, magnetar field lines, synthesized audio, NASA starfield.
+item.singularity:core=§5Singularity Core
+sgx.menu.title=§l§4DOOMS DAY§r
+sgx.menu.subtitle=§8SINGULARITY CORE
+sgx.menu.body=§7Aim at the ground 40–128 blocks away.
+sgx.menu.play=§5BLACK HOLE
+sgx.menu.play.sub=§7Binary, merger, disk, jets, the fall
+sgx.menu.magnetar=§bMAGNETAR
+sgx.menu.magnetar.sub=§7SGR 1806-20 · the flare of 2004
+sgx.menu.options=§5OPTIONS
+sgx.menu.options.sub=§7Destruction, damage, protections, quality, camera
+sgx.menu.cancel=§8Cancel
+sgx.msg.too_close=§cToo close. Aim at the ground at least %1 blocks away.
+sgx.msg.busy=§8Another cinematic is already playing.
+sgx.msg.loaded=§8[Dooms Day] §7Loaded. /give @s singularity:core

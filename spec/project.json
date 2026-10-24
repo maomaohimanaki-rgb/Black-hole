@@ -1,0 +1,92 @@
+{
+  "title": "DOOMS DAY",
+  "title_pt": "DOOMS DAY",
+  "title_note": "D-01 (out/2026): o addon se chama Dooms Day. \"Doom\" = destino inevitável, a mesma palavra que se associa a buracos negros. Os ids internos (singularity:, sgx:, SGXB, sgx_) ficam como estão: o jogador não vê, e o item continua sendo o Núcleo da Singularidade.",
+  "version": "0.1.0",
+  "namespace": "singularity",
+  "short": "sgx",
+  "prefixes": {
+    "scriptevent": "sgx:",
+    "dynamic_property": "sgx:",
+    "entity": "singularity:sgx_",
+    "particle": "singularity:sgx_",
+    "persist_particle": "singularity:sgx_p_",
+    "sound_positional": "singularity:  (+ id completo: singularity:sgx_void_in, arquivo <id>_m.ogg mono)",
+    "sound_cutscene_2d": "singularity:sgx2d_  (+ id sem o 'sgx_': sgx_void_in → singularity:sgx2d_void_in)",
+    "ui_bus_title": "SGXB",
+    "ui_clear_marker": "SGX_CLEAR",
+    "ui_control": "sgx_",
+    "texture_dir": "textures/sgx/",
+    "lang_key": "sgx."
+  },
+  "item": {
+    "id": "singularity:core",
+    "name_en": "Singularity Core",
+    "name_pt": "Núcleo da Singularidade",
+    "texture": "singularity_core"
+  },
+  "film": {
+    "tick_rate": 20,
+    "ticks": 720,
+    "outro_ticks": 20,
+    "seconds": 36.0
+  },
+  "targeting": {
+    "min_distance": 40,
+    "max_distance": 128,
+    "reason": "o corpo do jogador fica onde estava; a cratera tem raio 30 (+10 de margem)"
+  },
+  "bedrock": {
+    "min_engine_version": [
+      1,
+      26,
+      0
+    ],
+    "script_modules": {
+      "@minecraft/server": "2.10.0",
+      "@minecraft/server-ui": "2.2.0"
+    },
+    "format_versions": {
+      "entity_bp": "1.21.0",
+      "client_entity": "1.10.0",
+      "geometry": "1.12.0",
+      "render_controllers": "1.8.0",
+      "animations": "1.8.0",
+      "particles": "1.21.0",
+      "item": "1.21.50",
+      "sound_definitions": "1.20.20"
+    },
+    "note": "@minecraft/server 2.10.0 e server-ui 2.2.0 são as versões estáveis do jogo 1.26.50+ (o usuário está no 1.26.52, out/2026)."
+  },
+  "uuids": {
+    "bp_header": "4981f1e9-00ed-4b1f-8490-c274b010ef6e",
+    "bp_data_module": "323b05eb-4876-4bc7-bdd1-95a5a6a48aa3",
+    "bp_script_module": "7478adda-74a7-4da5-b3d8-6a91c6d4268a",
+    "rp_header": "ef1c613a-d712-4e8d-b6b0-45cbf0902773",
+    "rp_resources_module": "0fbf6d5a-78fa-4374-ad14-059a2f62a871"
+  },
+  "languages": [
+    "en_US",
+    "pt_BR"
+  ],
+  "quality_profiles": {
+    "alto": 1.0,
+    "equilibrio": 0.75,
+    "leve": 0.5
+  },
+  "events": {
+    "blackhole": {
+      "title": "SINGULARITY",
+      "subtitle_cjk": "黑洞",
+      "storyboard": "docs/STORYBOARD.md",
+      "spec": "spec/storyboard.json"
+    },
+    "magnetar": {
+      "title": "MAGNETAR · SGR 1806-20",
+      "subtitle_cjk": "磁星",
+      "storyboard": "docs/MAGNETAR.md",
+      "spec": "(gerado na F9)"
+    }
+  },
+  "other_addons_rule": "Prefixos próprios em tudo (namespace, scriptevent, dynamic property, título do barramento, controles de UI, tag do jogador). Ver docs/BEDROCK_PITFALLS.md P-14 e P-51."
+}

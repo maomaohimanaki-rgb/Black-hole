@@ -1,0 +1,28 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "singularity:sgx_spike_bb_cam",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/sgx/spike/bb_cam"
+      },
+      "geometry": {
+        "default": "geometry.singularity.sgx_spike_bb_cam"
+      },
+      "render_controllers": [
+        "controller.render.singularity.sgx_simple"
+      ],
+      "scripts": {
+        "animate": [
+          "face"
+        ]
+      },
+      "animations": {
+        "face": "animation.singularity.sgx_spike_bb_cam.face"
+      }
+    }
+  }
+}

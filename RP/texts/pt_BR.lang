@@ -1,0 +1,75 @@
+pack.name=Dooms Day (RP)
+pack.description=Recursos do Dooms Day: impostores do buraco negro (traçado de raios de Schwarzschild), disco de acreção, jatos, linhas de campo do magnetar, áudio sintetizado, céu da NASA.
+item.singularity:core=§5Núcleo da Singularidade
+sgx.menu.title=§l§4DOOMS DAY§r
+sgx.menu.subtitle=§8NÚCLEO DA SINGULARIDADE
+sgx.menu.body=§7Mire no chão a 40–128 blocos.
+sgx.menu.play=§5BURACO NEGRO
+sgx.menu.play.sub=§7Par, fusão, disco, jatos, a queda
+sgx.menu.magnetar=§bMAGNETAR
+sgx.menu.magnetar.sub=§7SGR 1806-20 · a erupção de 2004
+sgx.menu.options=§5OPÇÕES
+sgx.menu.options.sub=§7Destruição, dano, proteções, qualidade, câmera
+sgx.menu.cancel=§8Cancelar
+sgx.msg.too_close=§cPerto demais. Mire no chão a pelo menos %1 blocos.
+sgx.msg.busy=§8Já tem uma cinemática tocando.
+sgx.msg.loaded=§8[Dooms Day] §7Carregado. /give @s singularity:core
+## F0/F1
+sgx.menu.soon=§8Chega numa versão futura.
+sgx.menu.options.body=§7As opções chegam com o filme completo. Por enquanto: /scriptevent sgx:spike 1…10, sgx:play blackhole, sgx:stop.
+sgx.msg.no_target=§cMire no chão (a 40–128 blocos).
+sgx.msg.too_far=§cLonge demais. Mire no chão a no máximo %1 blocos.
+sgx.msg.stopped=§8[Dooms Day] Parado.
+sgx.msg.restored=§8[Dooms Day] Restaurei as configurações do mundo depois de uma cinemática interrompida.
+sgx.msg.film_done=§8[Dooms Day] Animatic terminou (%1 ticks, %2 pulados, script %3 ms média / %4 ms pico).
+sgx.spike.unknown=§cTeste desconhecido. Use /scriptevent sgx:spike 1…10
+sgx.spike.end=§8[S-%1] Teste terminou. Câmera de volta ao normal.
+sgx.spike.1=§e[S-01] Profundidade: §fdisco 3D (anéis numerados) + partícula preta no centro. A câmera orbita por 12 s. §7Olhe: o disco preto fica NA FRENTE da parte de trás dos anéis e ATRÁS da parte da frente?
+sgx.spike.2=§e[S-02] Billboards: §fem cima = q.camera_rotation, embaixo = q.rotation_to_camera. A câmera da cutscene orbita. §7Olhe: cada placa gira JUNTO com a câmera (mesmo que virada do lado errado)?
+sgx.spike.3=§e[S-03] Cubos finos: §fsó o anel de fora do disco (cubos de 0,1 unidade, entity_emissive). §7Olhe: o anel aparece inteiro e aceso (no tablet E no celular)?
+sgx.spike.4=§e[S-04] Detritos: §f20 blocos numerados caem em espiral e esticam (ossos deslocados até 30 blocos pelo Molang). §7Olhe: algum some quando você vira para longe do centro? Eles esticam apontando para o centro?
+sgx.spike.5=§e[S-05] Estéreo: §fum som 2D vai da ESQUERDA → DIREITA em 4 s (duas vezes). §7Escute no alto-falante do celular E no fone: ele anda da esquerda para a direita?
+sgx.spike.6=§e[S-06] Atlas: §f4 partículas com v.incl 0…3 (linhas I0–I3) animando os quadros F0→F3, mais 1 impostor (F0…F7). §7Olhe: cada uma mostra a própria linha e os números dos quadros mudam?
+sgx.spike.7=§e[S-07] poly_mesh: §fum anel laranja liso ("MESH") girando. §7Olhe: ele aparece, no tablet E no celular?
+sgx.spike.8=§e[S-08] Letterbox: §fas barras varrem 16:9 → 2,39 → 3,2 → fechado → abre, depois os flashes (branco, gelo, quente, violeta, preto). §7Olhe: as barras ficam limpas no 20:9? Algo vaza nas bordas?
+sgx.spike.9=§e[S-09] FOV respirando: §fcâmera parada, FOV ±5° a cada 3 ticks (6 s), depois a cada 6 ticks (6 s). §7Olhe: liso ou aos trancos?
+sgx.spike.10=§e[S-10] Puxão: §f10 vacas são puxadas para o marcador dourado a cada 4 ticks por 8 s. §7Olhe: liso, ou elas "teleportam"?
+sgx.spike.10.after=§8[S-10] Vacas removidas.
+sgx.spike.busy=§8Já tem um teste ou cinemática rodando. /scriptevent sgx:stop
+## GERADO do spec/storyboard.json (HUD)
+sgx.hud.b01.0=ANOMALIA DETECTADA
+sgx.hud.b01.1=GRAV. GRADIENT +0.003 g
+sgx.hud.b02.0=SINGULARIDADE · A
+sgx.hud.b02.1=MASS 36 M☉
+sgx.hud.b03.0=SECOND BODY · 29 M☉
+sgx.hud.b03.1=SISTEMA BINÁRIO
+sgx.hud.b04.0=INSPIRAL · f 35 Hz · d 8.0
+sgx.hud.b05.0=f 37 Hz · d 7.8
+sgx.hud.b05.1=f 39 Hz · d 7.5
+sgx.hud.b05.2=f 41 Hz · d 7.2
+sgx.hud.b06.0=f 44 Hz · d 6.9
+sgx.hud.b06.1=f 50 Hz · d 6.3
+sgx.hud.b07.0=f 62 Hz · d 5.5
+sgx.hud.b07.1=f 103 Hz · d 3.9
+sgx.hud.b07.2=f 146 Hz · d 3.1
+sgx.hud.b07.3=f 245 Hz
+sgx.hud.b08.0=VIRARAM UM SÓ
+sgx.hud.b08.1=MERGER · 62 M☉
+sgx.hud.b08.2=ΔM = 3.0 M☉ → GRAVITATIONAL WAVES
+sgx.hud.b10.0=ACREÇÃO
+sgx.hud.b10.1=T 10⁷ K
+sgx.hud.b11.0=SPIN a* = 0.67
+sgx.hud.b11.1=ISCO 3 r_s
+sgx.hud.b12.0=JATOS RELATIVÍSTICOS
+sgx.hud.b12.1=v = 0.99 c
+sgx.hud.b14.0=FORÇAS DE MARÉ
+sgx.hud.b14.1=STRAIN 10⁹ g
+sgx.hud.b15.0=r = 6 r_s
+sgx.hud.b15.1=r = 3 r_s
+sgx.hud.b15.2=r = 1.5 r_s · PHOTON SPHERE
+sgx.hud.b16.0=r → r_s
+sgx.hud.b16.1=z = 9.0
+sgx.hud.b17.0=t → ∞
+sgx.hud.b17.1=SINAL PERDIDO
+sgx.hud.b22.0=SINGULARITY
+sgx.hud.b22.1=黑洞
