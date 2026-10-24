@@ -24,6 +24,11 @@ for (let n = 1; n <= 10; n++) {
     assert.ok(!m.some((x) => x.startsWith("§c")), m.join(" | "));
     for (const e of game.log.entities.slice(before)) assert.equal(e.isValid, false, `${e.typeId} ficou no mundo`);
     assert.ok(game.log.camera.at(-1)?.clear, "câmera de volta ao normal");
+    // v0.1.1: um clear no mesmo tick do último setCamera com ease perdia para o ease (câmera presa
+    // no fim do S-01/S-02). Tem que haver um clear depois que o ease terminou.
+    const lastSet = game.log.camera.filter((c) => !c.clear).at(-1)?.tick ?? -99;
+    assert.ok(game.log.camera.some((c) => c.clear && c.tick >= lastSet + 3), "clear depois do último ease");
+    assert.ok(game.log.commands.some((c) => c.c === "camera @s fov_clear"));
   });
 }
 
@@ -46,6 +51,23 @@ test("sgx:play blackhole roda o animatic inteiro e restaura tudo", () => {
   assert.ok(msgs().includes("sgx.msg.film_done"), msgs().join(" | "));
   assert.ok(!msgs().some((x) => x.startsWith("§c")), msgs().join(" | "));
   assert.ok(!game.tags.has("cinematic_busy"));
+  const lastSet = game.log.camera.filter((c) => !c.clear).at(-1).tick;
+  assert.ok(game.log.camera.some((c) => c.clear && c.tick >= lastSet + 3), "câmera solta depois do filme");
+});
+
+test("item → menu sem mira válida: usa 60 blocos à frente e avisa (não recusa)", async () => {
+  game.log.messages = [];
+  const orig = game.player.getBlockFromViewDirection;
+  game.player.getBlockFromViewDirection = () => ({ block: { location: { x: 0, y: 63, z: 5 } } }); // perto demais
+  game.formAnswer = { canceled: false, selection: 0 };
+  game.emit("itemUse", { itemStack: { typeId: "singularity:core" }, source: game.player });
+  game.run(2);
+  await new Promise((r) => setTimeout(r, 0));
+  game.player.getBlockFromViewDirection = orig;
+  assert.ok(msgs().includes("sgx.msg.auto_target"), msgs().join(" | "));
+  assert.ok(game.tags.has("cinematic_busy"));
+  ev("sgx:stop");
+  game.run(15);
 });
 
 test("item → menu → BURACO NEGRO começa o filme; sgx:stop para no meio", async () => {

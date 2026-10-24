@@ -6,6 +6,9 @@
 import { ease, lerp } from "./easing.js";
 import { add, mul, sub, lerpV, len, dirToRot, rotToDir } from "./vec.js";
 
+export const FOV_MIN = 30;
+export const FOV_MAX = 110;
+
 const val = (x, t) => (typeof x === "function" ? x(t) : x);
 
 export class CameraTrack {
@@ -97,7 +100,8 @@ export class CameraDriver {
       this.camera.setCamera("minecraft:free", opts);
       this.packets++;
     }
-    const fov = Math.round(pose.fov * 4) / 4;
+    // v0.1.1: o jogo só aceita FOV de 30 a 110 (o B16–B18 pede 120 e o setFov lançava erro no 535+).
+    const fov = Math.round(Math.min(FOV_MAX, Math.max(FOV_MIN, pose.fov)) * 4) / 4;
     if (fov !== this.lastFov) {
       const o = { fov };
       if (!pose.cut && this.lastFov != null) o.easeOptions = { easeTime: this.easeTime, easeType: this.easeType };

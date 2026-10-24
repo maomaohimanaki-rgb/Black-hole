@@ -5,6 +5,7 @@
 import { v3, add, mul, norm, cross, madd, sub, dirToRot } from "../engine/vec.js";
 import { UiBus } from "../engine/ui_bus.js";
 import { lbCode } from "../blackhole/modules/screen.js";
+import { releaseCamera } from "../engine/safety.js";
 
 const NS = "singularity";
 let running = null;
@@ -232,10 +233,7 @@ export function runSpike(n, { player, mc, system }) {
         f();
       } catch {}
     }
-    try {
-      player.camera.clear();
-      player.runCommand("camera @s fov_clear");
-    } catch {}
+    releaseCamera(player, system);
     running = null;
     if (!silent) player.sendMessage({ translate: "sgx.spike.end", with: [String(n).padStart(2, "0")] });
   };

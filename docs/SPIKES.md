@@ -6,16 +6,16 @@ Cada teste é um `/scriptevent sgx:spike <n>`. Ele monta a cena **na frente do j
 
 | ID | Pergunta | Tablet | Celular | Decisão |
 |---|---|---|---|---|
-| S-01 | Disco 3D na frente da sombra e a sombra na frente do lado de trás do disco? | ⏳ | ⏳ | |
-| S-02 | `q.camera_rotation` / `q.rotation_to_camera` seguem a câmera da cutscene? | ⏳ | ⏳ | |
-| S-03 | Cubos de 0,1 unidade + `entity_emissive` renderizam? | ⏳ | ⏳ | |
-| S-04 | Detrito com osso deslocado 30 blocos continua visível com a origem fora da tela? | ⏳ | ⏳ | |
-| S-05 | Som 2D estéreo toca estéreo (esquerda → direita)? | ⏳ | ⏳ | |
-| S-06 | Partícula escolhe a linha do atlas por variável (`v.incl`) e anima por idade? | ⏳ | ⏳ | |
-| S-07 | `poly_mesh` em geometria de entidade funciona? | ⏳ | ⏳ | |
-| S-08 | Letterbox em 3,2:1 e fechamento total no 20:9, sem vazar nas bordas? | ⏳ | ⏳ | |
-| S-09 | FOV respirando ±5° a cada 3 ticks fica liso? | ⏳ | ⏳ | |
-| S-10 | `applyImpulse` a cada 4 ticks puxa as vacas liso, sem "teleporte"? | ⏳ | ⏳ | |
+| S-01 | Disco 3D na frente da sombra e a sombra na frente do lado de trás do disco? | ✅ | ✅ | Disco 3D + impostor funcionam juntos (a sombra cobre o lado de trás, os anéis passam na frente). Kepler visível. Fica a técnica do VISUAL_TECH §2.5. |
+| S-02 | `q.camera_rotation` / `q.rotation_to_camera` seguem a câmera da cutscene? | ⚠️ | ⚠️ | **Só `q.rotation_to_camera` segue a câmera da cutscene**; `q.camera_rotation` fica parada. Billboard de entidade: usar `rotation_to_camera`. |
+| S-03 | Cubos de 0,1 unidade + `entity_emissive` renderizam? | ✅ | ✅ | Cubos de 0,1 unidade + `entity_emissive` ok nos dois aparelhos. |
+| S-04 | Detrito com osso deslocado 30 blocos continua visível com a origem fora da tela? | ✅ | ✅ | Espiral + esticamento para o centro ok; nada sumiu com a origem fora da tela. |
+| S-05 | Som 2D estéreo toca estéreo (esquerda → direita)? | ✅ | ✅ | Estéreo L→R ok no alto-falante e no fone: o pan do Doppler fica. |
+| S-06 | Partícula escolhe a linha do atlas por variável (`v.incl`) e anima por idade? | ✅ | ✅ | Linha do atlas por `v.incl` + quadro por idade ok, sempre virado para a câmera: **impostor com 1 id e várias inclinações num atlas**. |
+| S-07 | `poly_mesh` em geometria de entidade funciona? | ✅ | ✅ | `poly_mesh` funciona: o disco pode ser liso (decidir na F5 entre cubos e mesh). |
+| S-08 | Letterbox em 3,2:1 e fechamento total no 20:9, sem vazar nas bordas? | ✅ | ✅ | Letterbox até fechar e os 5 flashes ok no 20:9. |
+| S-09 | FOV respirando ±5° a cada 3 ticks fica liso? | ✅ | ✅ | Liso com 3 e com 6 ticks: fica o de 3 (B08). |
+| S-10 | `applyImpulse` a cada 4 ticks puxa as vacas liso, sem "teleporte"? | ✅ | ✅ | Puxão liso em qualquer direção (até do céu): fica a cada 4 ticks. |
 
 Legenda: ✅ funcionou · ❌ não funcionou (aplicar o plano B) · ⚠️ funcionou com ressalva · ⏳ falta testar.
 
@@ -34,4 +34,8 @@ Legenda: ✅ funcionou · ❌ não funcionou (aplicar o plano B) · ⚠️ funci
 
 ## Resultados
 
-(preencher com data, aparelho e o que foi visto; anexar print/vídeo no chat)
+### 24/10/2026 · build 0.1.0 teste-1 · tablet + celular 20:9
+- Todos os 10 rodaram. Única falha geral: no fim do **S-01 e do S-02 a câmera ficou presa** (o jogador não voltava para a própria câmera até rodar outro teste ou reabrir o mundo). Causa: o `clear()` saía no mesmo tick do último `setCamera` com ease, e o ease terminava depois. **Corrigido na 0.1.1** (`releaseCamera`: solta de novo 3 e 10 ticks depois), com teste.
+- Animatic do buraco negro: **ritmo de câmera aprovado** ("ficou bem bom"), nenhuma câmera apontando para lugar errado. Erros no chat em 535–539: o FOV de 120 do B16–B18 passa do máximo do jogo (110). **Corrigido na 0.1.1** (FOV preso em 30–110), com teste.
+- Desempenho no aparelho: 741 ticks, 0 pulados, script 5,3 ms média / 25 ms pico (meta: ≤ 8 típico).
+- **F0 concluída:** nenhum plano B foi necessário.

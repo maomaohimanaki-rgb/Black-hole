@@ -1,6 +1,9 @@
 // Relógio único do filme (ARCHITECTURE §4.1). Todo efeito é "dispare quando t ≥ N".
 // Nada de runTimeout encadeado: ele acumula erro (P-03).
 
+// v0.1.1: no QuickJS o stack não traz a mensagem do erro; junta os dois.
+const errText = (e) => `${e}${e?.stack ? "\n" + e.stack : ""}`;
+
 export class TickScheduler {
   constructor() {
     this.cues = [];
@@ -31,7 +34,7 @@ export class TickScheduler {
       try {
         c.fn(c.tick);
       } catch (e) {
-        this.errors.push({ tick: c.tick, tag: c.tag, error: String(e?.stack ?? e) });
+        this.errors.push({ tick: c.tick, tag: c.tag, error: errText(e) });
       }
       fired++;
     }

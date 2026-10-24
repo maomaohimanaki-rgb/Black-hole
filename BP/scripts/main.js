@@ -29,19 +29,22 @@ function findTarget(player, { lenient = false } = {}) {
     if (dist >= MIN_DIST && dist <= MAX_DIST) return { G };
     if (!lenient) return { error: dist < MIN_DIST ? "too_close" : "too_far" };
   } else if (!lenient) return { error: "no_target" };
+  const auto = true;
   const d = player.getViewDirection();
   const h = Math.hypot(d.x, d.z) || 1;
   const x = P.x + (d.x / h) * 60, z = P.z + (d.z / h) * 60;
   const top = player.dimension.getTopmostBlock({ x: Math.floor(x), z: Math.floor(z) });
-  return { G: { x: Math.floor(x) + 0.5, y: (top ? top.location.y : Math.floor(P.y)) + 1, z: Math.floor(z) + 0.5 } };
+  return { auto, G: { x: Math.floor(x) + 0.5, y: (top ? top.location.y : Math.floor(P.y)) + 1, z: Math.floor(z) + 0.5 } };
 }
 
-function play(player, { from = 0, lenient = false } = {}) {
+function play(player, { from = 0, lenient = true } = {}) {
   if (activeFilm() || spikeRunning() || player.hasTag(safety.BUSY_TAG)) {
     player.sendMessage(tr("sgx.msg.busy"));
     return;
   }
   const tg = findTarget(player, { lenient });
+  // v0.1.1: mira fora de 40–128 não recusa mais; usa o chão 60 blocos à frente e avisa.
+  if (tg.auto) player.sendMessage(tr("sgx.msg.auto_target"));
   if (tg.error) {
     const key = { too_close: "sgx.msg.too_close", too_far: "sgx.msg.too_far", no_target: "sgx.msg.no_target" }[tg.error];
     player.sendMessage(tr(key, tg.error === "too_far" ? MAX_DIST : MIN_DIST));
@@ -102,7 +105,7 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
       break;
     case "sgx:stop":
       if (stopFilm("stop") || stopSpike()) player.sendMessage(tr("sgx.msg.stopped"));
-      else if (safety.restore({ world, player, mc })) player.sendMessage(tr("sgx.msg.restored"));
+      else if (safety.restore({ world, player, mc, system })) player.sendMessage(tr("sgx.msg.restored"));
       break;
     case "sgx:spike":
       if (activeFilm()) player.sendMessage(tr("sgx.spike.busy"));
@@ -119,6 +122,6 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
 world.afterEvents.playerSpawn.subscribe((ev) => {
   if (!ev.initialSpawn) return;
   system.runTimeout(() => {
-    if (safety.restore({ world, player: ev.player, mc })) ev.player.sendMessage(tr("sgx.msg.restored"));
+    if (safety.restore({ world, player: ev.player, mc, system })) ev.player.sendMessage(tr("sgx.msg.restored"));
   }, 20);
 });

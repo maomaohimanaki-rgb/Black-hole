@@ -16,6 +16,9 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
 - **T-10 · Versões do jogo** (24/10/2026): o usuário está no 1.26.52. `@minecraft/server` 2.10.0 e `@minecraft/server-ui` 2.2.0 são as estáveis dessa versão (conferido no npm).
 - **T-11 · Fonte Poppins completa** (24/10/2026): a do kit é um subconjunto (16 KB). Baixar a completa (OFL, Google Fonts) na F3, antes do título assado.
 - **T-12 · `.mcaddon` no chat e em `dist/` no repositório** (24/10/2026).
+- **T-13 · Resultado da F0** (24/10/2026, `docs/SPIKES.md`): as 10 técnicas passaram, nenhum plano B. Billboard de entidade usa `q.rotation_to_camera` (o `q.camera_rotation` não segue a câmera da cutscene). Impostor = 1 id de partícula com as inclinações em linhas do atlas (`v.incl`). Estéreo 2D vale (pan do Doppler fica). `poly_mesh` disponível.
+- **T-14 · FOV máximo 110** (24/10/2026). O storyboard pede 120 no fim do B16 e no B17; o jogo só aceita 30–110. O motor prende em 110. *Divergência JSON × jogo:* o efeito de "lente olho de peixe" do 120 vai precisar vir de overlay (anel de aberração, canal `AB`) na F6.
+- **T-15 · Ritmo de câmera do animatic aprovado** (24/10/2026). A duração de 36 s fica (D-02/T-09 confirmado).
 
 ## Em aberto (decidir antes ou durante a fase indicada)
 

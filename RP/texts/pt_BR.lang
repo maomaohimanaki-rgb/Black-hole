@@ -20,6 +20,7 @@ sgx.menu.options.body=§7As opções chegam com o filme completo. Por enquanto: 
 sgx.msg.no_target=§cMire no chão (a 40–128 blocos).
 sgx.msg.too_far=§cLonge demais. Mire no chão a no máximo %1 blocos.
 sgx.msg.stopped=§8[Dooms Day] Parado.
+sgx.msg.auto_target=§8[Dooms Day] Sem chão a 40–128 blocos na mira: usando o chão 60 blocos à frente.
 sgx.msg.restored=§8[Dooms Day] Restaurei as configurações do mundo depois de uma cinemática interrompida.
 sgx.msg.film_done=§8[Dooms Day] Animatic terminou (%1 ticks, %2 pulados, script %3 ms média / %4 ms pico).
 sgx.spike.unknown=§cTeste desconhecido. Use /scriptevent sgx:spike 1…10

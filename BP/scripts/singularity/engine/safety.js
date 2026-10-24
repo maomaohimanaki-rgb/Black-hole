@@ -46,8 +46,24 @@ function setInput(player, mc, on) {
   }
 }
 
+// v0.1.1: um clear no MESMO tick de um setCamera com ease perde para o ease (que termina depois e
+// religa a câmera livre): a câmera ficava presa no fim do S-01 e do S-02. Solta agora e de novo
+// 3 e 10 ticks depois, quando nenhum ease está mais em voo.
+export function releaseCamera(player, system) {
+  const once = () => {
+    try {
+      player.camera.clear();
+    } catch {}
+    try {
+      player.runCommand("camera @s fov_clear"); // o clear não garante o FOV de volta
+    } catch {}
+  };
+  once();
+  if (system) for (const d of [3, 10]) system.runTimeout(once, d);
+}
+
 // Idempotente: sem estado gravado, não faz nada.
-export function restore({ world, player, mc }) {
+export function restore({ world, player, mc, system }) {
   const raw = player.getDynamicProperty(KEY);
   if (typeof raw !== "string") {
     player.removeTag(BUSY_TAG);
@@ -62,10 +78,7 @@ export function restore({ world, player, mc }) {
   try {
     player.onScreenDisplay.setHudVisibility(mc.HudVisibility.Reset);
   } catch {}
-  try {
-    player.camera.clear();
-    player.runCommand("camera @s fov_clear"); // o clear não garante o FOV de volta
-  } catch {}
+  releaseCamera(player, system);
   setInput(player, mc, true);
   player.removeTag(BUSY_TAG);
   player.setDynamicProperty(KEY, undefined);

@@ -79,7 +79,7 @@ export function startFilm({ system, world, mc, player, layout, data, modules, op
         player.onScreenDisplay.clearTitle?.();
         player.onScreenDisplay.setActionBar("");
       } catch {}
-      safety.restore({ world, player, mc });
+      safety.restore({ world, player, mc, system });
       const report = {
         reason,
         ticks: stats.ticks,

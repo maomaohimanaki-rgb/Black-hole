@@ -1,6 +1,9 @@
 // Orçamento por tick (ARCHITECTURE §4.2). Hooks com janela e prioridade; tarefas de fundo
 // fatiadas nas sobras de ms (P-04, P-05).
 
+// v0.1.1: no QuickJS o stack não traz a mensagem do erro; junta os dois.
+const errText = (e) => `${e}${e?.stack ? "\n" + e.stack : ""}`;
+
 export const PRIO = { critical: 0, normal: 1, optional: 2 };
 
 export class Arbiter {
@@ -46,7 +49,7 @@ export class Arbiter {
       }
     } catch (e) {
       j.done = true;
-      this.errors.push({ job: j.name, error: String(e?.stack ?? e) });
+      this.errors.push({ job: j.name, error: errText(e) });
     }
   }
 
@@ -71,7 +74,7 @@ export class Arbiter {
       try {
         h.fn(t);
       } catch (e) {
-        this.errors.push({ t, hook: h.name, error: String(e?.stack ?? e) });
+        this.errors.push({ t, hook: h.name, error: errText(e) });
       }
       this.stats.ran++;
     }

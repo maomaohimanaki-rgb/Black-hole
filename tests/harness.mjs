@@ -66,6 +66,8 @@ export function makeGame({ msPerTick = 50 } = {}) {
         log.camera.push({ tick, preset, ...o });
       },
       setFov(o) {
+        // Como o jogo: FOV fora de 30–110 lança erro (visto no aparelho na v0.1.0, ticks 535+).
+        if (o?.fov != null && (o.fov < 30 || o.fov > 110)) throw new Error(`fov ${o.fov} fora de 30–110`);
         log.fov.push({ tick, ...o });
       },
       clear() {
