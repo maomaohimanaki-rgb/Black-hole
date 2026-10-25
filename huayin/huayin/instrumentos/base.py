@@ -188,7 +188,7 @@ def criar(id_: str, sr: int = 48000, **params) -> Instrumento:
     todos = list(REGISTRO) + list(VARIANTES)
     sug = difflib.get_close_matches(id_, todos, n=3)
     raise ValueError(f"instrumento desconhecido '{id_}'." + (f" Quis dizer: {', '.join(sug)}?" if sug else "")
-                     + f" Use huayin.listar_instrumentos().")
+                     + " Use huayin.listar_instrumentos().")
 
 
 def listar() -> list[dict]:

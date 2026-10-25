@@ -1,0 +1,51 @@
+% 茉莉花 (Mòlìhuā, Jasmim) — canção tradicional de Jiangsu (domínio público)
+% Formato: cabeçalho "chave: valor", depois um bloco [faixa nome: instrumento] por músico.
+titulo: 茉莉花 Jasmim
+tempo: 66
+tom: 1=F
+reverb: jardim
+nivel_reverb: 1.0
+
+[faixa melodia: erhu]
+volume_db: -1
+pan: 0.15
+humanizar: 6 0.05 2
+!mf 3 3/ 5/ 6/ 1'/ 1'/ 6/ | (5 5/ 6/) 5 - |
+3 3/ 5/ 6/ 1'/ 1'/ 6/ | (5 5/ 6/) 5{huarou} - |
+5 5 5 3/ 5/ | 6 6 5{yarou} - |
+3 2/ 3/ 5 3/ 2/ | 1 1/ 2/ 1 - |
+!p 3/ 2/ 1/ 3/ 2 3/ 5/ | 6/ 1'/ 5{slide_in} - - |
+!mf 2 3/ 5/ 2/ 3/ 1/ 6,/ | 5, - - - |
+
+[faixa contracanto: dizi]
+volume_db: -7
+pan: -0.25
+oitava: 5
+0 0 0 0 | 0 0 0 0 |
+0 0 0 0 | 0 0 0 0 |
+!p 1' - 6 - | 5 - 3 - |
+2 - 3 - | 1 - - - |
+5 - 6 - | 1' - 6{qizhenyin} - |
+5 - 3 2 | 1 - - - |
+
+[faixa cama: guzheng]
+volume_db: -5
+pan: -0.5
+oitava: 3
+1{huazhi} - 5 - | 1 - 5 - |
+1 - 5 - | 1 - 5 - |
+4 - 1 - | 2 - 5 - |
+6, - 3 - | 1 - - - |
+6, - 3 - | 4 - 1{guazou:ate=F5,tempo=0.6} - |
+5, - 2 - | 1{arpejo:notas=0 7 12 16,intervalo=0.08} - - - |
+
+[faixa baixo: ruan]
+volume_db: -8
+pan: 0.4
+oitava: 2
+1 - - - | 5, - - - |
+1 - - - | 5, - - - |
+4, - - - | 5, - - - |
+6, - - - | 1 - - - |
+6, - - - | 4, - - - |
+5, - - - | 1{yaozhi} - - - |

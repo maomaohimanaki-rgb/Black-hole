@@ -447,7 +447,11 @@ def salvar_audio(caminho, y: np.ndarray, sr: int, bits: int = 24, mono: bool = F
         np.save(caminho, y)
         return caminho
     if suf == ".ogg":
-        sf.write(caminho, dados, sr, format="OGG", subtype="VORBIS")
+        # v1.0: o codificador Vorbis do libsndfile 1.2 cai (segfault) com blocos grandes de uma vez;
+        # gravar em pedaços evita o problema
+        with sf.SoundFile(caminho, "w", sr, dados.shape[1], format="OGG", subtype="VORBIS") as arq:
+            for i in range(0, dados.shape[0], 8192):
+                arq.write(dados[i:i + 8192])
     elif suf == ".flac":
         sf.write(caminho, dados, sr, format="FLAC", subtype="PCM_24" if bits >= 24 else "PCM_16")
     else:

@@ -131,6 +131,12 @@ def _bend_em(lista, beat):
     return v
 
 
+def _latin1(texto: str) -> str:
+    """Nomes de faixa MIDI são latin-1: tira os caracteres chineses (o resto fica)."""
+    limpo = "".join(c for c in texto if ord(c) < 256).strip()
+    return " ".join(limpo.split()) or "huayin"
+
+
 def exportar_midi(musica, caminho):
     import mido
 
@@ -138,7 +144,7 @@ def exportar_midi(musica, caminho):
     mid = mido.MidiFile(ticks_per_beat=tpb)
     meta = mido.MidiTrack()
     mid.tracks.append(meta)
-    meta.append(mido.MetaMessage("track_name", name=musica.titulo, time=0))
+    meta.append(mido.MetaMessage("track_name", name=_latin1(musica.titulo), time=0))
     eventos = [(0.0, musica.tempo.bpm_inicial)] + [(b, v) for b, v, _ in musica.tempo.eventos]
     t_ant = 0
     for b, v in sorted(eventos):
@@ -149,7 +155,7 @@ def exportar_midi(musica, caminho):
     for f in musica.faixas:
         tr = mido.MidiTrack()
         mid.tracks.append(tr)
-        tr.append(mido.MetaMessage("track_name", name=f"{f.nome} ({f.instrumento.id})", time=0))
+        tr.append(mido.MetaMessage("track_name", name=_latin1(f"{f.nome} ({f.instrumento.id})"), time=0))
         percussao = f.instrumento.familia.startswith("percussão")
         ch = 9 if percussao and not any(n.altura is not None for n in f.notas) else canal
         if ch != 9:

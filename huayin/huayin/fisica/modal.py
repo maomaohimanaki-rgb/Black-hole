@@ -11,7 +11,7 @@ Cada modo é uma senoide amortecida. Os detalhes que fazem soar "de verdade":
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 

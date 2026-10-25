@@ -47,10 +47,10 @@ def ajuda(instrumento: str) -> str:
     return type(inst).descrever()
 
 
-def nota_unica(instrumento: str, altura="A4", dur: float = 2.0, vel: float = 0.7, tecnica=None,
+def nota_unica(instrumento: str, altura="A4", dur: float = 2.0, vel: float = 0.7, tec=None,
                sr: int = 48000, reverb: str | None = None, **params):
     """Renderiza uma nota só e devolve o áudio estéreo (útil para testar e ajustar parâmetros)."""
     m = Musica("nota", tempo=60, sr=sr, reverb=reverb)
     f = m.faixa("f", instrumento, **params)
-    f.nota(altura, 0, dur, vel, tecnica)
+    f.nota(altura, 0, dur, vel, tec)
     return m.renderizar(normalizar="pico")

@@ -7,7 +7,7 @@ from ..dsp import filtros as F
 from ..fisica.arco import renderizar_arco
 from ..fisica.corda import MATERIAIS, ParamsCorda, renderizar_corda
 from .base import registrar, tecnica
-from .continuo_base import ContinuoBase, Segmento
+from .continuo_base import ContinuoBase
 
 
 class HuqinBase(ContinuoBase):

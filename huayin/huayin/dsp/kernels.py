@@ -15,14 +15,14 @@ import numpy as np
 TEM_NUMBA = False
 if os.environ.get("HUAYIN_SEM_NUMBA") != "1":
     try:
-        from numba import njit
+        from numba import njit  # noqa: F811
 
         TEM_NUMBA = True
     except ImportError:  # pragma: no cover
         pass
 
 if not TEM_NUMBA:
-    def njit(*a, **k):  # noqa: D401 — substituto transparente
+    def njit(*a, **k):  # noqa: F811 — substituto transparente
         if a and callable(a[0]):
             return a[0]
         return lambda f: f

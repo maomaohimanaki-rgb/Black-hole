@@ -108,6 +108,11 @@ class FlautaBase(SoproBase):
     }
 
     def sintetizar(self, f, amp, brilho, ruido, direcao, frase, rng):
+        if float(np.min(f)) < 285 and not getattr(self, "_avisou", False):
+            # v1.0: abaixo de ~290 Hz o modelo de jato pula de modo (medido em tests/test_afinacao_fisica.py)
+            import warnings
+            warnings.warn(f"[{self.id}] notas abaixo de ré4 (~290 Hz) ficam instáveis no modelo de flauta")
+            self._avisou = True
         din = self.din
         env = np.clip(amp, 0, 1.6)
         # a pressão só cai abaixo do limiar de oscilação nos golpes de língua e no fim; o 花舌 e o
@@ -320,7 +325,6 @@ class PalhetaLivreBase(Instrumento):
         return y
 
     def _bordao(self, buf, tocadas, rng):
-        sr = self.sr
         f = self.afinacao.hz(self.p["bordao"])
         regioes = []
         for a, b in sorted(tocadas):

@@ -131,7 +131,6 @@ class ContinuoBase(Instrumento):
         t_ini = max(0.0, fr[0].t0 - 0.005)
         t_fim = fr[-1].t1 + sol * 2.5 + 0.05
         n = int((t_fim - t_ini) * sr) + 1
-        t = t_ini + np.arange(n) / sr
         logf = np.zeros(n)
         amp = np.zeros(n)
         din = np.zeros(n)
@@ -205,7 +204,8 @@ class ContinuoBase(Instrumento):
             din[c:] = din[max(c - 1, 0)]
         # suaviza degraus (o dedo nunca troca de nota em zero segundos)
         from ..dsp.filtros import coef_um_polo, um_polo
-        logf = um_polo(np.concatenate([np.full(64, logf[0]), logf]), coef_um_polo(80, sr))[64:]
+        l0 = logf[0]  # filtra em volta do valor inicial (o filtro começa em repouso)
+        logf = l0 + um_polo(logf - l0, coef_um_polo(80, sr))
         amp = um_polo(amp, coef_um_polo(120, sr))
         self.din = um_polo(din, coef_um_polo(20, sr))
         y = self.sintetizar(2 ** logf, amp, brilho * self.p["brilho"] * 2, ruido * self.p["ruido"],
