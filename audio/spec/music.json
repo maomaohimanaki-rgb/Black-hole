@@ -312,10 +312,11 @@
       "why": "a fusão: cadência de engano (esperava Ré, vem Si♭). O espanto: o buraco negro nasce fora de casa"
     },
     {
-      "at": "A5:1",
+      "at": 280,
       "to": "A5:3",
       "note": "D2",
-      "reg": "pedal"
+      "reg": "pedal",
+      "why": "v5.1: renasce no 280 com o disco acendendo, de dentro do quase-silêncio (antes voltava só no 300: um buraco de 1,7 s)"
     },
     {
       "at": "A5:3",
@@ -484,7 +485,7 @@
       "reg": "great_tutti"
     },
     {
-      "at": "A5:1",
+      "at": 280,
       "to": "A5:3",
       "notes": [
         "D3",
@@ -751,7 +752,7 @@
           1
         ]
       ],
-      "gate": 0.8,
+      "gate": 0.92,
       "why": "a dança: o MESMO arpejo, cada vez mais rápido pela subdivisão (colcheia → tercina → semicolcheia → sextina), em vez de acelerar o andamento. É o accelerando do chirp escrito em música, e cada compasso puxa um registro a mais"
     },
     {
@@ -824,7 +825,7 @@
           1
         ]
       ],
-      "gate": 0.8,
+      "gate": 0.92,
       "why": "o disco: o arpejo volta em seis (gira, como a matéria), e acelera até os jatos"
     },
     {
@@ -895,7 +896,7 @@
           1
         ]
       ],
-      "gate": 0.75,
+      "gate": 0.92,
       "why": "a queda: arpejo só subindo (nunca volta), cada vez mais agudo"
     },
     {
@@ -956,7 +957,7 @@
           0
         ]
       ],
-      "gate": 0.9,
+      "gate": 0.92,
       "level": 0.35,
       "why": "Ato VII: um arpejo de flautas no alto, como poeira de luz, subindo até o clarão"
     }
@@ -1106,8 +1107,16 @@
         1.0
       ],
       [
-        262,
+        250,
         0.8
+      ],
+      [
+        264,
+        0.3
+      ],
+      [
+        280,
+        0.15
       ],
       [
         300,
@@ -1170,6 +1179,18 @@
       [
         240,
         1.0
+      ],
+      [
+        248,
+        0.8
+      ],
+      [
+        264,
+        0.2
+      ],
+      [
+        280,
+        0.05
       ],
       [
         300,

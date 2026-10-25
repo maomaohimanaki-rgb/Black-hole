@@ -101,25 +101,6 @@
       "impact": 540,
       "phases": [
         {
-          "type": "hiccup",
-          "ticks": [
-            480,
-            510,
-            525
-          ],
-          "depth": [
-            0.15,
-            0.25,
-            0.35
-          ],
-          "length_ticks": [
-            4,
-            4,
-            5
-          ],
-          "why": "prenúncio: o relógio de Mountains soluça nos tempos fortes (A8:1, A8:3, A8:4), cada vez mais fundo. O tempo do mundo já está falhando antes do horizonte."
-        },
-        {
           "type": "inhale",
           "from": 524,
           "to": 538.4,
@@ -288,5 +269,34 @@
       "sgx_horizon"
     ],
     "why": "golpe não se normaliza por loudness (−16 LUFS é régua de cama): só o pico em −1 dBFS. É o que dá ao golpe o ESPAÇO acima do build."
+  },
+  "hiccups_removed": "v5.1 (retorno do usuário: 'engasgos'): os soluços de tempo saíram dos dois momentos. Numa música com grade, um soluço não soa como prenúncio: soa como a reprodução travando. A fase continua no vocabulário do diretor.",
+  "mix": {
+    "reference": [
+      "sgx_music_a",
+      "sgx_music_b"
+    ],
+    "reference_floor_db": -45,
+    "offsets_db": {
+      "sgx_chirp": -3,
+      "sgx_ringdown": -4,
+      "sgx_disk_ignite": -3,
+      "sgx_disk_loop": -8,
+      "sgx_pad": -6,
+      "sgx_tidal": -5,
+      "sgx_fall": -8,
+      "sgx_hawking": -6,
+      "sgx_burst": -4
+    },
+    "free": [
+      "sgx_void_in",
+      "sgx_point",
+      "sgx_twin",
+      "sgx_merge",
+      "sgx_jet",
+      "sgx_horizon",
+      "sgx_disk_loop_ext"
+    ],
+    "why": "v5.1: a música é a referência. Cada efeito de cama fica offsets_db abaixo da trilha no trecho em que toca (o chirp, que é a voz do build, fica perto: −3). Os livres são os golpes (o psycho.py cobra o espaço deles), o Ato I (a música ainda nem começou) e o disco de fora (quem está fora não ouve a trilha). Antes cada efeito era normalizado a −16 LUFS como a trilha e ficava 10–20 dB acima dela."
   }
 }

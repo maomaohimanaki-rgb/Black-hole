@@ -2,6 +2,15 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## Áudio v5.1 (pacote em `audio/`) · 25/10/2026 — a música manda no mix
+
+**Por quê:** retorno do usuário: "o mix não parece a mesma música; os SFX matam; o fim parece toque de celular de 2010; a música sozinha dá uns engasgos".
+
+- A música virou a referência do mix: medido, os efeitos ficavam 10–20 dB ACIMA da trilha (a maré +14, o horizonte +13). Agora os efeitos de cama ficam abaixo dela (T-18).
+- Os sinos de senoide pura (o "toque de celular") viraram tubos do mesmo órgão, na mesma sala; os estalos de articulação viraram sopro de ar.
+- A música ficou sem engasgos: legato de organista, a música renasce no 280 (antes havia 1,7 s de buraco depois da fusão) e os soluços de tempo saíram.
+- Conferido: ida e volta 18/18, ouvido automático aprovado, e a música só tem os 4 cortes de propósito.
+
 ## Áudio v5.0 (pacote em `audio/`, fora do .mcaddon por enquanto) · 25/10/2026 — trilha nova, do zero
 
 **Por quê:** o usuário achou complicado demais consertar a trilha antiga e pediu para "zerar só a música e manter as ferramentas", com o ofício de Interestelar como referência: órgão de 32 pés com o efeito resultante, ostinato e o relógio.

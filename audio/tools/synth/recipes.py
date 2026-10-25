@@ -125,15 +125,6 @@ def sub_drop(f0, f1, m, dur=0.6, decay=0.7):
     return dsp.sat(body * 0.8, 1.6) * np.clip(t / 0.01, 0, 1) * np.exp(-t / decay)
 
 
-def bell(f, m, rng, decay=1.6, partials=((1, 1.0), (2.0, 0.45), (3.0, 0.22), (4.2, 0.12), (5.4, 0.06))):
-    """Sino/vidro AFINADO (parciais quase harmônicos): o "brilho de lente" no tom da trilha."""
-    t = time(m)
-    x = np.zeros(m)
-    for k, (mult, a) in enumerate(partials):
-        x += a * np.sin(2 * np.pi * f * mult * (1 + 0.0007 * k) * t + rng.uniform(0, 6)) * np.exp(-t / (decay / (1 + 0.6 * k)))
-    return x * np.clip(t / 0.004, 0, 1)
-
-
 def bloom(f, m, rng, attack=0.05, decay=0.7):
     """Floração tonal: um acorde de órgão/coro que acende (sem ataque de ruído)."""
     t = time(m)
@@ -159,10 +150,19 @@ def reverse_swell(notes, m, rng, length_s=1.2):
     return out / (np.abs(out).max() + 1e-12)
 
 
-def glint(f, m, decay=0.35):
-    """Brilho curto afinado (substitui o clique de ruído)."""
-    t = time(m)
-    return (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 2 * f * t) * np.exp(-t / 0.05)) * np.clip(t / 0.002, 0, 1) * np.exp(-t / decay)
+FLUTE_AIR = [["4", "flute", 0.6], ["2", "flute", 0.25]]
+
+
+def pipe_ping(f, seconds, rng, reg=FLUTE_AIR, decay=None):
+    """v5.1: o "brilho" agora é um TUBO de flauta curto (com o sopro de ar do ataque), não um seno puro. Senoides
+    puras em sino, afinadas e secas, são literalmente a receita de toque de celular ("celular de 2010", retorno
+    do usuário). O tubo tem harmônicos, ar e vai para a mesma sala do órgão: é o mesmo material da trilha."""
+    import organ
+    m = int(seconds * SR)
+    x = organ.note(f, m, reg, rng, release=0.12)
+    if decay:
+        x *= np.exp(-time(len(x)) / decay)
+    return x
 
 
 # modos de uma membrana circular (zeros de Bessel ÷ o primeiro): a "placa" do golpe, inarmônica como metal
@@ -306,7 +306,7 @@ def chirp(s):
     P.add_bed(dsp.stereo(h, 0.3) * 0.6)
     for o in s["onsets_intended"]:
         st = at(o["tick"], S)
-        P.add_event(o["tick"], dsp.stereo(place(n, st, glint(hz("D7"), sl(n, st), 0.12)) * 0.15, 0.3))
+        P.add_event(o["tick"], dsp.stereo(place(n, st, pipe_ping(hz("D6"), 0.07, rng, decay=0.08)) * 0.15, 0.3))
         P.mark(o["tick"], "D7")
     # quase seco: o chirp é a coisa mais PERTO do filme (o espaço vem da trilha). Um IR de ruído tem espectro
     # irregular, e um tom que varre passa pelos picos e vales: com sala o chirp oscilava ±3 dB tick a tick.
@@ -369,11 +369,14 @@ def ringdown(s):
     f = hz("D4")
     dec = np.exp(-t / 0.6)
     dec *= np.interp(t, [0, (255 - S) / 20, (266 - S) / 20, 99], [1, 1, 0.12, 0.12])  # quase-silêncio a partir do 268
-    strike = np.sin(2 * np.pi * f * t) * dec * np.clip(t / 0.004, 0, 1)
+    # v5.1: o sino é um tubo principal + flauta (o mesmo órgão da trilha), não um seno puro
+    import organ
+    # o anel é mais forte no instante em que é "tocado" (o tubo fala devagar; sem o reforço o pico caía no 242)
+    strike = organ.note(f, n, [["8", "principal", 0.7], ["4", "flute", 0.3]], rng)[:n] * dec * (1 + 0.8 * np.exp(-t / 0.05))
     P.add_event(241, dsp.stereo(strike, 0.2))
     P.mark(241, "D7")
-    lfo = 1 + 0.004 * np.sin(2 * np.pi * 0.7 * t)
-    sh = np.sin(dsp.phase_osc(f * lfo)) * dec * np.clip(t / 0.08, 0, 1) * 0.5 + 0.12 * np.sin(2 * np.pi * 1.5 * f * t) * dec
+    # o brilho que fica: duas flautas quase iguais (a "celeste" do órgão, que bate devagar)
+    sh = sum(organ.note(f * 2 ** (c / 1200), n, [["8", "flute", 0.5]], rng)[:n] for c in (-4, 4)) * dec * np.clip(t / 0.3, 0, 1) * 0.3
     P.add_bed(dsp.stereo(sh, 1.0))
     P.room(0.3, rng, tail_fade=0.6)
     # o vazio respira (268–279): o quase-silêncio vale também para a cauda da sala
@@ -621,8 +624,7 @@ def horizon(s):
     body *= 10 ** (np.maximum(C["gain_db"][sl_], -90) / 20 * 0.8)[:, None]
     body = np.stack([dsp.tv_filter(body[:, c], np.maximum(C["lp"][sl_], 250), "low") for c in range(2)], axis=1)  # e escurece junto (o vermelho)
     hit = body + dsp.stereo(trans * 0.18, 0.3)  # TÁ (0,8) e o BOOM no tick seguinte (1,0): o 540: 0,8 do spec
-    P.add_event(540, hit)
-    P.mark(540, "A6")
+    P.add_event(540, hit)  # sem marca de articulação: o golpe e o coração já têm ataque próprio (v5.1)
     # 4. o corpo: o coração não sofre o relógio do mundo e NÃO entra na catedral (seco e perto: é dentro de
     #    você; com a sala, a cauda de cada batida virava o chão do Ato VI)
     for o in s["onsets_intended"][1:]:
@@ -634,7 +636,6 @@ def horizon(s):
         if k2 < m:
             hb[k2:] += 0.5 * dsp.sat(np.sin(2 * np.pi * hz("D1") * 1.4 * time(m - k2)) * dsp.env_ad(m - k2, 0.008, 0.12), 2.2)
         P.add_event(o["tick"], dsp.stereo(place(n, so, dsp.lp(hb, 700))))
-        P.mark(o["tick"], "D6")
     # ponto de partida da calibração: o golpe cheio e cada batida já perto do nível que o spec pede em relação a
     # ele (0,6 · 0,45 · 0,3 do pico do golpe; o batimento cru é ~9 dB mais forte que o golpe cru)
     P.hints = {540: 1.0, 552: 0.2, 566: 0.15, 584: 0.09}
@@ -650,41 +651,56 @@ PENTA = ["D", "E", "F#", "A", "B"]
 
 
 def hawking(s):
-    """Evaporação: ambiente quase inaudível e brilhos de vidro AFINADOS no pentatônico de Ré maior (o perdão da
-    trilha), cada vez mais densos, e a temperatura subindo como um harmônico que sobe."""
+    """Evaporação. v5.1 (retorno: o fim "parece toque de celular de 2010"): os brilhos eram senoides puras em sino,
+    no pentatônico, secas. Agora são TUBOS de flauta curtos (4' e 2', com o sopro do ataque) uma oitava mais baixos,
+    na sala do órgão, cada vez mais densos; a "temperatura subindo" é ar (ruído numa banda que sobe), não um apito."""
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     bed = dsp.stereo(dsp.pink(rng, n) * 10 ** (-50 / 20) * 6, 0.8)
 
-    def sparkle(level):
-        nm = PENTA[int(rng.integers(len(PENTA)))] + str(int(rng.integers(6, 8)))
-        d = int(rng.uniform(0.15, 0.4) * SR)
-        return dsp.pan(bell(hz(nm), d, rng, 0.25, ((1, 1.0), (2.0, 0.3), (3.0, 0.1))) * level, rng.uniform(-0.8, 0.8))
+    def sparkle(level, dur=(0.12, 0.35)):
+        nm = PENTA[int(rng.integers(len(PENTA)))] + "6"  # os aleatórios numa oitava só, acima dos marcados (bandas separadas)
+        x = pipe_ping(hz(nm), rng.uniform(*dur), rng, decay=0.18)
+        return dsp.pan(x * level, rng.uniform(-0.8, 0.8))
 
     k = 0.0
     while True:
-        rate = 3 + 30 * (k / n) ** 2  # Poisson com taxa subindo
+        rate = 3 + 22 * (k / n) ** 2  # Poisson com taxa subindo
         k += rng.exponential(SR / rate)
         if k >= n - 0.4 * SR:
             break
-        sp = sparkle(0.008 * (0.2 + k / n) ** 2)
-        bed[int(k):int(k) + len(sp)] += sp
-    for _ in range(30):  # o enxame antes do clarão (é o pico do som); v0.2.6: 693–696, antes do drop-out
-        sp = sparkle(0.8)
-        i = at(693, S) + int(rng.uniform(0, 2.6) * TICK)
-        e = min(n, i + len(sp))
-        bed[i:e] += sp[: e - i]
+        if any(-1.5 * TICK < at(o["tick"], S) - k < 0.3 * TICK for o in s["onsets_intended"]):
+            continue  # um mini-vácuo antes de cada brilho marcado: o aleatório não pode cobrir o marcado
+        sp = sparkle(0.012 * (0.2 + k / n) ** 2)
+        e = min(n, int(k) + len(sp))
+        bed[int(k):e] += sp[: e - int(k)]
     i660 = at(660, S)
     m = sl(n, i660)
-    temp = np.zeros(n)
-    temp[i660:] = dsp.sine_sweep(m, hz("D7"), hz("D8")) * np.linspace(0, 0.05, m)
-    P.add_bed(bed + dsp.stereo(temp))
-    for o, nm in zip(s["onsets_intended"], ["A6", "D7", "F#6", "A6", "D7", "F#7"]):
+    air = np.zeros(n)
+    air[i660:] = dsp.tv_filter(dsp.white(rng, m), np.geomspace(1500, 6000, m), "band", width=0.6) * np.linspace(0, 0.012, m)
+    P.add_bed(bed + dsp.stereo(air, 0.9))
+    for o, nm in zip(s["onsets_intended"], ["A4", "D5", "F#4", "A4", "D5", "F#5"]):
         st = at(o["tick"], S)
-        P.add_event(o["tick"], dsp.pan(place(n, st, bell(hz(nm), int(0.5 * SR), rng, 0.3)), rng.uniform(-0.5, 0.5)))
+        x = pipe_ping(hz(nm), 0.22, rng, [["8", "flute", 0.5], ["4", "flute", 0.4]], decay=0.15)  # curto: o anterior não pode cobrir o próximo
+        # o tubo fala devagar (~20 ms) e o onset escorregava para depois do tick: o começo ganha um acento (o
+        # "sopro forte" do ataque), e o brilho marcado chega no tick
+        x *= 1 + 1.2 * np.exp(-time(len(x)) / 0.025)
+        P.add_event(o["tick"], dsp.pan(place(n, st, x), rng.uniform(-0.5, 0.5)))
+        P.mark(o["tick"], nm[:-1] + "7")
     P.room(0.35, rng)
+    # o enxame antes do clarão (691,2–693,8): é o pico do arquivo (o 1,0 do spec) e entra DEPOIS da sala grande, com
+    # uma sala curta própria. Com a sala grande, a cauda dele enchia todas as bandas até o 697 e engolia o brilho
+    # marcado do 696 (o ouvido não percebia o ataque, e a ida e volta também não)
+    swarm = np.zeros((n, 2))
+    for _ in range(14):
+        sp = sparkle(0.35, (0.05, 0.09))  # notas curtas: o enxame tem que ACABAR antes do 696
+        i = int(at(691.2, S)) + int(rng.uniform(0, 2.6) * TICK)
+        e = min(n, i + len(sp))
+        swarm[i:e] += sp[: e - i]
+    swarm = swarm * 0.85 + dsp.convolve(swarm, dsp.reverb_ir(rng, 0.4, 0.06)) * 0.6
+    P.add_bed(swarm)
     # v0.2.6: ponto de audição: a cama sai abafada e some no drop-out; os brilhos marcados ficam (o do 699 é
     # o único som no vazio antes do clarão)
     import act7
@@ -693,26 +709,24 @@ def hawking(s):
 
 
 def burst(s):
-    """O último clarão: Ré maior com 9ª em vidro (sem sub violento) e um véu de luz que abre e entra no outro."""
+    """O último clarão. v5.1: sem os sinos de vidro (senoides puras = toque de celular). O acorde do clarão já é o
+    órgão da trilha (Ré maior com 9ª, B1:1); o efeito só dá o que a música não tem: o sopro de luz (ar que abre),
+    um baque grave e macio, e um acorde de flautas do mesmo órgão que acende e se espalha (de mono a largo)."""
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     t = time(n)
-    glass = sum(bell(hz(nm), n, rng, 1.6) * a for nm, a in (("D5", 1.0), ("F#5", 0.7), ("A5", 0.7), ("E6", 0.5), ("D6", 0.5)))
-    flash = sum(bell(hz(nm), n, rng, 0.06) for nm in ("D6", "A6", "D7"))  # o golpe de luz: tudo no primeiro tick
-    # resolução da célula DOOMS DAY: Ab5 aparece por dezenas de ms e cai
-    # para A5; o ouvido reconhece a mesma entidade que perseguiu a queda.
-    sig_t = time(n)
-    sig_env = np.exp(-sig_t / 0.32) * np.clip(sig_t / 0.006, 0, 1)
-    signature = (np.sin(2*np.pi*hz("Ab5")*sig_t) * np.exp(-sig_t/0.035)
-                 + np.sin(2*np.pi*hz("A5")*sig_t) * np.exp(-sig_t/0.45))
-    signature *= sig_env
-    P.add_event(700, dsp.stereo(glass * 0.55 + flash * 2.0 + signature * 0.8, 0.8))
+    puff = dsp.tv_filter(dsp.white(rng, n), np.interp(t, [0, 0.3, 1.5], [6000, 2500, 900]), "band", width=1.5)
+    puff *= np.clip(t / 0.004, 0, 1) * np.exp(-t / 0.35)
+    thump = sub_drop(hz("D2"), hz("D1"), n, 0.25, 0.5) * 0.7
+    flutes = sum(place(n, 0, pipe_ping(hz(nm), 1.4, rng, [["8", "flute", 0.5], ["4", "flute", 0.35]], decay=0.9))
+                 for nm in ("D5", "F#5", "A5", "E6"))
+    P.add_event(700, dsp.stereo(puff * 0.8 + thump + flutes * 0.25, 0.8))
     veil = dsp.tv_filter(dsp.pink(rng, n), np.interp(t, [0, 1.5], [800, 6000]), "band", width=2.0)
     veil *= np.interp(t, [0, 0.6, 1.2], [0, 0.12, 0.12]) * np.exp(-np.maximum(t - 1.2, 0) / 0.9)
     P.add_bed(dsp.stereo(veil, 1.0))
-    P.room(0.35, rng, tail_fade=0.4)
+    P.room(0.45, rng, tail_fade=0.4)
     import act7
     return P.map(lambda x: act7.widen(x, S))  # v0.2.6: a luz se espalha: de quase mono a largo
 

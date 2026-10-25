@@ -195,3 +195,22 @@ Pedido do usuário: "zerar só a música, manter as ferramentas". Referência de
 **A narrativa harmônica:** a fusão evita a tônica (Si♭), os jatos fogem para o maior (Fá) e o horizonte é a primeira vez que a música chega ao Ré com tudo. O buraco negro passa o filme inteiro puxando para o Ré, e no horizonte ele ganha.
 
 **O que ficou das ferramentas:** o diretor (vácuo, grave sugado, contorção e congelamento, agora sobre a trilha nova), o ouvido automático, a ida e volta, o `act7` (ponto de audição do Ato VII) e os efeitos. **O que saiu:** `score.py`/`score.json` e `rhythm.py`/`rhythm.json` (a música antiga), os soluços da fusão (a grade já acelera por subdivisão) e o Risset de subida do Ato VII.
+
+---
+
+## 11. v5.1: a hierarquia e o material (o que estava errado no mix)
+
+Retorno do usuário sobre a v5.0: *"a música sozinha ficou boa, tirando uns engasgos; o mix não parece a mesma música; os SFX matam; o fim parece toque de celular de 2010"*.
+
+**Diagnóstico (medido):**
+1. **Hierarquia invertida.** Cada efeito era normalizado a −16 LUFS, igual à trilha, e ficava 10–20 dB ACIMA dela: a maré +14, o horizonte +13, o chirp +9. No mix a música virava fundo dos efeitos, por isso parecia outra música.
+2. **Material errado.** O fim (Hawking + clarão) era feito de senoides puras em sino, afinadas no pentatônico e quase secas. É exatamente a receita de um toque de celular. E todo onset de todo efeito ganhava um estalo mecânico de articulação.
+3. **Engasgos na música.** Cada troca de acorde soltava os tubos antes do próximo, e o tubo grande leva até 0,2 s para falar (buraco de 8–11 dB acima de 150 Hz). Depois da fusão ficava um buraco de 1,7 s (a música só voltava no 300). E os soluços de tempo, numa música com grade, soam como a reprodução travando.
+
+**Regras novas (valem para tudo daqui pra frente):**
+- **A música é a referência do mix** (`dramaturgy.json → mix`, `render.automix`). Cada efeito de cama fica a `offsets_db` abaixo da trilha, no trecho em que toca. Só os golpes (fusão, jatos, horizonte) e o Ato I ficam livres, e o `psycho.py` cobra o espaço deles.
+- **Efeito é feito do mesmo material da música.** Brilho = tubo de flauta curto, com o sopro do ataque (`pipe_ping`), nunca seno puro. Sino = tubo principal. Luz = ar. Tudo na mesma sala do órgão.
+- **Articulação é ar, não clique.** A marca que a ida e volta usa para achar o instante virou um sopro curto (o chiff do tubo), a 30 % do pico local.
+- **Legato de organista.** A nota comum entre dois acordes fica presa e as outras invadem a próxima em 60 ms (`music.legato`). Medido acima de 150 Hz, só restam os quatro cortes de propósito: os dois vácuos, o quase-silêncio do 268 e o drop-out do 697.
+- **Medir onde o ouvido escuta.** Uma janela de 10 ms "vê" a onda do 32' (54 ms) subindo e descendo e acusa corte onde não há. Quem procurar engasgo mede acima de 150 Hz.
+- **Mini-vácuo também vale no pequeno:** um brilho marcado precisa de ~75 ms sem nada da mesma banda antes dele (no Hawking, o enxame aleatório engolia o brilho do 696, para o ouvido e para o detector).

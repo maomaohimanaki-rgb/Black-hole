@@ -58,6 +58,29 @@ def side(f):
     return -0.35 if midi % 2 == 0 else 0.35
 
 
+LEGATO_TICKS = 1.2  # 60 ms: quanto uma nota invade a próxima na troca de acorde
+
+
+def legato(notes):
+    """v5.1 (retorno: a música "dá uns engasgos"): o organista não solta o acorde antes do próximo. Medido: em cada
+    troca, os tubos paravam e os novos levavam até 0,2 s para falar (o tubo grande fala devagar), um buraco de
+    8–11 dB. Agora (1) a nota que continua no acorde seguinte fica PRESA (não é tocada de novo) e (2) as outras
+    invadem a próxima em 60 ms. Onde não há acorde seguinte (o vácuo, o fim do trecho), a nota acaba no tempo."""
+    notes = sorted(notes)
+    starts = {round(a, 3) for a, *_ in notes}
+    out = []
+    for a, b, nm, reg, lv in notes:
+        tied = next((o for o in out if o[2] == nm and o[3] == reg and o[4] == lv and abs(o[1] - a) < 1e-3), None)
+        if tied:
+            tied[1] = b
+        else:
+            out.append([a, b, nm, reg, lv])
+    for o in out:
+        if round(o[1], 3) in starts:
+            o[1] += LEGATO_TICKS
+    return [tuple(o) for o in out]
+
+
 @lru_cache(maxsize=1)
 def render_full(end_tick=760):
     M = spec()
@@ -72,10 +95,8 @@ def render_full(end_tick=760):
         if e > st:
             bus[b][st:e] += dsp.pan(x[: e - st], p) if x.ndim == 1 else x[: e - st]
 
-    for e in M["pedal"]:
-        a, b = pos(e["at"], M), pos(e["to"], M)
-        x = organ.note(hz(e["note"]), int((b - a) * TICK), R[e["reg"]], rng, release=0.12)
-        put("pedal", a, dsp.stereo(x, 0.3))
+    for a, b, nm, reg, lv in legato([(pos(e["at"], M), pos(e["to"], M), e["note"], e["reg"], 1.0) for e in M["pedal"]]):
+        put("pedal", a, dsp.stereo(organ.note(hz(nm), int((b - a) * TICK), R[reg], rng, release=0.12), 0.3))
     for e in M["pulse"]:
         a, b = pos(e["from"], M), pos(e["to"], M)
         t, i = a, 0
@@ -84,11 +105,10 @@ def render_full(end_tick=760):
             put("pedal", t, dsp.stereo(organ.note(hz(e["notes"][i % len(e["notes"])]), d, R[e["reg"]], rng, 0.05), 0.3))
             t += e["every"]
             i += 1
-    for e in M["chords"]:
-        a, b = pos(e["at"], M), pos(e["to"], M)
-        for nm in e["notes"]:
-            f = hz(nm)
-            put("great", a, organ.note(f, int((b - a) * TICK), R[e["reg"]], rng) * e.get("level", 1.0), side(f))
+    chord_notes = [(pos(e["at"], M), pos(e["to"], M), nm, e["reg"], e.get("level", 1.0)) for e in M["chords"] for nm in e["notes"]]
+    for a, b, nm, reg, lv in legato(chord_notes):
+        f = hz(nm)
+        put("great", a, organ.note(f, int((b - a) * TICK), R[reg], rng) * lv, side(f))
     for o in M["ostinatos"]:
         a, b = pos(o["from"], M), pos(o["to"], M)
         t, i = a, 0
@@ -134,7 +154,7 @@ def render_full(end_tick=760):
         x = seg * (1 - room["wet"]) + dsp.cathedral(seg, room, rng) * room["wet"] * 1.4
         x[b:] = 0
         if b_t == 268:
-            r = int(0.35 * SR)
+            r = int(1.0 * SR)  # v5.1: 0,35 s soava como corte; a caixa já vem fechando desde o 248
             x[b - r:b] *= np.cos(np.linspace(0, np.pi / 2, r))[:, None] ** 2
         if b_t == 240:
             x[b - int(0.004 * SR):b] *= np.linspace(1, 0, int(0.004 * SR))[:, None]

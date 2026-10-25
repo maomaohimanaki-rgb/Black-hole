@@ -60,10 +60,16 @@ def to_ogg(x, path):
 # ------------------------------------------------------------------ calibração
 
 
+# v5.1: o nível fica em 0,3 do pico local, mas a marca deixou de ser um estalo mecânico (impulso numa ressonância):
+# um estalo seco em TODO onset de todo efeito era parte do "som barato" do mix (retorno do usuário). Agora é um
+# SOPRO de ar curto, o mesmo "chiff" com que um tubo de órgão começa a falar: o detector da ida e volta continua
+# achando o instante, e o ouvido ouve ar, não clique.
+MARK_LEVEL = 0.3
+
+
 def _marks(s, parts, peak):
-    """Marcas de articulação. v0.2.7: um TIQUE MECÂNICO (impulso em ressonância larga, sem nota) e não mais um
-    brilho afinado: os brilhos afinados soavam "pim pom" de campainha. Nível relativo ao TRECHO (45 % do pico
-    local, ±2 ticks), não ao pico do arquivo; a nota da marca só dá a cor da ressonância."""
+    """Marcas de articulação (o instante de cada onset, para a ida e volta). Nível relativo ao TRECHO (pico local,
+    ±2 ticks). A nota da marca dá o centro da banda do sopro (uma oitava e meia de largura)."""
     out = np.zeros((parts.n, 2))
     m = int(0.05 * SR)
     t = dsp.time(m)
@@ -74,12 +80,10 @@ def _marks(s, parts, peak):
         if k <= 0:
             continue
         local = np.abs(peak[max(0, st - 2 * TICK):st + 2 * TICK]).max()
-        imp = np.zeros(m)
-        q = int(0.001 * SR)
-        imp[:q] = rng.standard_normal(q)
-        g = dsp.resonator(imp, min(f, 6000), 5) * np.exp(-t / 0.008)
+        fc = min(f, 7000)
+        g = dsp.bp(dsp.white(rng, m), fc / 2.5, min(fc * 2.5, 16000), 2) * np.clip(t / 0.0005, 0, 1) * np.exp(-t / 0.01)
         g = g / (np.abs(g).max() + 1e-12)
-        out[st:st + k] += dsp.stereo(g[:k] * 0.45 * local)
+        out[st:st + k] += dsp.stereo(g[:k] * MARK_LEVEL * local, 0.6)
     return out
 
 
@@ -157,6 +161,40 @@ def master(x, sid=None):
     return x * min(g_lufs, g_peak)
 
 
+# ------------------------------------------------------------------ mix
+
+
+def automix(stems):
+    """v5.1: a MÚSICA é a referência (retorno do usuário: "o mix não parece a mesma música; parece outra"). Medido no
+    v5.0: cada efeito saía normalizado a −16 LUFS, igual à trilha, e ficava 10–20 dB ACIMA dela (a maré +14, o
+    horizonte +13): a música virava fundo dos efeitos. Agora cada efeito de cama fica `offsets_db` abaixo da música
+    no trecho em que toca (só abaixa: nunca passa do pico do arquivo). Os livres (golpes, Ato I) ficam como estão:
+    o psycho.py cuida deles. Devolve {id: ganho em dB} e o ganho vai assado no .ogg."""
+    MX = director.spec()["mix"]
+    end = AU["meta"]["audio_end_tick"]
+    vol = {s["id"]: s["volume"] for s in AU["sounds"]}
+    start = {s["id"]: s["tick"] for s in AU["sounds"]}
+    ref = np.zeros(end * TICK)
+    for sid in MX["reference"]:
+        x = dsp.mono(stems[sid]) * vol[sid]
+        a = start[sid] * TICK
+        ref[a:a + len(x)] += x[: len(ref) - a]
+    trims = {}
+    for sid, off in MX["offsets_db"].items():
+        y = dsp.mono(stems[sid]) * vol[sid]
+        a = start[sid] * TICK
+        r = ref[a:a + len(y)]
+        py, pr = analyze.tick_rms(y) ** 2, analyze.tick_rms(r) ** 2
+        k = min(len(py), len(pr))
+        py, pr = py[:k], pr[:k]
+        act = py > py.max() * 10 ** (-20 / 10)  # onde o efeito está de fato soando
+        ly, lr = 10 * np.log10(py[act].mean() + 1e-20), 10 * np.log10(pr[act].mean() + 1e-20)
+        if lr < MX["reference_floor_db"]:
+            continue  # a música quase não toca ali: não há o que seguir
+        trims[sid] = round(float(min(0.0, lr + off - ly)), 2)
+    return trims
+
+
 # ------------------------------------------------------------------ análise para o timeline
 
 
@@ -206,8 +244,8 @@ def main():
     if subprocess.run([sys.executable, str(Path(__file__).resolve().parent / "check_organ.py")]).returncode:
         sys.exit("✗ o 32' resultante do órgão não apareceu")
     events, library, report, failed = [], {}, [], []
-    stems = {}
-    for i, s in enumerate(AU["sounds"], start=1):
+    stems, checked = {}, {}
+    for s in AU["sounds"]:
         sid = s["id"]
         parts = RECIPES[sid](s)
         x, gains = calibrate(s, parts)
@@ -221,6 +259,14 @@ def main():
         # mixdown é o som DIRIGIDO (spec/dramaturgy.json), conferido depois no mix pelo psycho.py
         x = director.apply(x, sid, s["tick"])
         stems[sid] = x
+        checked[sid] = (rows, ok, gains)
+
+    # v5.1: a música é a referência do mix (spec/dramaturgy.json → mix)
+    trims = automix(stems)
+    for i, s in enumerate(AU["sounds"], start=1):
+        sid = s["id"]
+        rows, ok, gains = checked[sid]
+        x = stems[sid] = stems[sid] * 10 ** (trims.get(sid, 0.0) / 20)
         lufs = METER.integrated_loudness(x)
         report.append((sid, rows, ok, gains, lufs, float(20 * np.log10(np.abs(x).max() + 1e-12))))
         write_wav(x, BUILD / "stems" / f"{sid}.wav")
@@ -237,7 +283,8 @@ def main():
             "onsets_abs": [{"tick": round(s["tick"] + o["t_local_s"] * 20, 2), "time_s": round(s["tick"] / 20 + o["t_local_s"], 4),
                             "strength": o["strength"], "rms_norm": o["rms_norm"]} for o in library[f"{sid}.ogg"]["onsets"]],
         })
-        print(f"  {'✓' if ok else '✗'} {sid:20s} {lufs:6.1f} LUFS  " + " ".join(f"{r['tick']}:{r['rms']:.2f}/{r['want']:.2f}{'' if r['ok'] else '✗'}" for r in rows))
+        tr = f"{trims[sid]:+5.1f} dB" if sid in trims else "       "
+        print(f"  {'✓' if ok else '✗'} {sid:20s} {lufs:6.1f} LUFS {tr} " + " ".join(f"{r['tick']}:{r['rms']:.2f}/{r['want']:.2f}{'' if r['ok'] else '✗'}" for r in rows))
 
     # mixdown: a cutscene inteira (2D, com os volumes do jogo)
     end = AU["meta"]["audio_end_tick"]
