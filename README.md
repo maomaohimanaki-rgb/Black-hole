@@ -24,3 +24,6 @@ node --test tests/*.test.mjs      # testes
 python3 tools/package.py          # dist/*.mcaddon com UUIDs novos
 ```
 Leia primeiro o `CLAUDE.md`. Ele diz a ordem dos docs e o que nunca se edita à mão.
+
+## Motor de instrumentos chineses (`huayin/`)
+Ferramenta Python à parte, independente do addon: **华音 Huayin** sintetiza por modelagem física 41 instrumentos clássicos chineses (pipa da dinastia Tang, guqin, guzheng, erhu, dizi, suona, sheng, 编钟, gongos da ópera…), com técnicas, 简谱, MIDI, mixer e exportação `.ogg`. Manual em [`huayin/README.md`](huayin/README.md).

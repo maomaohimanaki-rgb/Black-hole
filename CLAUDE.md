@@ -51,3 +51,4 @@ Não existe código de outro projeto aqui e **não se importa nem se copia nada 
 - `assets/nasa/starmap_2020_4k.exr`: Deep Star Maps 2020 (NASA SVS), para o anel de Einstein.
 - `assets/fonts/`: IBM Plex Mono/Sans e Poppins (OFL) para o HUD e os títulos. Falta uma fonte de apoio para `☉ ⁷ ⁹ → ∞` e uma CJK fina para `黑洞`/`磁星` (P-25).
 - `templates/`: esqueleto BP/RP gerado por `tools/gen_templates.py` (modelos para a F0, não testados no jogo).
+- `huayin/`: motor Python de instrumentos clássicos chineses por síntese física (pedido do usuário, independente do addon). Manual em `huayin/README.md`; testes com `cd huayin && python3 -m unittest discover -s tests -t tests`; a referência `huayin/docs/INSTRUMENTOS.md` é gerada por `python3 -m huayin doc`.

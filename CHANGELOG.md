@@ -2,6 +2,16 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## Ferramenta: motor 华音 Huayin 1.0.0 · out/2026 — instrumentos clássicos chineses (pasta `huayin/`)
+
+**Por quê:** pedido do usuário: um motor em Python que simule instrumentos chineses clássicos (a começar pelo pipa da dinastia Tang) o mais fiel possível, com tudo que um motor de música precisa e um tutorial para acrescentar coisas. É independente do addon (não entra no `.mcaddon`), mas exporta `.ogg` mono/estéreo que servem de matéria-prima para os sons do filme.
+
+- **Síntese física, sem samples:** guia de onda para cordas (seda, aço-náilon, aço; rigidez, duas polarizações, ponto de dedilhado, atrito do dedo deslizando, ressonância simpática), corda friccionada de McIntyre–Schumacher–Woodhouse para o erhu, jato de ar (dizi/xiao) com a membrana 笛膜, palheta dupla cônica (suona) e cilíndrica (guanzi), palheta livre (sheng), síntese modal para sinos, pedras, gongos, pratos e tambores.
+- **41 instrumentos + 7 variantes, 119 técnicas** (轮指, 推拉, 吟猱, 泛音, 滑音, 花舌, 刮奏, 马嘶, 当心画…), com nomes em pinyin, chinês e português. O 编钟 tem os dois tons por sino (正鼓/侧鼓); o 小锣 sobe e o 大锣 desce de altura depois do golpe, como medido por Jossic et al. (JASA 2018).
+- **Motor de música:** Musica/Faixa, andamento com rampas, afinações históricas (三分损益, justa, igual de 朱载堉), tons e modos, leitor de 简谱 (`.jp`), JSON, MIDI ida e volta, automação, humanização reproduzível, efeitos (reverbs de palácio Tang, templo, gruta de Dunhuang; EQ, compressor, limitador, eco, chorus), loudness BS.1770, stems e CLI (`python3 -m huayin`).
+- **Docs:** `huayin/README.md` (manual), `docs/TUTORIAL.md` (inclui criar instrumento, técnica, corpo, material, afinação e efeito), `docs/PARTITURA.md`, `docs/FIDELIDADE.md` (o que é medido × estimado, fontes) e `docs/INSTRUMENTOS.md` (gerado).
+- **Testes:** 39 (`cd huayin && python3 -m unittest discover -s tests -t tests`), travando a afinação de cada modelo físico (corda ±3 cents, erhu e dizi ±8), o sentido do glissando dos gongos, os dois tons do 编钟, o leitor de 简谱, JSON/MIDI e o loudness.
+
 ## 0.1.1 (em teste) · out/2026 — correções do primeiro teste no aparelho
 
 **Por quê:** o retorno do teste-1 (vídeo, relatos e print do chat) aprovou os 10 spikes e o ritmo da câmera, mas mostrou dois bugs.
