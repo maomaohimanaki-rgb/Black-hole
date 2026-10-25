@@ -303,7 +303,6 @@ def render_full(end_tick=760):
     dry += act7.world(n, 0, rng)  # v0.2.6: a cratera e o vento, ouvidos de dentro
 
     R = S["reverb"]
-    T = S["tape_stop"]
     out = np.zeros((n, 2))
     for a_t, b_t in S["segments"]:
         a, b = a_t * TICK, min(n, b_t * TICK)
@@ -318,17 +317,11 @@ def render_full(end_tick=760):
         if b_t == 240:
             x[b - int(0.004 * SR):b] *= np.linspace(1, 0, int(0.004 * SR))[:, None]  # corte seco: a fusão assume
         if b_t == 600:
-            # parada de fita no Ato VI: desacelera e afina para baixo, termina em zero exato no 600
-            ta, tb = T["from"] * TICK, T["to"] * TICK
-            rate = np.linspace(T["rate"][0], T["rate"][1], tb - ta)
-            x[ta:tb] = dsp.varispeed(x[ta:tb], rate)
-            x[ta:tb] *= np.interp(np.arange(tb - ta), [0, (tb - ta) * 0.75, tb - ta - 1], [1, 0.5, 0])[:, None]
+            # v0.4.0: a parada de fita linear (1,0 → 0,25) e o abaixa-volume do 540 saíram: o tempo do Ato VI é do
+            # diretor (spec/dramaturgy.json → M2_horizonte), o MESMO relógio para trilha, ritmo e vento. Aqui só
+            # o zero exato no fim do trecho.
+            x[b - int(0.05 * SR):b] *= np.linspace(1, 0, int(0.05 * SR))[:, None]
         out += x
-    # v0.2.7: a partir do 540 o horizonte CONGELA o som do filme (sgx_horizon): a trilha dá passagem
-    tk = np.arange(n) / TICK
-    duck = np.interp(tk, [0, 540, 546, 598], [1, 1, 0.12, 0])
-    duck[tk >= 620] = 1.0
-    out *= duck[:, None]
     # v0.2.6: Ato VII pelo ponto de audição: abafado → zumbido → drop-out → o estéreo abre no clarão
     out = act7.muffle(out, 0)
     out += act7.tinnitus(n, 0, rng)

@@ -105,10 +105,10 @@ Coral sintetizado: síntese por formantes de um "ah" (filtros em 700, 1 220 e 2 
 Estalos: impulsos curtos em filtros ressonantes (madeira 180–600 Hz, pedra 80–300 Hz, Q alto), **esticados 4×** por granulação (o rangido fica longo e grave). Por baixo, ronco contínuo de 30–60 Hz saturado. Os onsets aceleram (420, 430, 438, 446, 452, 457).
 
 ### `sgx_fall` (460–540, só cutscene)
-Vento: ruído com passa-banda cuja frequência central acompanha a velocidade do pedaço-herói (a mesma curva da câmera). **No 500, whoosh Doppler**: ruído com pan e frequência subindo e descendo rápido, pico no 500. **Dilatação a partir do 510:** a taxa de reprodução cai de 1,0 para 0,5 até o 539. Use reamostragem variável integrando a taxa, para o som **afinar e desacelerar juntos**, como fita.
+Vento: ruído com passa-banda cuja frequência central acompanha a velocidade do pedaço-herói (a mesma curva da câmera). **No 500, whoosh Doppler**: ruído com pan e frequência subindo e descendo rápido, pico no 500. ~~Dilatação a partir do 510: a taxa cai de 1,0 para 0,5 até o 539.~~ **v0.4.0:** o tempo é do diretor (`spec/dramaturgy.json → M2_horizonte`, `docs/SOUND_DIRECTION.md`): soluços em 470/500/518/531, inspiração (o mundo acelera e perde o grave) e vácuo antes do 540. A sala do golpe do 540, de trás pra frente, cresce até o começo do vácuo.
 
 ### `sgx_horizon` (540–600, só cutscene)
-A "mistura" (o roar + o pad, re-renderizados) passando por uma **parada de fita**: taxa 0,5 → 0,05. Batidas de sub (coração) em 540, 552, 566 e 584, com intervalos que alongam. **Termina em silêncio digital exato no tick 600** (o analisador confere < −90 dBFS de 600 a 619).
+~~A "mistura" passando por uma parada de fita: taxa 0,5 → 0,05.~~ **v0.4.0:** o ZA WARUDO do filme, em fases (`docs/SOUND_DIRECTION.md` §7): golpe em camadas no 540 (TÁ e o BOOM no tick seguinte), contorção (o relógio do mundo despenca, ricocheteia e balança), suspensão assintótica e escura, a foto congelada e o disco arranhado nas poses da câmera. O coração (552, 566, 584) fica seco e fora do relógio do mundo: dois relógios discordando. **Termina em silêncio digital exato no tick 600** (o analisador confere < −90 dBFS de 600 a 619).
 
 ### `sgx_hawking` (620–700)
 Ambiente quase inaudível (ruído rosa a −50 dB). Brilhos: senos de 6–14 kHz de 15–40 ms, posições aleatórias com densidade crescendo (Poisson com taxa subindo), mais os 6 onsets marcados mais fortes. A partir do 660, um seno subindo de 2 para 8 kHz bem baixo: a temperatura de Hawking subindo.

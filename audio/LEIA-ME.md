@@ -1,4 +1,4 @@
-# Dooms Day: só o áudio do filme do buraco negro (36 s), versão 0.2.7
+# Dooms Day: só o áudio do filme do buraco negro (36 s), versão 0.4.0 do áudio (pacote v4.0)
 
 Tudo que gera o som: 20 arquivos (16 efeitos + trilha em 2 partes + camada rítmica em 2 partes), sintetizados do zero em Python, sem nenhum sample.
 
@@ -13,14 +13,15 @@ python3 tools/build_timeline.py          # opcional: gera o timeline_data.js que
 - `build/singularity_mix.wav` / `.mp3`: o mixdown do filme inteiro, como se ouve na cutscene.
 - `build/stems/<id>.wav`: cada som separado. `build/report.md` traz os onsets pedidos × medidos e o volume.
 
-O render **falha** se a "ida e volta" não bater: cada onset de `spec/audio_cues.json` tem que ser re-detectado no áudio a ±0,5 tick e com o rms pedido ±0,15, e 600–619 tem que ser silêncio digital. Para ver por que um som falhou: `python3 tools/synth/diagnose.py sgx_jet`.
+O render **falha** se a "ida e volta" não bater ou se o **ouvido automático** reprovar (`build/psycho_report.md`): cada onset de `spec/audio_cues.json` tem que ser re-detectado no áudio a ±0,5 tick e com o rms pedido ±0,15, e 600–619 tem que ser silêncio digital. Para ver por que um som falhou: `python3 tools/synth/diagnose.py sgx_jet`.
 
 ## A ordem (o que roda, de onde vem)
 1. **`spec/audio_cues.json`**: QUAIS sons existem, QUANDO tocam (tick de 1/20 s), o volume no jogo e os onsets que cada um tem que ter.
 2. **`spec/score.json`**: a TRILHA como dado (pedal, órgão, coral, dinâmicas, relógio, Shepard–Risset, reverb, os trechos de silêncio e o `act7`, que é o Ato VII pelo ponto de audição).
 3. **`spec/rhythm.json`**: a CAMADA RÍTMICA (baixo, tom, shaker, poeira, tique-taque, subidas) na grade do filme.
 4. **`spec/layout.json`**: a física de que o som depende (as 19 meias-órbitas, que são o relógio do chirp e do ritmo).
-5. **`tools/synth/render.py`**: para cada som do `audio_cues`, chama a receita → calibra os ganhos → masteriza (−16 LUFS, pico −1 dBFS) → exporta → analisa → monta o mixdown.
+5. **`spec/dramaturgy.json`** (v0.4.0): a DIREÇÃO. Papéis de cada som, o fader de tensão, os momentos (fusão e horizonte) escritos em fases (soluço, inspiração, vácuo, golpe, contorção) e as metas que o ouvido automático cobra. A teoria está em `docs/SOUND_DIRECTION.md`.
+6. **`tools/synth/render.py`**: para cada som do `audio_cues`, chama a receita → calibra os ganhos → masteriza (−16 LUFS, pico −1 dBFS; golpes só pelo pico) → confere a ida e volta → **dirige** (`director.py`) → exporta → analisa → monta o mixdown → **mede o mix** (`psycho.py`).
 
 ## Os scripts
 | Arquivo | O quê |
@@ -33,6 +34,8 @@ O render **falha** se a "ida e volta" não bater: cada onset de `spec/audio_cues
 | `tools/synth/act7.py` | Ato VII: zumbido, mundo abafado, drop-out, estéreo abrindo |
 | `tools/synth/analyze.py` | a ida e volta (rms por tick, detecção de onsets em 4 bandas) |
 | `tools/synth/render.py` | o maestro (ver "A ordem") |
+| `tools/synth/director.py` | v0.4.0: o diretor. Aplica `spec/dramaturgy.json` no tempo absoluto: relógio do mundo (soluços, inspiração, contorção, congelamento), filtros, pente e fader de tensão |
+| `tools/synth/psycho.py` | v0.4.0: o ouvido automático. Mede o mix (golpe × build, grave que volta, celular, ataque, relógio não-linear, respiração) e reprova. `build/psycho_report.md` + `build/psycho.png` |
 | `tools/synth/diagnose.py` | por que um onset falhou |
 | `tools/build_timeline.py` | `build/timeline.json` → `BP/.../timeline_data.js` |
 | `jogo/audio.js` | como o jogo toca: cada som no seu tick (2D para quem assiste, posicional em O para os outros) |

@@ -20,7 +20,9 @@ import pyloudnorm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import analyze  # noqa: E402
+import director  # noqa: E402
 import dsp  # noqa: E402
+import psycho  # noqa: E402
 from dsp import SR, TICK  # noqa: E402
 from recipes import RECIPES  # noqa: E402
 
@@ -136,8 +138,14 @@ def calibrate(s, parts, iters=80):
     return mix(), gains
 
 
-def master(x):
-    """−16 LUFS integrado com pico ≤ −1 dBFS (o que limitar primeiro)."""
+def master(x, sid=None):
+    """−16 LUFS integrado com pico ≤ −1 dBFS (o que limitar primeiro).
+    v0.4.0: os GOLPES (spec/dramaturgy.json → master.impact_stems) não entram na régua de −16 LUFS. Normalizar
+    um golpe de 1 s ao mesmo loudness de uma cama de 30 s era o que deixava a fusão 3 dB abaixo do build: o
+    volume do jogo só abaixa, então quem tem que ser maior tem que nascer maior. Golpe = só o pico em −1 dBFS
+    (linear: a calibração dos onsets continua valendo); a densidade vem da saturação dentro do próprio golpe."""
+    if sid in director.spec().get("master", {}).get("impact_stems", []):
+        return x * 10 ** (-1 / 20) / (np.abs(x).max() + 1e-12)
     lufs = METER.integrated_loudness(x if len(x) >= 0.4 * SR else np.pad(x, ((0, int(0.4 * SR)), (0, 0))))
     g_lufs = 10 ** ((-16 - lufs) / 20) if np.isfinite(lufs) else 1.0
     g_peak = 10 ** (-1 / 20) / (np.abs(x).max() + 1e-12)
@@ -195,13 +203,16 @@ def main():
         sid = s["id"]
         parts = RECIPES[sid](s)
         x, gains = calibrate(s, parts)
-        x = master(x)
+        x = master(x, sid)
         if s["channels"]["cutscene_2d"] == "mono" or not s["heard_in_cutscene"]:
             x = dsp.stereo(dsp.mono(x))
-        stems[sid] = x
         rows, ok = analyze.check(s, x)
         if not ok:
             failed.append(sid)
+        # v0.4.0: a ida e volta confere o som CRU (o contrato com o storyboard); o que vai para o jogo e para o
+        # mixdown é o som DIRIGIDO (spec/dramaturgy.json), conferido depois no mix pelo psycho.py
+        x = director.apply(x, sid, s["tick"])
+        stems[sid] = x
         lufs = METER.integrated_loudness(x)
         report.append((sid, rows, ok, gains, lufs, float(20 * np.log10(np.abs(x).max() + 1e-12))))
         write_wav(x, BUILD / "stems" / f"{sid}.wav")
@@ -235,6 +246,9 @@ def main():
     sil_db = 20 * np.log10(np.abs(silence).max() + 1e-20)
     if sil_db > -90:
         failed.append(f"silêncio 600–619 ({sil_db:.1f} dBFS)")
+    ok_ps, ps = psycho.check(mix)
+    if not ok_ps:
+        failed += [f"{mid}: {r['name']}" for mid, rows in ps for r in rows if not r["ok"]]
     write_wav(mix, BUILD / "singularity_mix.wav")
     to_ogg(mix, BUILD / "singularity_mix.ogg")
     # MP3 para ouvir no celular antes do jogo (qualquer player toca)
@@ -262,7 +276,7 @@ def main():
     for sid, rows, ok, gains, lufs, pk in report:
         on = " · ".join(f"{r['tick']}: {r['rms']:.2f}/{r['want']:.2f}, Δ{r['dt']}" for r in rows)
         lines.append(f"| `{sid}` | {lufs:.1f} | {pk:.1f} | {on} | {'✅' if ok else '❌'} |")
-    lines += ["", "Espectrogramas: `build/spectrograms/<som>.png`. Mixdown: `build/singularity_mix.wav` / `.ogg`."]
+    lines += ["", "Dramaturgia (impacto, vácuo, relógio do mundo): `build/psycho_report.md` e `build/psycho.png`.", "", "Espectrogramas: `build/spectrograms/<som>.png`. Mixdown: `build/singularity_mix.wav` / `.ogg`."]
     (BUILD / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     if failed:

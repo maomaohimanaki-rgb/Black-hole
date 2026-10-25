@@ -14,6 +14,7 @@ Não existe código de outro projeto aqui e **não se importa nem se copia nada 
 3. `docs/ARCHITECTURE.md`: o motor, a estrutura do repositório e a técnica de cada elemento.
 4. `docs/ROADMAP.md`: em que fase estamos. **Comece pela F0 (spikes)**, não pelo filme.
 5. `docs/VISUAL_TECH.md` e `docs/AUDIO_DESIGN.md` quando chegar nessas partes; `docs/MAGNETAR.md` na F9.
+   - **Áudio de verdade:** o motor fica em `audio/` (pacote próprio, com spec próprio em escala B, D-14). Antes de mexer em qualquer som, leia `audio/docs/SOUND_DIRECTION.md`: ciência como gramática (T-16), o vocabulário de fases e o processo. Rodar: `cd audio && python3 tools/synth/render.py` (falha se a ida e volta ou o `psycho.py` reprovar).
 6. `docs/DECISIONS.md`: o que já foi decidido e o que falta perguntar.
 
 ## Fontes da verdade

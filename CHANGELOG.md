@@ -2,6 +2,16 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## Áudio v4.0 (pacote em `audio/`, fora do .mcaddon por enquanto) · 25/10/2026 — dramaturgia do som
+
+**Por quê:** retorno do usuário sobre o áudio v3.0, ouvido fora do jogo: "a ciência tem que ser gramática, não lei universal". O trecho de 12 a 22 s estava bom, mas o drop dos 11–12 s e a dilatação (21–30 s) eram "bonitos no papel e broxantes no ouvido". Medido: os dois golpes ficavam **abaixo** do build (−3,3 dB na fusão e −1,1 dB no horizonte), o grave sumia no golpe da fusão e a dilatação eram três rampas lineares sem relógio comum.
+
+- O pacote de áudio entra no repositório em `audio/`, primeiro como veio (v3.0) e depois com as mudanças, para o diff mostrar só o que mudou. Ele fica isolado porque o spec dele está em escala B (D-14).
+- **Camada de dramaturgia:** `audio/spec/dramaturgy.json` + `director.py` (aplica) + `psycho.py` (mede e reprova o build). Teoria, processo e botões em `audio/docs/SOUND_DIRECTION.md` (T-16).
+- **Fusão:** soluços de prenúncio, grave sugado, 90 ms de vácuo e golpe em camadas. **Horizonte:** inspiração, 80 ms de vácuo, TÁ-BOOM, o relógio do mundo despencando, ricocheteando e balançando, suspensão assintótica, coração seco fora do relógio.
+- O morph do chirp do v3.0 saiu: a frequência descia até ≈ 40 Hz antes da fusão e reprovava a ida e volta.
+- Antes → depois: golpe da fusão −3,3 → +2,2 dB, golpe do horizonte −1,1 → +7,5 dB, grave no golpe da fusão −4,8 → +18 dB, respiração do filme 12,1 → 14,2 dB. Ida e volta 20/20.
+
 ## 0.1.1 (em teste) · out/2026 — correções do primeiro teste no aparelho
 
 **Por quê:** o retorno do teste-1 (vídeo, relatos e print do chat) aprovou os 10 spikes e o ritmo da câmera, mas mostrou dois bugs.

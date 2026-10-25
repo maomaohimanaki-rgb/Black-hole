@@ -164,6 +164,37 @@ def glint(f, m, decay=0.35):
     return (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 2 * f * t) * np.exp(-t / 0.05)) * np.clip(t / 0.002, 0, 1) * np.exp(-t / decay)
 
 
+# modos de uma membrana circular (zeros de Bessel ÷ o primeiro): a "placa" do golpe, inarmônica como metal
+PLATE = ((1.0, 1.0), (1.594, 0.8), (2.136, 0.6), (2.296, 0.55), (2.653, 0.4), (2.918, 0.35), (3.156, 0.3), (3.501, 0.2))
+
+
+def impact(root, m, rng, bloom=0.0):
+    """O golpe em camadas (v0.4.0, docs/SOUND_DIRECTION.md §3). Cada camada cuida de uma faixa e de um tempo:
+      transiente (0–20 ms, > 2 kHz): a fusão INTEIRA comprimida em 18 ms (o chirp vira estalo) + estalo de ruído;
+      corpo (150–900 Hz, o que o celular ouve): placa metálica afinada na raiz ×4, altura caindo no ataque, + braam;
+      sub (30–110 Hz, fone e TV): queda de oitava.
+    Devolve (transiente, resto): o transiente fica fora da contorção do tempo (o ouvido precisa de um ataque
+    limpo para marcar o instante); o resto pode ser contorcido pelo relógio do mundo."""
+    import gw
+    t = time(m)
+    click = place(m, 0, gw.gesture(T=0.018, f0=500, f1=6000, ring_s=0.02, ring_tau=0.004, harm=0.3, drive=3.0))
+    crack = dsp.hp(dsp.white(rng, m), 2000) * np.exp(-t / 0.01) * np.clip(t / 0.0004, 0, 1)
+    trans = click * 0.7 + crack * 0.8
+    fb = root * 4
+    pitch = 1 + 0.35 * np.exp(-t / 0.05)
+    body = sum(a * np.sin(dsp.phase_osc(fb * r * pitch) + rng.uniform(0, 6)) * np.exp(-t / (0.9 / (1 + 0.7 * i)))
+               for i, (r, a) in enumerate(PLATE))
+    body = dsp.sat(body * 0.7 * np.clip(t / 0.002, 0, 1), 2.4)
+    br = braam([root * 2, root * 3, root * 4], m, rng, open_s=0.12, decay=0.9, bright=3000)
+    sub = sub_drop(root * 2, root * 0.75, m, 0.35, 0.6)
+    # bloom > 0: a onda de choque, o golpe FLORESCE 40–120 ms depois do estalo (o "BOOM" depois do "TÁ"). O tick
+    # seguinte ao golpe fica o mais alto: o ouvido sente o ataque e depois o volume chegando, como uma explosão.
+    # Só no 540 (na fusão o 241 é do estalo do anel, que a floração mascarava)
+    shock = dsp.tv_filter(dsp.white(rng, m), np.interp(t, [0, 0.15, 0.6], [3500, 900, 250]), "band", width=2.0)
+    shock = dsp.sat(shock * dsp.env_ad(m, 0.03, 0.15, int(0.02 * SR)) * 1.5, 1.5)
+    return trans, body * 0.6 + br * 0.7 + sub * 1.1 + shock * bloom
+
+
 # ------------------------------------------------------------------ Ato I
 
 
@@ -259,36 +290,16 @@ def chirp(s):
     A_law = (f / 35) ** (2 / 3)
     A_law = A_law / A_law[int((ot[0] - S) * TICK)] * ov[0]
     A = np.where(ticks < ot[0], A_law, np.interp(ticks, ot, ov))  # T-16: o envelope segue o spec
-    # v0.3.2: MORPH temporal no pre-drop (~10–12 s). A curva GW continua sendo a espinha dorsal,
-    # mas a percepção não fica linear: há uma contração/expansão de velocidade, uma queda brusca e
-    # uma pequena recuperação antes do corte em 240. A matéria é a mesma; só o tempo dela é deformado.
-    morph = np.ones_like(f)
-    u = np.clip((ticks - 198) / (240 - 198), 0, 1)
-    # pulsos de velocidade: explosão -> freio -> explosão menor -> afundamento.
-    knots = np.array([0.00, 0.18, 0.34, 0.48, 0.63, 0.78, 0.90, 1.00])
-    vals  = np.array([1.00, 1.72, 0.62, 1.28, 0.48, 0.34, 0.72, 0.16])
-    morph_zone = np.interp(u, knots, vals)
-    morph[ticks >= 198] = morph_zone[ticks >= 198]
-    # Mantém o gesto reconhecível, mas a fase passa a obedecer à velocidade morfada.
-    fm = f * morph
-    ph = np.zeros_like(fm)
-    ph[0] = chirp_phase(ticks[0])
-    ph[1:] = ph[0] + 2 * np.pi * np.cumsum(fm[:-1]) / SR
+    # v0.4.0: sem o morph do v0.3.2. Ele fazia a frequência DESCER para 0,16× (≈ 40 Hz no 239): o maior
+    # riser natural da física murchava logo antes do drop, e o chirp saía de fase com a órbita (T-05) e
+    # reprovava a ida e volta em 202 e 216. A não-linearidade agora mora no diretor (spec/dramaturgy.json):
+    # soluços que devolvem o tempo em 202 e 216, o grave sugado e o vácuo antes do 240. O chirp sobe até o fim.
+    ph = chirp_phase(ticks)
     k239 = int((239 - S) * TICK)
-    ph[k239:] = ph[k239] + 2 * np.pi * np.cumsum(fm[k239:]) / SR  # depois do 239, fase com f limitado
+    ph[k239:] = ph[k239] + 2 * np.pi * np.cumsum(f[k239:]) / SR  # depois do 239, fase com f limitado
     c = np.cos(ph)
-    # O pico de velocidade ganha impacto, o afundamento ganha corpo.
-    burst = 1.0 + 0.55 * np.exp(-((ticks - 205) / 4.0) ** 2) + 0.30 * np.exp(-((ticks - 218) / 3.0) ** 2)
-    drop = np.interp(ticks, [198, 205, 212, 220, 232, 239], [1.0, 1.1, 0.95, 1.15, 0.75, 0.25])
-    A_m = A * burst * drop
     h = 0.55 * c + 0.3 * dsp.sat(c, 2.5) + 0.35 * np.cos(2 * ph + 0.6) + 0.3 * np.cos(4 * ph)
-    h = dsp.tv_filter(h, np.clip(fm * 7, 300, 3200), "low") * A_m
-    # Pequeno fantasma reverso: o ataque original parece ser puxado para trás antes do corte.
-    z0, z1 = int((228 - S) * TICK), int((239 - S) * TICK)
-    if z1 > z0 + 16:
-        ghost = h[z0:z1][::-1]
-        ghost = ghost * np.linspace(0.0, 0.42, len(ghost)) * np.hanning(len(ghost))
-        h[z0:z1] += ghost
+    h = dsp.tv_filter(h, np.clip(f * 7, 300, 3200), "low") * A
     h *= np.clip(time(n) / 0.4, 0, 1)
     h[-int(0.002 * SR):] *= np.linspace(1, 0, int(0.002 * SR))  # termina seco no 240
     P.add_bed(dsp.stereo(h, 0.3) * 0.6)
@@ -322,6 +333,10 @@ def merge(s):
     body_at = place(m, 0, body[int(0.8 * SR):])
     real_at = place(m, 0, real[int(0.2 * SR):])
     hit = body_at * 1.0 + real_at * 0.7 + 1.1 * sub_drop(hz("D2"), hz("D1"), m, 0.3, 0.4)
+    # v0.4.0: o golpe em camadas por cima do gesto (o v0.3.2 ficava 3 dB ABAIXO do build e sem ataque nítido):
+    # estalo para marcar o instante, placa em Ré para o celular, sub que devolve o grave que o vácuo tirou
+    trans, rest = impact(hz("D1"), m, rng)
+    hit = dense(hit + rest * 0.8, 3.0) + trans * 0.6  # o estalo fora da saturação: ataque nítido
     P.add_event(240, dsp.stereo(place(n, i240, hit), 0.5))
     # o inspiral dos dois termina exatamente no 240 (vai na cama: é a subida final)
     insp = np.zeros(n)
@@ -329,7 +344,9 @@ def merge(s):
     insp[a:i240] = body[int(0.8 * SR) - (i240 - a):int(0.8 * SR)] * 0.6
     a2 = max(0, i240 - int(0.2 * SR))
     insp[a2:i240] += real[int(0.2 * SR) - (i240 - a2):int(0.2 * SR)] * 0.5
-    P.add_bed(dsp.stereo(insp, 0.4))
+    # v0.4.0: o inspiral do gesto sem o grave (passa-alta 180 Hz): o vácuo do 238–240 é só do chirp e do ar,
+    # e o grave que volta no 240 é sentido como volta (o sub do inspiral enchia o vácuo)
+    P.add_bed(dsp.stereo(dsp.hp(insp, 180, 4), 0.4))
     P.mark(240, "D6")
     i241 = at(241, S)
     m2 = sl(n, i241)
@@ -488,15 +505,6 @@ def tidal(s):
 STUTTER = [1, 1, 2, 2, 3, 4, 6, 8]  # o stutter da câmera no B17 (spec/storyboard.json); depois, 8 em 8 (B18)
 
 
-def freeze_hit(rng, seconds=2.0):
-    """O golpe do congelamento (o "ZA WARUDO" deste filme): o gesto GW150914 de trás pra frente, devagar e
-    grave: o anel cresce num instante e a nota DESCE de Lá2 até o fundo, com sub."""
-    import gw
-    g = gw.gesture(T=seconds, f0=hz("A0") * 0.75, f1=hz("A2"), ring_s=0.05, ring_tau=0.03, reverse=True, drive=2.6)
-    m = len(g)
-    return g + 0.8 * sub_drop(hz("A1"), hz("A0") * 0.75, m, seconds, seconds * 0.6)
-
-
 def moment(start_tick, end_tick):
     """O som do filme naquele instante (trilha + ritmo, tempo absoluto), para congelar e arranhar."""
     import rhythm
@@ -537,42 +545,87 @@ def fall(s):
     pn = np.clip((np.arange(n) - i500) / (0.25 * SR), -1, 1)
     P.add_event(500, dsp.pan(w, pn))
     P.mark(500, "A8")  # acima da banda do rasante
-    rate = np.interp(ticks, [510, 539], [1.0, 0.5])
     P.room(0.35, rng, tail_fade=0.05)
-    P.map(lambda x: dsp.varispeed(x, rate))
-    # v0.2.7: o tempo sendo PUXADO: o golpe do congelamento de trás pra frente, terminando seco no 540
-    suck = freeze_hit(rng)[::-1]
-    suck = suck / (np.abs(suck).max() + 1e-12) * np.linspace(0, 1, len(suck)) ** 2
-    P.add_bed(dsp.stereo(place(n, n - len(suck), suck) * 0.5, 0.6))
+    # v0.4.0: sem a rampa linear 1,0 → 0,5 a partir do 510. O tempo agora é do diretor (spec/dramaturgy.json):
+    # soluços em 470/500/518/531, a inspiração que acelera e o vácuo antes do golpe, iguais para todo o mundo.
+    # A SUCÇÃO: a sala do próprio golpe do 540 de trás pra frente, crescendo para dentro e cortando seca no
+    # começo do vácuo (538,4): o ouvido ouve o golpe chegar antes de ele existir.
+    i_end = int((538.4 - S) * TICK)
+    tail = suck_of(hz("A1"), rng, 1.6)
+    a = max(0, i_end - len(tail))
+    sk = np.zeros((n, 2))
+    sk[a:i_end] = tail[len(tail) - (i_end - a):]
+    P.add_bed(sk * 0.8)
     return P
 
 
+def dense(x, drive=2.5):
+    """Densidade do golpe (v0.4.0): saturação suave do golpe inteiro, normalizado. Menos fator de crista = mais
+    loudness pelo mesmo pico. É o que faz o golpe ser maior que o build sem passar de −1 dBFS."""
+    return dsp.sat(x / (np.abs(x).max() + 1e-12), drive)
+
+
+def suck_of(root, rng, seconds):
+    """A sala do golpe de trás pra frente (reverb invertido do impacto): cresce para dentro e para seca."""
+    m = int(seconds * SR)
+    _, rest = impact(root, m, rng)
+    wet = dsp.cathedral(dsp.stereo(rest, 0.8), REVERB, rng)[::-1]
+    wet = wet / (np.abs(wet).max() + 1e-12) * (np.linspace(0, 1, m) ** 2.5)[:, None]
+    wet[-int(0.004 * SR):] *= np.linspace(1, 0, int(0.004 * SR))[:, None]
+    return wet
+
+
 def horizon(s):
-    """O horizonte, o tempo parando (o "ZA WARUDO" deste filme). v0.2.7 (identidade: "a dilatação não impressiona"):
-    1. no 540, o GOLPE do congelamento (o gesto GW de trás pra frente, descendo até o fundo);
-    2. o som do filme naquele instante CONGELA (congelamento espectral da trilha + ritmo de 530–540), um
-       drone que vai afinando para baixo (redshift);
-    3. em cima, o mesmo instante PULA como disco arranhado nos ticks do stutter da câmera [1,1,2,2,3,4,6,8]
-       (depois 8 em 8), cada pulo mais grave e mais baixo;
-    4. o coração abafado alongando (os onsets do spec);
-    5. silêncio digital exato no 600."""
+    """O horizonte, o tempo parando: o ZA WARUDO deste filme. v0.4.0 (retorno do usuário: "a dilatação é bonita
+    no papel e broxante no ouvido: o cérebro registra 'caiu a velocidade' e não sente impacto"). A dilatação
+    deixou de ser uma rampa e virou um GESTO em fases (spec/dramaturgy.json → M2_horizonte):
+      inspiração (o mundo acelera e perde o grave, no sgx_fall e na trilha) → vácuo de 80 ms → GOLPE no 540 →
+      CONTORÇÃO (o relógio do mundo despenca, ricocheteia e balança como mola) → SUSPENSÃO (o mundo afunda,
+      assintótico, rumo a zero) → silêncio digital no 600.
+    Aqui mora o que é do horizonte:
+      1. o golpe em camadas; o transiente fica seco e o corpo + a sala passam pelo MESMO relógio do mundo
+         (director.warp_from): a cauda do golpe se contorce junto com a trilha;
+      2. a foto congelada: o congelamento espectral do mundo de 530–536 (antes da inspiração), afinando para
+         baixo e escurecendo com o passa-baixa do diretor (o vermelho);
+      3. o disco arranhado nos ticks do stutter da câmera [1,1,2,2,3,4,6,8] (sincrese com a pose segurando);
+      4. o CORPO: o coração (552 · 566 · 584) fica seco, perto e no tom certo. Dois relógios em conflito: o do
+         mundo morre, o seu continua batendo. É isso que a dilatação do tempo É: dois relógios discordando;
+      5. silêncio digital exato no 600."""
+    import director
     import gw
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     t = time(n)
-    hit = freeze_hit(rng)
-    P.add_bed(dsp.stereo(place(n, 0, hit / (np.abs(hit).max() + 1e-12)) * 0.9, 0.5))
-    src = moment(0, 541)  # absoluto até o 540
-    fr = gw.freeze(src[int(530 * TICK):int(540 * TICK)], n / SR + 0.5, rng)
-    rate = np.interp(t, [0, 3.0], [1.0, 0.35])
-    drone = dsp.varispeed(np.concatenate([fr, fr]), rate)[:n] * np.interp(t, [0, 0.08, 1.2, 2.5, 2.98], [0, 0.55, 0.35, 0.15, 0])
-    P.add_bed(dsp.stereo(dsp.lp(drone, 2500), 0.8))
+    C = director.curves()
+    sl_ = slice(S * TICK, S * TICK + n)
+    src = moment(0, 541)  # o mundo cru (sem o diretor), tempo absoluto
+    # 2. a foto congelada: entra depois da contorção, quando o mundo já está afundando
+    fr = gw.freeze(src[int(530 * TICK):int(536 * TICK)], n / SR + 0.5, rng)[:n]
+    fr = dsp.hp(dsp.lp(fr, 3000), 90) * np.interp(t, [0, 0.25, 0.9, 2.2, 2.95], [0, 0.003, 0.009, 0.004, 0])
+    fr = dsp.tv_filter(fr, np.maximum(C["lp"][sl_], 150), "low")
+    P.add_bed(dsp.stereo(fr, 0.8))
+    # 3. o disco arranhado: cresce depois da contorção (as poses curtas 1,1,2,2 são do golpe)
     st = gw.stutter(src, 540, STUTTER, 600, pitch_step=0.93, gain_step=0.86, grain_ticks=3)
-    st = st / (np.abs(st).max() + 1e-12) * 0.6
-    P.add_bed(st * np.interp(t, [0, 2.5, 2.98], [1, 0.4, 0])[:, None])
-    for o in s["onsets_intended"]:
+    st = st / (np.abs(st).max() + 1e-12) * 0.01 * np.interp(t, [0, 0.3, 0.6, 1.6, 2.4, 2.95], [0, 0.3, 1, 0.45, 0.15, 0])[:, None]
+    P.add_bed(dsp.hp(np.stack([dsp.tv_filter(st[:, c], np.maximum(C["lp"][sl_], 200), "low") for c in range(2)], axis=1), 90))
+    P.room(0.3, rng, tail_fade=0.05)
+    # 1. o golpe: sala própria, e o corpo + a sala contorcidos pelo relógio do mundo
+    trans, rest = impact(hz("A1"), n, rng, bloom=3.7)
+    body = dsp.stereo(dense(rest, 2.5), 0.6)
+    body = body * 0.7 + dsp.cathedral(body, REVERB, rng) * 0.45
+    body = director.warp_from(body, S, director.warp_phase(540)["impact_follow"])
+    # a sala do golpe morre com o mundo (o mesmo fader da contorção): sem isso a cauda de 9 s da catedral virava o
+    # chão do Ato VI e o coração não conseguia ficar sozinho
+    body *= 10 ** (np.maximum(C["gain_db"][sl_], -90) / 20 * 0.8)[:, None]
+    body = np.stack([dsp.tv_filter(body[:, c], np.maximum(C["lp"][sl_], 250), "low") for c in range(2)], axis=1)  # e escurece junto (o vermelho)
+    hit = body + dsp.stereo(trans * 0.18, 0.3)  # TÁ (0,8) e o BOOM no tick seguinte (1,0): o 540: 0,8 do spec
+    P.add_event(540, hit)
+    P.mark(540, "A6")
+    # 4. o corpo: o coração não sofre o relógio do mundo e NÃO entra na catedral (seco e perto: é dentro de
+    #    você; com a sala, a cauda de cada batida virava o chão do Ato VI)
+    for o in s["onsets_intended"][1:]:
         so = at(o["tick"], S)
         m = sl(n, so)
         tt = time(m)
@@ -580,11 +633,10 @@ def horizon(s):
         k2 = int(0.24 * SR)
         if k2 < m:
             hb[k2:] += 0.5 * dsp.sat(np.sin(2 * np.pi * hz("D1") * 1.4 * time(m - k2)) * dsp.env_ad(m - k2, 0.008, 0.12), 2.2)
-        P.add_event(o["tick"], dsp.stereo(place(n, so, dsp.lp(hb, 600))))
+        P.add_event(o["tick"], dsp.stereo(place(n, so, dsp.lp(hb, 700))))
         P.mark(o["tick"], "D6")
-    P.room(0.35, rng, tail_fade=0.05)
-    # silêncio digital exato no fim (o filme fica mudo de 600 a 619)
-    P.map(lambda x: x * np.interp(t, [0, 2.97, 2.995], [1, 1, 0])[:, None])
+    # 5. silêncio digital exato no fim (o filme fica mudo de 600 a 619)
+    P.map(lambda x: x * np.interp(t, [0, 2.94, 2.995], [1, 1, 0])[:, None])
     return P
 
 

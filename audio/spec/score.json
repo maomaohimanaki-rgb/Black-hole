@@ -772,15 +772,6 @@
     ],
     "why": "a queda: um som que desce para sempre (Shepard–Risset, como o Zimmer em Dunkirk)"
   },
-  "tape_stop": {
-    "from": 540,
-    "to": 600,
-    "rate": [
-      1.0,
-      0.25
-    ],
-    "why": "Ato VI: a trilha desacelera e afina para baixo com o tempo parando"
-  },
   "segments_why": "Trechos de reverb: a cauda não atravessa o corte seco do 240, o quase-silêncio de 268–279 (o vazio respirando) nem o preto de 600–619.",
   "act7": {
     "why": "v0.2.6 (retorno do usuário: o B20–B22 era 'sumiu, sumiu e mais nada, o som não induz nada'). Ponto de audição (point-of-audition, o zumbido de O Resgate do Soldado Ryan): depois de atravessar o horizonte, o som é o que o OUVIDO escuta. Do preto nasce um zumbido agudo, com o mundo abafado por baixo e o filtro abrindo devagar. O zumbido desce e vira a nota do coral (o trauma vira música), um Shepard–Risset SUBINDO (o espelho da queda sem fim) leva ao clarão, um drop-out de 3 ticks dá o contraste e no 700 o som abre de mono para estéreo largo (a luz se espalhando).",

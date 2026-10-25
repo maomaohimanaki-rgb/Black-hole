@@ -460,29 +460,22 @@
     {
       "inst": "clock",
       "grid": {
-        "type": "list",
-        "ticks": [
-          540,
-          544,
-          549,
-          555,
-          562,
-          570,
-          579,
-          589
-        ]
+        "type": "every",
+        "from": 532,
+        "to": 566,
+        "period": 4
       },
       "level": [
         [
-          540,
-          1.0
+          532,
+          0.8
         ],
         [
-          589,
-          0.35
+          566,
+          0.6
         ]
       ],
-      "why": "Ato VI: o tique-taque do relógio desacelerando até parar (o tempo parando; os intervalos crescem como o stutter da câmera)"
+      "why": "Ato VI: o relógio do MUNDO, regular no tempo do mundo (v0.4.0). Quem espaça os tiques e afina para baixo é o relógio do diretor: o tique-taque desacelera até parar porque o tempo dele parou, não porque a lista diz."
     },
     {
       "inst": "tick",
@@ -594,14 +587,14 @@
       "level": [
         [
           202,
-          0.55
+          0.3
         ],
         [
           202,
-          0.55
+          0.3
         ]
       ],
-      "why": "explosão temporal antes da queda do chirp"
+      "why": "explosão temporal antes da queda do chirp (v0.4.0: cai junto com o soluço do diretor no mesmo tick: o prenúncio do 240)"
     },
     {
       "inst": "morph_hit",
@@ -615,58 +608,14 @@
       "level": [
         [
           216,
-          0.38
+          0.22
         ],
         [
           216,
-          0.38
+          0.22
         ]
       ],
-      "why": "segunda deformação, mais baixa e curta"
-    },
-    {
-      "inst": "morph_hit",
-      "grid": {
-        "type": "list",
-        "ticks": [
-          540
-        ]
-      },
-      "freq": 52,
-      "level": [
-        [
-          540,
-          0.9
-        ],
-        [
-          540,
-          0.9
-        ]
-      ],
-      "why": "golpe de congelamento: impacto e queda não-linear"
-    },
-    {
-      "inst": "morph_hit",
-      "grid": {
-        "type": "list",
-        "ticks": [
-          548,
-          557,
-          569
-        ]
-      },
-      "freq": 44,
-      "level": [
-        [
-          548,
-          0.38
-        ],
-        [
-          569,
-          0.12
-        ]
-      ],
-      "why": "ecos deformados durante o tempo quebrado"
+      "why": "segunda deformação, mais baixa e curta (v0.4.0: cai junto com o soluço do diretor no mesmo tick: o prenúncio do 240)"
     }
   ]
 }

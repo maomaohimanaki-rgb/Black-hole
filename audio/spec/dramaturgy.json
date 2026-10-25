@@ -1,0 +1,324 @@
+{
+  "about": "Dramaturgia do som (v0.4.0, 25/10/2026). A quarta camada, por cima de trilha + ritmo + efeitos: não cria som, DIRIGE o que já existe no tempo absoluto do filme. Retorno do usuário: 'a ciência tem que ser gramática, não lei universal; a dilatação é bonita no papel e broxante no ouvido; falta o ZA WARUDO'. Lido por tools/synth/director.py (aplica) e tools/synth/psycho.py (mede e reprova). A teoria está em docs/SOUND_DIRECTION.md.",
+  "roles": {
+    "world": [
+      "sgx_score_a",
+      "sgx_rhythm_a",
+      "sgx_fall",
+      "sgx_disk_loop",
+      "sgx_pad"
+    ],
+    "signal": [
+      "sgx_chirp"
+    ],
+    "why": "world = o universo de fora (trilha, ritmo, vento, disco): é ele que encolhe, prende a respiração, se contorce e congela. signal = o chirp, a espinha: só sofre os soluços que devolvem o tempo (a fase da órbita continua certa). Todo o resto (fusão, jatos, horizonte, coração) é EVENTO ou CORPO: o diretor não mexe, a receita já nasce dirigida. O sgx_tidal (estalos da maré) é evento: os estalos são o storyboard falando, não o mundo de fundo."
+  },
+  "tension_db": {
+    "keys": [
+      [
+        0,
+        -2
+      ],
+      [
+        60,
+        -3
+      ],
+      [
+        180,
+        -4
+      ],
+      [
+        236,
+        -5
+      ],
+      [
+        240,
+        0
+      ],
+      [
+        279,
+        0
+      ],
+      [
+        419,
+        0
+      ],
+      [
+        420,
+        -6
+      ],
+      [
+        470,
+        -8
+      ],
+      [
+        526,
+        -8
+      ],
+      [
+        600,
+        0
+      ],
+      [
+        620,
+        0
+      ],
+      [
+        760,
+        0
+      ]
+    ],
+    "why": "o 'fader de tensão' do mundo. A regra: um impacto só existe se tiver ESPAÇO; o ato II e o ato V crescem, mas começam abaixo do pico, para o golpe ter onde cair (contraste relativo, não volume absoluto). v0.4.0: vale para o mundo E para o chirp (o build inteiro)."
+  },
+  "moments": [
+    {
+      "id": "M1_fusao",
+      "impact": 240,
+      "phases": [
+        {
+          "type": "hiccup",
+          "ticks": [
+            202,
+            216
+          ],
+          "depth": [
+            0.28,
+            0.4
+          ],
+          "length_ticks": [
+            5,
+            4
+          ],
+          "why": "prenúncio: o espaço-tempo soluça duas vezes antes de rasgar (os golpes de morph do v0.3.2 viram soluços que DEVOLVEM o tempo: a fase do chirp continua batendo com a órbita). O cérebro aprende o motivo e espera o grande (Huron: previsão)."
+        },
+        {
+          "type": "inhale",
+          "from": 222,
+          "to": 238.2,
+          "highpass_hz": [
+            25,
+            260
+          ],
+          "gain_db": [
+            0,
+            2.5
+          ],
+          "why": "o grave é SUGADO pela fusão: o mundo perde o chão enquanto o chirp sobe sozinho. Quando o grave voltar no 240, o corpo sente (o 'bass drop' de Solberg)."
+        },
+        {
+          "type": "vacuum",
+          "from": 238.2,
+          "to": 240,
+          "gain_db": -26,
+          "why": "90 ms de vácuo: só o chirp no último ciclo. O silêncio antes do golpe é o que faz o golpe existir."
+        },
+        {
+          "type": "release",
+          "at": 240,
+          "why": "no 240 o mundo volta inteiro (filtro aberto, ganho cheio) por baixo do impacto da sgx_merge."
+        }
+      ],
+      "checks": {
+        "impact_over_build_db": 2.0,
+        "sub_return_db": 12.0,
+        "body_over_build_db": 2.0,
+        "flux_is_max_s": 1.5
+      }
+    },
+    {
+      "id": "M2_horizonte",
+      "impact": 540,
+      "phases": [
+        {
+          "type": "hiccup",
+          "ticks": [
+            470,
+            500,
+            518,
+            531
+          ],
+          "depth": [
+            0.18,
+            0.3,
+            0.4,
+            0.5
+          ],
+          "length_ticks": [
+            4,
+            5,
+            5,
+            6
+          ],
+          "why": "prenúncio: soluços de tempo cada vez mais fundos (o 500 casa com o cruzamento do disco). Substitui a rampa linear 1,0 → 0,5 do sgx_fall."
+        },
+        {
+          "type": "inhale",
+          "from": 524,
+          "to": 538.4,
+          "highpass_hz": [
+            25,
+            480
+          ],
+          "rate_to": 1.1,
+          "gain_db": [
+            0,
+            7
+          ],
+          "why": "a inspiração do ZA WARUDO: o mundo de fora ACELERA e sobe de tom (desvio para o azul de quem cai) e perde o grave. Antecipação (Disney) + aproximação (looming: som subindo parece mais perto e maior)."
+        },
+        {
+          "type": "vacuum",
+          "from": 538.4,
+          "to": 540,
+          "gain_db": -30,
+          "why": "80 ms de nada antes do golpe."
+        },
+        {
+          "type": "warp",
+          "from": 540,
+          "rate_keys": [
+            [
+              540,
+              1.0
+            ],
+            [
+              540.8,
+              0.2
+            ],
+            [
+              543.5,
+              0.74
+            ],
+            [
+              547,
+              0.42
+            ],
+            [
+              552,
+              0.5
+            ],
+            [
+              560,
+              0.26
+            ],
+            [
+              575,
+              0.1
+            ],
+            [
+              590,
+              0.03
+            ],
+            [
+              598,
+              0.0
+            ]
+          ],
+          "wobble": {
+            "hz": 3.4,
+            "depth": 0.22,
+            "tau_s": 0.55
+          },
+          "comb": {
+            "from": 540,
+            "to": 566,
+            "delay_ms": [
+              0.6,
+              9.0
+            ],
+            "feedback": 0.55,
+            "mix": 0.5
+          },
+          "lowpass_hz": [
+            [
+              540,
+              18000
+            ],
+            [
+              548,
+              5000
+            ],
+            [
+              570,
+              1200
+            ],
+            [
+              598,
+              180
+            ]
+          ],
+          "gain_db": [
+            [
+              540,
+              0
+            ],
+            [
+              541,
+              -1
+            ],
+            [
+              548,
+              -4
+            ],
+            [
+              556,
+              -8
+            ],
+            [
+              575,
+              -16
+            ],
+            [
+              590,
+              -28
+            ],
+            [
+              596,
+              -40
+            ],
+            [
+              598,
+              -90
+            ]
+          ],
+          "why": "o golpe e a CONTORÇÃO: a taxa do mundo despenca (0,2), ricocheteia (0,74), balança como mola amortecida (3,4 Hz) e só depois afunda de vez, assintótica, rumo a zero (desvio para o vermelho infinito). A física dá as condições de contorno (afina e desacelera juntos, como fita; tende a zero no horizonte); a FORMA da curva é direção. O golpe do 540 segue o relógio a 70 % (impact_follow): é arrastado e balança, mas não some no infrassom.",
+          "highpass_hz": [
+            [
+              540,
+              45
+            ],
+            [
+              598,
+              45
+            ]
+          ],
+          "impact_follow": 0.7
+        }
+      ],
+      "checks": {
+        "impact_over_build_db": 2.0,
+        "sub_return_db": 12.0,
+        "body_over_build_db": 2.0,
+        "flux_is_max_s": 1.5,
+        "rate": {
+          "anticipation_min": 1.04,
+          "slam_max": 0.35,
+          "rebound_min": 0.25,
+          "wobble_extrema_min": 3,
+          "end_max": 0.05
+        }
+      }
+    }
+  ],
+  "global_checks": {
+    "dynamic_range_db": 14.0,
+    "silence_600_619_dbfs": -90.0
+  },
+  "master": {
+    "impact_stems": [
+      "sgx_merge",
+      "sgx_horizon"
+    ],
+    "why": "golpe não se normaliza por loudness (−16 LUFS é régua de cama): só o pico em −1 dBFS. É o que dá ao golpe o ESPAÇO acima do build."
+  }
+}
