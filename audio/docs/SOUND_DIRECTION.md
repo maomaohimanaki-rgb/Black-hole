@@ -214,3 +214,31 @@ Retorno do usuário sobre a v5.0: *"a música sozinha ficou boa, tirando uns eng
 - **Legato de organista.** A nota comum entre dois acordes fica presa e as outras invadem a próxima em 60 ms (`music.legato`). Medido acima de 150 Hz, só restam os quatro cortes de propósito: os dois vácuos, o quase-silêncio do 268 e o drop-out do 697.
 - **Medir onde o ouvido escuta.** Uma janela de 10 ms "vê" a onda do 32' (54 ms) subindo e descendo e acusa corte onde não há. Quem procurar engasgo mede acima de 150 Hz.
 - **Mini-vácuo também vale no pequeno:** um brilho marcado precisa de ~75 ms sem nada da mesma banda antes dele (no Hawking, o enxame aleatório engolia o brilho do 696, para o ouvido e para o detector).
+
+---
+
+## 12. v5.2: o horizonte pela anatomia do ZA WARUDO (o tempo parar é um CORTE, não desacelerar)
+
+O usuário mandou um clipe de 2,7 s do *time stop*, para estudo (o clipe não entra no projeto). Medido:
+
+**O clipe, medido:**
+| Tempo | O que acontece |
+|---|---|
+| 0–0,05 s | entrada macia (sem pancada) |
+| 0,05–2,05 s | **parede** de volume CONSTANTE (−27 dB parado, todas as faixas). A tensão sobe por dentro: um grave sobe ~3 semitons, metal em pente nos médios, um apito aparece (~1,7 kHz) e sobe (~3 kHz), os agudos tremem, e o **estéreo fecha** de largo para quase mono |
+| 2,05 s | **corte**: −20 dB em menos de 10 ms |
+| 2,10 s | um **"tin"** agudo e curto (~2,2 kHz) |
+| 2,1–2,7 s | resto grave e escuro (~20 dB abaixo), os agudos somem primeiro, o estéreo **abre** de novo |
+
+**A lição:** o cérebro sente "o tempo parou" pelo contraste entre uma parede que aperta e o vazio. Desacelerar (fita parando, como fizemos até a v5.1) o ouvido lê como "ficou lento".
+
+**Como ficou no filme (fase `wall` do diretor, `M2_horizonte`):**
+- **540:** o golpe (TÁ-BOOM, a nossa "explosão inicial") e o tutti em Ré.
+- **540–583,4, a parede (a trilha):** volume constante (sobe 3,5 dB para compensar o golpe se apagando); o mundo sobe 3 semitons (o desvio para o azul de quem cai, e o relógio de fora acelera); o estéreo fecha até 6 % (o anel do universo de fora vira uma linha, B17); o pente aperta (9 → 0,6 ms); o **chirp da fusão volta como ar** (ruído numa banda estreita que segue a lei do chirp, 1,6 → 3,4 kHz); um ar rosado no agudo é o universo passando; e o coração empurra a parede (*sidechain*: ela abaixa ~10 dB em cada batida).
+- **583,4:** o **corte** (5 ms), 30 ms antes da última batida: o coração do 584 cai no vazio.
+- **590:** o "tin" do último fóton (as barras se encontram), curto e ~12 dB abaixo. Com sala longa e nível alto ele virava um apito de meio segundo, o toque de celular de novo.
+- **584–600:** um resto grave e escuro (pedal de 16') que se apaga, o estéreo abrindo, e o zero digital no 600.
+
+**Medidas novas** (`checks.wall` no `psycho.py`): parede plana (p90 − p10 ≤ 6 dB), o estéreo fecha (≥ 8 dB), o corte apaga o mundo (≥ 18 dB entre 1 e 8 kHz). Saíram as medidas da contorção (despencada, ricochete, balanço, assíntota).
+
+**Calibrador:** a zona morta subiu para 0,07 (metade da tolerância). Com 0,03, um onset cuja razão é fixada pelo formato do próprio evento (o TÁ/BOOM do 540, 0,86 contra 0,80) arrastava todos os ganhos até a cama.

@@ -123,78 +123,18 @@
           "why": "80 ms de nada antes do golpe."
         },
         {
-          "type": "warp",
+          "type": "wall",
           "from": 540,
-          "rate_keys": [
-            [
-              540,
-              1.0
-            ],
-            [
-              541.5,
-              0.6
-            ],
-            [
-              544,
-              0.9
-            ],
-            [
-              548,
-              0.68
-            ],
-            [
-              555,
-              0.55
-            ],
-            [
-              565,
-              0.3
-            ],
-            [
-              580,
-              0.1
-            ],
-            [
-              592,
-              0.03
-            ],
-            [
-              598,
-              0.0
-            ]
+          "cut": 583.4,
+          "cut_until": 600,
+          "rate": [
+            1.0,
+            1.19
           ],
-          "wobble": {
-            "hz": 3.4,
-            "depth": 0.22,
-            "tau_s": 0.55
-          },
-          "comb": {
-            "from": 540,
-            "to": 566,
-            "delay_ms": [
-              0.6,
-              9.0
-            ],
-            "feedback": 0.55,
-            "mix": 0.5
-          },
-          "lowpass_hz": [
-            [
-              540,
-              18000
-            ],
-            [
-              548,
-              5000
-            ],
-            [
-              570,
-              1200
-            ],
-            [
-              598,
-              180
-            ]
+          "rate_shape": 2.0,
+          "width": [
+            1.0,
+            0.06
           ],
           "gain_db": [
             [
@@ -202,46 +142,26 @@
               0
             ],
             [
-              541,
-              -1
+              560,
+              1.5
             ],
             [
-              548,
-              -4
-            ],
-            [
-              556,
-              -8
-            ],
-            [
-              575,
-              -16
-            ],
-            [
-              590,
-              -28
-            ],
-            [
-              596,
-              -40
-            ],
-            [
-              598,
-              -90
+              583.4,
+              3.5
             ]
           ],
-          "why": "o golpe e a CONTORÇÃO, v5: o tutti em Ré menor é ouvido inteiro por meio segundo e só então o tempo cede: a taxa cai (0,6), ricocheteia (0,9), balança como mola amortecida e afunda assintótica rumo a zero. O relógio de bolso continua regular no tempo do mundo, então são os tiques que se espaçam até parar. A física dá as condições de contorno (afina e desacelera juntos; tende a zero); a FORMA da curva é direção. O golpe do 540 segue o relógio a 70 % (impact_follow).",
-          "highpass_hz": [
-            [
-              540,
-              45
+          "comb": {
+            "from": 546,
+            "to": 592,
+            "delay_ms": [
+              9.0,
+              0.6
             ],
-            [
-              598,
-              45
-            ]
-          ],
-          "impact_follow": 0.7
+            "feedback": 0.5,
+            "mix": 0.4
+          },
+          "impact_follow": 0.7,
+          "why": "v5.2, a anatomia do ZA WARUDO medida no clipe do usuário: não é desacelerar, é uma PAREDE de volume constante que aperta por dentro e é CORTADA. 540: o golpe (TÁ-BOOM) e o tutti em Ré. 540–584: a parede: o mundo sobe 3 semitons (desvio para o azul de quem cai; o relógio de fora acelera), o estéreo fecha até quase mono (o anel do universo de fora vira uma linha, B17), o pente aperta (o metal esticando) e o chirp da fusão volta como ar, subindo. 583,4: CORTE (5 ms), 30 ms ANTES da última batida do coração: a batida do 584 cai no vazio. Depois do corte só existe o corpo: o coração do 584, o 'tin' do último fóton no 590 (as barras se encontram) e um resto grave e escuro até o preto do 600."
         }
       ],
       "checks": {
@@ -249,12 +169,12 @@
         "sub_return_db": 12.0,
         "body_over_build_db": 2.0,
         "flux_is_max_s": 1.5,
-        "rate": {
-          "anticipation_min": 1.04,
-          "slam_max": 0.7,
-          "rebound_min": 0.15,
-          "wobble_extrema_min": 3,
-          "end_max": 0.05
+        "wall": {
+          "from": 545,
+          "cut": 583.4,
+          "flat_range_db": 6.0,
+          "narrow_db": 8.0,
+          "cut_drop_db": 18.0
         }
       }
     }

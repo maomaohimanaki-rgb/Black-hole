@@ -56,8 +56,10 @@ def measure(mix):
     flux = np.r_[0, np.maximum(np.diff(Bd, axis=1), 0).sum(0)]
     n = len(p)
     flux = np.pad(flux, (0, max(0, n - len(flux))))[:n]
+    side = (mix[:, 0] - mix[:, 1]) / 2
+    width = _db(_tick_power(side)) - _db(p)  # v5.2: largura estéreo (lado − meio, dB): a parede fecha o estéreo
     return {"rms": _db(p), "mom": mom, "sub": _band(m, 0, 120), "body": _band(m, 150, 600),
-            "hi": _band(m, 4000, 16000), "flux": flux}
+            "hi": _band(m, 4000, 16000), "air": _band(m, 1000, 8000), "width": width, "flux": flux}
 
 
 def _w(a, b):
@@ -104,6 +106,17 @@ def check_moment(M, C, rate=None):
         row("balanço (extremos da taxa em 1,5 s)", ext, f"≥ {R['wobble_extrema_min']}", ext >= R["wobble_extrema_min"], "")
         endr = rate[(tk >= 596) & (tk < 598)].mean()
         row("assíntota: a taxa tende a zero no horizonte", endr, f"≤ {R['end_max']}", endr <= R["end_max"], "×")
+    if "wall" in K:
+        # v5.2: a parede do ZA WARUDO (volume constante que aperta por dentro e é cortada)
+        W = K["wall"]
+        a, c = W["from"], W["cut"]
+        mom = C["mom"][_w(a, c - 2)]
+        rng_db = np.percentile(mom, 90) - np.percentile(mom, 10)
+        row("parede: volume constante (p90 − p10)", rng_db, f"≤ {W['flat_range_db']}", rng_db <= W["flat_range_db"])
+        d = C["width"][_w(a - 4, a + 4)].mean() - C["width"][_w(c - 8, c)].mean()
+        row("parede: o estéreo fecha (largura início − fim)", d, f"≥ {W['narrow_db']}", d >= W["narrow_db"])
+        d = C["air"][_w(c - 3, c)].mean() - C["air"][_w(c + 1, c + 4)].mean()
+        row("corte: o mundo some (1–8 kHz, antes − depois)", d, f"≥ {W['cut_drop_db']}", d >= W["cut_drop_db"])
     return rows
 
 

@@ -2,6 +2,13 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## Áudio v5.2 (pacote em `audio/`) · 25/10/2026 — o horizonte vira parede + corte
+
+**Por quê:** o usuário mandou o clipe do *time stop* do ZA WARUDO para estudo. Medido: o tempo parar não é desacelerar. É uma parede de volume constante que aperta por dentro e é CORTADA, com um "tin" e um resto escuro.
+
+- O horizonte (27–30 s) deixou de desacelerar. Agora é parede: o mundo sobe de tom (o azul de quem cai), o estéreo fecha (o anel do universo de fora vira uma linha), o chirp da fusão volta como ar e o coração empurra a parede. Corte no 583,4, o coração do 584 no vazio e o "tin" do último fóton no 590 (T-19).
+- Conferido: ida e volta 18/18, ouvido automático aprovado com as medidas novas da parede.
+
 ## Áudio v5.1 (pacote em `audio/`) · 25/10/2026 — a música manda no mix
 
 **Por quê:** retorno do usuário: "o mix não parece a mesma música; os SFX matam; o fim parece toque de celular de 2010; a música sozinha dá uns engasgos".

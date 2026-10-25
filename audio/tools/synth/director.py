@@ -35,7 +35,7 @@ def role(sid):
 def warp_phase(impact):
     for M in spec()["moments"]:
         if M["impact"] == impact:
-            return next(P for P in M["phases"] if P["type"] == "warp")
+            return next(P for P in M["phases"] if P["type"] in ("warp", "wall"))
     raise KeyError(impact)
 
 
@@ -50,7 +50,7 @@ def _seg(tk, a, b):
 
 @lru_cache(maxsize=2)
 def curves(end_tick=760):
-    """Curvas por amostra, tick 0 → end_tick: rate (mundo), rate_signal (chirp), gain_db, hp, lp e o pente."""
+    """Curvas por amostra, tick 0 → end_tick: rate (mundo), rate_signal (chirp), gain_db, hp, lp, width e o pente."""
     D = spec()
     n = end_tick * TICK
     tk = np.arange(n) / TICK
@@ -60,6 +60,7 @@ def curves(end_tick=760):
     rate_sig = np.ones(n)
     hp = np.full(n, NEUTRAL_HP)
     lp = np.full(n, NEUTRAL_LP)
+    width = np.ones(n)
     comb = []
     for M in D["moments"]:
         imp = M["impact"]
@@ -107,12 +108,41 @@ def curves(end_tick=760):
                 hp[m] = np.interp(tk[m], ht, hv)
                 if "comb" in P:
                     comb.append(P["comb"])
+            elif k == "wall":
+                # v5.2: a PAREDE (anatomia do ZA WARUDO, medida no clipe do usuário): volume constante, e a tensão
+                # sobe por dentro (o tom sobe = desvio para o azul de quem cai; o estéreo fecha = o anel do universo
+                # de fora encolhendo para uma linha, B17); no `cut` o mundo some de uma vez (5 ms). Nada de desacelerar
+                a, c = P["from"], P["cut"]
+                m = _seg(tk, a, c)
+                u = (tk[m] - a) / (c - a)
+                r0, r1 = P["rate"]
+                rate[m] = r0 + (r1 - r0) * u ** P.get("rate_shape", 2.0)
+                rate[tk >= c] = r1
+                w0, w1 = P["width"]
+                width[m] = w0 + (w1 - w0) * u  # linear: com u^1,5 o estéreo só fechava nos últimos 0,3 s
+                gt, gv = zip(*P["gain_db"])
+                gain_db[m] += np.interp(tk[m], gt, gv)
+                ramp = 0.1  # 5 ms: corte, mas sem estalo
+                gain_db += -90 * np.clip((tk - c) / ramp, 0, 1) * (tk >= c) * (tk < P.get("cut_until", 600))
+                if "highpass_hz" in P:
+                    ht, hv = zip(*P["highpass_hz"])
+                    hp[m] = np.interp(tk[m], ht, hv)
+                if "comb" in P:
+                    comb.append(P["comb"])
             elif k == "release":
                 pass  # o fim da inspiração e do vácuo já é a volta do mundo inteiro
             else:
                 raise ValueError(f"fase desconhecida: {k}")
     sig_gain_db = np.interp(tk, ts, vs)
-    return {"tk": tk, "rate": rate, "sig_gain_db": sig_gain_db, "rate_signal": rate_sig, "gain_db": gain_db, "hp": hp, "lp": lp, "comb": comb}
+    return {"tk": tk, "rate": rate, "sig_gain_db": sig_gain_db, "rate_signal": rate_sig, "gain_db": gain_db, "hp": hp, "lp": lp,
+            "width": width, "comb": comb}
+
+
+def narrow(x, w):
+    """Largura estéreo por M/S (a soma mono fica intacta): w = 1 não mexe, w → 0 vira mono."""
+    mid = (x[:, 0] + x[:, 1]) / 2
+    side = (x[:, 0] - x[:, 1]) / 2 * w
+    return np.stack([mid + side, mid - side], axis=1)
 
 
 def world_clock(rate):
@@ -194,6 +224,7 @@ def apply(x, sid, start_tick):
         y = comb_sweep(y, cb, start)
     y = _filt(y, C["hp"][sl], "high", NEUTRAL_HP)
     y = _filt(y, C["lp"][sl], "low", NEUTRAL_LP)
+    y = narrow(y, C["width"][sl])
     g = 10 ** (C["gain_db"][sl] / 20)
     g[C["gain_db"][sl] <= -89] = 0.0
     return y * g[:, None]

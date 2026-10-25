@@ -133,9 +133,10 @@ def calibrate(s, parts, iters=80):
                     continue
                 meas = rn[k - start]
                 worst = max(worst, abs(meas - want[k]))
-                # v5: zona morta de 0,03 (a tolerância é 0,15). Sem ela, um onset cuja razão é fixada pela forma do
-                # próprio evento (o 540 do horizonte: TÁ 0,82 × BOOM 1,0) puxava o ganho para baixo até a cama
-                if abs(meas - want[k]) > 0.03:
+                # v5: zona morta (a tolerância é 0,15). Sem ela, um onset cuja razão é fixada pela forma do próprio
+                # evento (o 540 do horizonte: TÁ 0,86 × BOOM 1,0) puxava o ganho para baixo até a cama.
+                # v5.2: 0,03 → 0,07 (metade da tolerância): com 0,03 o 540 (0,86 contra 0,80) ainda arrastava tudo
+                if abs(meas - want[k]) > 0.07:
                     gains[k] = float(np.clip(gains[k] * (want[k] / max(meas, 1e-4)) ** 0.9, 1e-4, 1e4))
             if worst < 0.02:
                 break

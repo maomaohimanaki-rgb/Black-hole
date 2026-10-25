@@ -579,54 +579,68 @@ def suck_of(root, rng, seconds):
 
 
 def horizon(s):
-    """O horizonte, o tempo parando: o ZA WARUDO deste filme. v0.4.0 (retorno do usuário: "a dilatação é bonita
-    no papel e broxante no ouvido: o cérebro registra 'caiu a velocidade' e não sente impacto"). A dilatação
-    deixou de ser uma rampa e virou um GESTO em fases (spec/dramaturgy.json → M2_horizonte):
-      inspiração (o mundo acelera e perde o grave, no sgx_fall e na trilha) → vácuo de 80 ms → GOLPE no 540 →
-      CONTORÇÃO (o relógio do mundo despenca, ricocheteia e balança como mola) → SUSPENSÃO (o mundo afunda,
-      assintótico, rumo a zero) → silêncio digital no 600.
-    Aqui mora o que é do horizonte:
-      1. o golpe em camadas; o transiente fica seco e o corpo + a sala passam pelo MESMO relógio do mundo
-         (director.warp_from): a cauda do golpe se contorce junto com a trilha;
-      2. a foto congelada: o congelamento espectral do mundo de 530–536 (antes da inspiração), afinando para
-         baixo e escurecendo com o passa-baixa do diretor (o vermelho);
-      3. o disco arranhado nos ticks do stutter da câmera [1,1,2,2,3,4,6,8] (sincrese com a pose segurando);
-      4. o CORPO: o coração (552 · 566 · 584) fica seco, perto e no tom certo. Dois relógios em conflito: o do
-         mundo morre, o seu continua batendo. É isso que a dilatação do tempo É: dois relógios discordando;
-      5. silêncio digital exato no 600."""
+    """O horizonte: o ZA WARUDO deste filme. v5.2: refeito pela ANATOMIA do clipe que o usuário mandou (medida:
+    entrada macia, uma parede de 2 s com volume CONSTANTE em que a tensão sobe por dentro — um grave subindo, metal em
+    pente, um apito que aparece e sobe, o estéreo fechando até quase mono — e então um CORTE de −20 dB em menos de
+    10 ms, um "tin" agudo e um resto grave escuro que se abre). O tempo parando não é desacelerar: é a parede sumindo.
+    Até a v5.1 a gente desacelerava o mundo (fita parando): fisicamente certo, mas o ouvido lê "ficou lento".
+    Fases (spec/dramaturgy.json → M2_horizonte, fase `wall`):
+      540       o golpe (TÁ-BOOM) e o tutti em Ré da trilha;
+      540–583   a PAREDE (a trilha: o tutti em Ré segurado): o mundo sobe 3 semitons (o azul de quem cai), o estéreo
+                fecha (o anel do universo de fora vira uma linha, B17), o pente aperta, e o CHIRP da fusão volta como
+                ar, subindo (a assinatura do filme fechando o arco);
+      583,4     o CORTE, 30 ms antes da última batida do coração (a batida cai no vazio);
+      584–600   só o corpo: o coração, o "tin" do último fóton no 590 (as barras se encontram), um resto grave e escuro
+                que se abre no estéreo, e o zero digital no 600."""
     import director
     import gw
+    import organ
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     t = time(n)
+    tk = S + t * 20
     C = director.curves()
+    W = director.warp_phase(540)
+    cut = W["cut"]
     sl_ = slice(S * TICK, S * TICK + n)
-    src = moment(0, 541)  # o mundo cru (sem o diretor), tempo absoluto
-    # 2. a foto congelada: entra depois da contorção, quando o mundo já está afundando
-    fr = gw.freeze(src[int(530 * TICK):int(536 * TICK)], n / SR + 0.5, rng)[:n]
-    fr = dsp.hp(dsp.lp(fr, 3000), 90) * np.interp(t, [0, 0.25, 0.9, 2.2, 2.95], [0, 0.003, 0.009, 0.004, 0])
-    fr = dsp.tv_filter(fr, np.maximum(C["lp"][sl_], 150), "low")
-    P.add_bed(dsp.stereo(fr, 0.8))
-    # 3. o disco arranhado: cresce depois da contorção (as poses curtas 1,1,2,2 são do golpe)
-    st = gw.stutter(src, 540, STUTTER, 600, pitch_step=0.93, gain_step=0.86, grain_ticks=3)
-    st = st / (np.abs(st).max() + 1e-12) * 0.01 * np.interp(t, [0, 0.3, 0.6, 1.6, 2.4, 2.95], [0, 0.3, 1, 0.45, 0.15, 0])[:, None]
-    P.add_bed(dsp.hp(np.stack([dsp.tv_filter(st[:, c], np.maximum(C["lp"][sl_], 200), "low") for c in range(2)], axis=1), 90))
+    alive = np.clip(1 - (tk - cut) / 0.1, 0, 1)  # o corte (5 ms)
+    wide = C["width"][sl_]
+    # v5.2: a parede é a TRILHA (o tutti em Ré segurado, que o diretor aperta). A foto congelada e o disco arranhado
+    # que moravam aqui eram o mundo de novo, por cima do mundo: brigavam com o coração (a ida e volta perdia o 566)
+    # o chirp da fusão de volta, como AR (ruído numa banda estreita que segue a lei do chirp)
+    i0, i1 = int((560 - S) * TICK), int((cut - S) * TICK)
+    T = (i1 - i0) / SR
+    whistle = np.zeros(n)
+    tw = time(i1 - i0)
+    fw = gw.gw_freq(tw, T, 1600, 3400)
+    w_ = dsp.tv_filter(dsp.white(rng, i1 - i0), fw, "band", width=0.25, block=64)
+    whistle[i0:i1] = w_ * np.clip(tw / 0.4, 0, 1) ** 2 * 0.03
+    # o universo de fora passando (o clipe tem muito ar no agudo da parede): ruído rosa no agudo, abrindo para cima
+    rush = dsp.tv_filter(dsp.hp(dsp.pink(rng, n), 700), np.interp(tk, [540, 583.4], [3000, 9000]), "low")
+    rush *= np.interp(tk, [540, 544, 568, 583.4], [0, 0.004, 0.006, 0.012])
+    # o coração empurra o mundo (sidechain): o ar e o apito abaixam ~10 dB em cada batida e voltam em 0,25 s. A parede
+    # pulsa com o seu coração, e a batida não se perde no ar (a ida e volta perdia o 566)
+    pump = np.ones(n)
+    for o in s["onsets_intended"][1:]:
+        d = (tk - o["tick"]) / 20
+        pump *= 1 - 0.68 * np.where(d < 0, np.exp(-(d / 0.02) ** 2), np.exp(-d / 0.25))
+    P.add_bed(dsp.stereo((whistle + rush) * pump, 0.8))
     P.room(0.3, rng, tail_fade=0.05)
-    # 1. o golpe: sala própria, e o corpo + a sala contorcidos pelo relógio do mundo
+    P.bed = director.narrow(P.bed, wide) * alive[:, None]  # depois da sala: a sala não pode reabrir o que a parede fechou
+    # o golpe: sala própria, corpo + sala no relógio do mundo (a 70 %: sobe junto com a parede) e cortado no 584
     trans, rest = impact(hz("A1"), n, rng, bloom=3.7)
     body = dsp.stereo(dense(rest, 2.5), 0.6)
     body = body * 0.7 + dsp.cathedral(body, REVERB, rng) * 0.45
-    body = director.warp_from(body, S, director.warp_phase(540)["impact_follow"])
-    # a sala do golpe morre com o mundo (o mesmo fader da contorção): sem isso a cauda de 9 s da catedral virava o
-    # chão do Ato VI e o coração não conseguia ficar sozinho
-    body *= 10 ** (np.maximum(C["gain_db"][sl_], -90) / 20 * 0.8)[:, None]
-    body = np.stack([dsp.tv_filter(body[:, c], np.maximum(C["lp"][sl_], 250), "low") for c in range(2)], axis=1)  # e escurece junto (o vermelho)
+    body = director.warp_from(body, S, W["impact_follow"])
+    # a cauda do golpe se apaga sozinha (a parede é a trilha, não o golpe): sem isso a sala dele enchia o grave e
+    # o coração do 566 não aparecia
+    body *= np.interp(tk, [540, 548, 566, 584], [1, 0.6, 0.15, 0.08])[:, None]
+    body = director.narrow(body, wide) * alive[:, None]
     hit = body + dsp.stereo(trans * 0.18, 0.3)  # TÁ (0,8) e o BOOM no tick seguinte (1,0): o 540: 0,8 do spec
     P.add_event(540, hit)  # sem marca de articulação: o golpe e o coração já têm ataque próprio (v5.1)
-    # 4. o corpo: o coração não sofre o relógio do mundo e NÃO entra na catedral (seco e perto: é dentro de
-    #    você; com a sala, a cauda de cada batida virava o chão do Ato VI)
+    # o CORPO: o coração não sofre o relógio do mundo nem entra na sala (seco e perto: é dentro de você)
     for o in s["onsets_intended"][1:]:
         so = at(o["tick"], S)
         m = sl(n, so)
@@ -636,12 +650,34 @@ def horizon(s):
         if k2 < m:
             hb[k2:] += 0.5 * dsp.sat(np.sin(2 * np.pi * hz("D1") * 1.4 * time(m - k2)) * dsp.env_ad(m - k2, 0.008, 0.12), 2.2)
         P.add_event(o["tick"], dsp.stereo(place(n, so, dsp.lp(hb, 700))))
-    # ponto de partida da calibração: o golpe cheio e cada batida já perto do nível que o spec pede em relação a
-    # ele (0,6 · 0,45 · 0,3 do pico do golpe; o batimento cru é ~9 dB mais forte que o golpe cru)
     P.hints = {540: 1.0, 552: 0.2, 566: 0.15, 584: 0.09}
-    # 5. silêncio digital exato no fim (o filme fica mudo de 600 a 619)
+    # depois do corte: o "tin" do último fóton (590) e o resto grave e escuro, abrindo no estéreo. Vão na cama,
+    # pequenos (no clipe, o resto fica ~20 dB abaixo da parede)
+    i590 = int((590 - S) * TICK)
+    # o "tin": curto e ~12 dB abaixo da parede, como no clipe. Com sala longa e nível alto ele virava um apito de
+    # meio segundo em 4,7 kHz (toque de celular de novo): sala curta, flauta 8' (a fundamental manda)
+    tin = pipe_ping(hz("D7"), 0.04, rng, [["8", "flute", 0.6], ["4", "flute", 0.15]], decay=0.03)
+    tin = np.concatenate([tin, np.zeros(int(0.4 * SR))])
+    tin = dsp.stereo(tin, 1.0) * 0.8 + dsp.convolve(dsp.stereo(tin, 1.0), dsp.reverb_ir(rng, 0.4, 0.07)) * 0.6
+    P.add_bed(place2(n, i590, tin) * 0.008)
+    ic = int((cut - S) * TICK)
+    hum = organ.note(hz("D2"), n - ic, [["16", "bourdon", 0.7], ["8", "flute", 0.2]], rng)[: n - ic]
+    hum = dsp.lp(hum, 400) * np.interp(time(n - ic), [0, 0.05, 0.4, (598.5 - cut) / 20], [0, 1, 0.6, 0])
+    tail = np.zeros((n, 2))
+    tail[ic:] = dsp.stereo(hum, 1.0) * 0.004
+    P.add_bed(tail)
+    # silêncio digital exato no fim (o filme fica mudo de 600 a 619)
     P.map(lambda x: x * np.interp(t, [0, 2.94, 2.995], [1, 1, 0])[:, None])
     return P
+
+
+def place2(n, start, x):
+    """Como place(), para estéreo."""
+    out = np.zeros((n, 2))
+    m = min(len(x), n - start)
+    if m > 0:
+        out[start:start + m] = x[:m]
+    return out
 
 
 # ------------------------------------------------------------------ Ato VII
