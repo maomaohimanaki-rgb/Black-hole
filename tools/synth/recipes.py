@@ -532,9 +532,9 @@ def hawking(s):
             break
         sp = sparkle(0.008 * (0.2 + k / n) ** 2)
         bed[int(k):int(k) + len(sp)] += sp
-    for _ in range(30):  # o último instante antes do clarão: um aglomerado denso (é o pico do som)
+    for _ in range(30):  # o enxame antes do clarão (é o pico do som); v0.2.6: 693–696, antes do drop-out
         sp = sparkle(0.8)
-        i = at(697, S) + int(rng.uniform(0, 1.9) * TICK)
+        i = at(693, S) + int(rng.uniform(0, 2.6) * TICK)
         e = min(n, i + len(sp))
         bed[i:e] += sp[: e - i]
     i660 = at(660, S)
@@ -545,7 +545,12 @@ def hawking(s):
     for o, nm in zip(s["onsets_intended"], ["A6", "D7", "F#6", "A6", "D7", "F#7"]):
         st = at(o["tick"], S)
         P.add_event(o["tick"], dsp.pan(place(n, st, bell(hz(nm), int(0.5 * SR), rng, 0.3)), rng.uniform(-0.5, 0.5)))
-    return P.room(0.35, rng)
+    P.room(0.35, rng)
+    # v0.2.6: ponto de audição: a cama sai abafada e some no drop-out; os brilhos marcados ficam (o do 699 é
+    # o único som no vazio antes do clarão)
+    import act7
+    P.bed = act7.muffle(P.bed, S) * act7.dropout(n, S)[:, None]
+    return P
 
 
 def burst(s):
@@ -561,7 +566,9 @@ def burst(s):
     veil = dsp.tv_filter(dsp.pink(rng, n), np.interp(t, [0, 1.5], [800, 6000]), "band", width=2.0)
     veil *= np.interp(t, [0, 0.6, 1.2], [0, 0.12, 0.12]) * np.exp(-np.maximum(t - 1.2, 0) / 0.9)
     P.add_bed(dsp.stereo(veil, 1.0))
-    return P.room(0.35, rng, tail_fade=0.4)
+    P.room(0.35, rng, tail_fade=0.4)
+    import act7
+    return P.map(lambda x: act7.widen(x, S))  # v0.2.6: a luz se espalha: de quase mono a largo
 
 
 def score_part(s):

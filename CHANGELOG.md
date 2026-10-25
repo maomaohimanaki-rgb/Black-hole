@@ -2,6 +2,16 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.6 (em teste) · out/2026 — o Ato VII pelo ponto de audição
+
+**Por quê:** o usuário aprovou o áudio como "funcional", mas o B20–B22 era "sumiu, sumiu e mais nada, o som não induz nada" (no mixdown, o B20 estava em −37 LUFS, o mais baixo do filme). A pesquisa levou ao **ponto de audição** (point-of-audition): depois do trauma, o som é o que o OUVIDO escuta (o zumbido de *O Resgate do Soldado Ryan*, *Vá e Veja*). E um clímax só aterrissa com contraste antes.
+
+- **B20, a volta:** do preto nasce um **zumbido agudo** (Ré8, dois senos batendo devagar, no meio da cabeça). Por baixo, o **mundo abafado**: a cratera e o vento, com um passa-baixa que abre de 160 Hz a 16 kHz, como o ouvido destampando. O B20 foi de −37 para −28 LUFS.
+- **B21, Hawking:** o zumbido **desce e pousa no Ré6 do coral** (o trauma vira música) e um **Shepard–Risset sobe** (o espelho da queda sem fim). O enxame de brilhos chega ao máximo em 693–696.
+- **697–699, drop-out:** tudo cai 32 dB e só um brilho fica no vazio. O contraste faz o clarão aterrissar.
+- **B22, o clarão:** Ré maior pleno, e o som **abre de quase mono para estéreo largo** em 1,5 s (a luz se espalhando, por M/S: a soma mono não muda).
+- Tudo como dado em `spec/score.json → act7`, compartilhado por trilha, ritmo e efeitos (`tools/synth/act7.py`).
+
 ## 0.2.5 (em teste) · out/2026 — a camada rítmica + o palco (ticking area)
 
 **Por quê:** o retorno da 0.2.4 aprovou a trilha e os efeitos, mas faltava a terceira camada de "Mountains": o ritmo que une a trilha e os efeitos e deixa o relógio respirar. E, com a escala B, o centro do filme saiu da distância de simulação do jogador (P-55, medido pelo usuário).

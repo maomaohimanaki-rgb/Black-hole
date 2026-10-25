@@ -16,6 +16,7 @@ from pathlib import Path
 
 import numpy as np
 
+import act7
 import dsp
 from dsp import SR, TICK, time
 from score import freq
@@ -183,7 +184,9 @@ def render_full(end_tick=760):
             r = int(0.004 * SR) if b_t == 240 else int(0.15 * SR)
             x[b - r:b] *= np.linspace(1, 0, r)[:, None]
         out += x
-    return out
+    # v0.2.6: o Ato VII é o mesmo ponto de audição (abafado, drop-out, estéreo abrindo)
+    out = act7.muffle(out, 0) * act7.dropout(n, 0)[:, None]
+    return act7.widen(out, 0)
 
 
 def part(start_tick, end_tick):

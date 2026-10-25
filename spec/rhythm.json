@@ -2,47 +2,618 @@
   "about": "Camada rítmica (rhythmic sound design), a terceira camada entre a trilha (score) e os efeitos (25/10/2026, pedido do usuário: 'como em Mountains do Hans Zimmer: score + SFX + o ritmo que une os dois e deixa o relógio respirar'). Pulso de baixo, golpes graves de percussão, textura granular, shaker, subidas de expectativa. O PULSO vem da mesma matemática do filme: meias-órbitas no Ato II, o Doppler de 1 Hz do disco no Ato IV, a aceleração da maré no Ato V, a dilatação do tempo no Ato VI. Lido por tools/synth/rhythm.py. Ticks do filme (20/s).",
   "reverb_wet": 0.28,
   "patterns": [
-    {"inst": "tom",    "grid": {"type": "list", "ticks": [20, 40]}, "notes": ["D1", "F1"], "level": [[20, 0.45], [40, 0.5]],
-     "why": "Ato I: a massa chegando, longe"},
-    {"inst": "dust",   "grid": {"type": "every", "from": 50, "to": 79, "period": 3, "jitter": 1.2}, "level": [[50, 0.0], [79, 0.35]],
-     "why": "poeira granular: a expectativa antes da dança"},
-
-    {"inst": "bass",   "grid": {"type": "half_orbits", "from": 74, "to": 239, "subdivide": 2},
-     "notes": [[74, "D2"], [130, "Bb1"], [175, "F1"], [205, "C2"], [228, "A1"]], "level": [[74, 0.25], [239, 1.0]],
-     "why": "Ato II: o baixo pulsa nas meias-órbitas (mesmo relógio do chirp) e segue a raiz dos acordes da trilha"},
-    {"inst": "tom",    "grid": {"type": "half_orbits", "from": 120, "to": 239, "subdivide": 1}, "notes": ["D1"], "level": [[120, 0.3], [239, 1.0]],
-     "why": "o golpe grave em cada meia-órbita: a dança ganha peso"},
-    {"inst": "shaker", "grid": {"type": "half_orbits", "from": 175, "to": 239, "subdivide": 4}, "level": [[175, 0.15], [239, 0.6]]},
-    {"inst": "riser",  "grid": {"type": "list", "ticks": [240]}, "length_ticks": 40, "level": [[240, 0.8]], "why": "a subida para dentro da fusão (corta seco no 240)"},
-
-    {"inst": "tom",    "grid": {"type": "every", "from": 280, "to": 349, "period": 20}, "notes": ["D1"], "level": [[280, 0.5], [349, 0.7]],
-     "why": "Ato IV: o golpe a cada passagem do Doppler (1 Hz)"},
-    {"inst": "bass",   "grid": {"type": "every", "from": 290, "to": 359, "period": 5}, "notes": [[290, "D2"], [310, "Bb1"], [350, "G1"]], "level": [[290, 0.2], [359, 0.6]]},
-    {"inst": "riser",  "grid": {"type": "list", "ticks": [360]}, "length_ticks": 30, "level": [[360, 1.0]], "why": "a subida para os jatos"},
-    {"inst": "tom",    "grid": {"type": "list", "ticks": [360]}, "notes": ["F1"], "level": [[360, 1.0]], "decay": 1.4},
-    {"inst": "tom",    "grid": {"type": "every", "from": 370, "to": 389, "period": 10}, "notes": ["F1"], "level": [[370, 0.8], [389, 0.6]]},
-    {"inst": "bass",   "grid": {"type": "every", "from": 362, "to": 389, "period": 5}, "notes": ["F1"], "level": [[362, 0.8], [389, 0.5]]},
-    {"inst": "shaker", "grid": {"type": "every", "from": 362, "to": 389, "period": 2.5}, "level": [[362, 0.5], [389, 0.3]]},
-    {"inst": "tick",   "grid": {"type": "every", "from": 390, "to": 419, "period": 10}, "notes": ["A5"], "level": [[390, 0.3], [419, 0.2]],
-     "why": "o olho do mundo: o ritmo respira, só o tique de madeira"},
-
-    {"inst": "bass",   "grid": {"type": "accel", "from": 420, "to": 538, "periods": [6, 2]},
-     "notes": [[420, "D2"], [440, "C#2"], [460, "C2"], [480, "B1"], [500, "Bb1"], [520, "A1"]], "level": [[420, 0.35], [538, 1.0]],
-     "why": "Ato V: a maré, cada vez mais rápido, o baixo descendo junto com o pedal"},
-    {"inst": "tom",    "grid": {"type": "accel", "from": 420, "to": 538, "periods": [12, 4]}, "notes": ["D1"], "level": [[420, 0.4], [538, 1.0]]},
-    {"inst": "shaker", "grid": {"type": "accel", "from": 440, "to": 538, "periods": [3, 1]}, "level": [[440, 0.1], [538, 0.5]]},
-    {"inst": "dust",   "grid": {"type": "every", "from": 420, "to": 538, "period": 1.5, "jitter": 1.0}, "level": [[420, 0.1], [538, 0.35]], "why": "a terra se desfazendo em grão"},
-    {"inst": "riser",  "grid": {"type": "list", "ticks": [540]}, "length_ticks": 40, "level": [[540, 0.9]]},
-
-    {"inst": "tom",    "grid": {"type": "list", "ticks": [540, 544, 549, 555, 562, 570, 579, 589]}, "notes": ["A0"], "level": [[540, 0.9], [589, 0.2]], "muffle": 400,
-     "why": "Ato VI: o pulso que alonga, o tempo dilatando (os intervalos crescem como o stutter da câmera)"},
-    {"inst": "bass",   "grid": {"type": "list", "ticks": [540, 549, 562, 579]}, "notes": ["A1"], "level": [[540, 0.6], [579, 0.2]], "muffle": 300},
-
-    {"inst": "tick",   "grid": {"type": "accel", "from": 640, "to": 699, "periods": [10, 4]}, "notes": ["D6", "A5", "F#6", "A5"], "level": [[640, 0.12], [699, 0.4]],
-     "why": "Ato VII: tiques de vidro acelerando até o clarão"},
-    {"inst": "riser",  "grid": {"type": "list", "ticks": [700]}, "length_ticks": 30, "level": [[700, 0.45]], "soft": true},
-    {"inst": "tom",    "grid": {"type": "list", "ticks": [700]}, "notes": ["D1"], "level": [[700, 0.55]], "decay": 2.0, "why": "o clarão: um golpe grave e longo, sem violência"},
-    {"inst": "tick",   "grid": {"type": "list", "ticks": [702, 707, 714, 724, 738]}, "notes": ["D6", "A5", "F#5", "D5", "A4"], "level": [[702, 0.35], [738, 0.08]],
-     "why": "o eco do clarão se espalhando, cada vez mais longe"}
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          20,
+          40
+        ]
+      },
+      "notes": [
+        "D1",
+        "F1"
+      ],
+      "level": [
+        [
+          20,
+          0.45
+        ],
+        [
+          40,
+          0.5
+        ]
+      ],
+      "why": "Ato I: a massa chegando, longe"
+    },
+    {
+      "inst": "dust",
+      "grid": {
+        "type": "every",
+        "from": 50,
+        "to": 79,
+        "period": 3,
+        "jitter": 1.2
+      },
+      "level": [
+        [
+          50,
+          0.0
+        ],
+        [
+          79,
+          0.35
+        ]
+      ],
+      "why": "poeira granular: a expectativa antes da dança"
+    },
+    {
+      "inst": "bass",
+      "grid": {
+        "type": "half_orbits",
+        "from": 74,
+        "to": 239,
+        "subdivide": 2
+      },
+      "notes": [
+        [
+          74,
+          "D2"
+        ],
+        [
+          130,
+          "Bb1"
+        ],
+        [
+          175,
+          "F1"
+        ],
+        [
+          205,
+          "C2"
+        ],
+        [
+          228,
+          "A1"
+        ]
+      ],
+      "level": [
+        [
+          74,
+          0.25
+        ],
+        [
+          239,
+          1.0
+        ]
+      ],
+      "why": "Ato II: o baixo pulsa nas meias-órbitas (mesmo relógio do chirp) e segue a raiz dos acordes da trilha"
+    },
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "half_orbits",
+        "from": 120,
+        "to": 239,
+        "subdivide": 1
+      },
+      "notes": [
+        "D1"
+      ],
+      "level": [
+        [
+          120,
+          0.3
+        ],
+        [
+          239,
+          1.0
+        ]
+      ],
+      "why": "o golpe grave em cada meia-órbita: a dança ganha peso"
+    },
+    {
+      "inst": "shaker",
+      "grid": {
+        "type": "half_orbits",
+        "from": 175,
+        "to": 239,
+        "subdivide": 4
+      },
+      "level": [
+        [
+          175,
+          0.15
+        ],
+        [
+          239,
+          0.6
+        ]
+      ]
+    },
+    {
+      "inst": "riser",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          240
+        ]
+      },
+      "length_ticks": 40,
+      "level": [
+        [
+          240,
+          0.8
+        ]
+      ],
+      "why": "a subida para dentro da fusão (corta seco no 240)"
+    },
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "every",
+        "from": 280,
+        "to": 349,
+        "period": 20
+      },
+      "notes": [
+        "D1"
+      ],
+      "level": [
+        [
+          280,
+          0.5
+        ],
+        [
+          349,
+          0.7
+        ]
+      ],
+      "why": "Ato IV: o golpe a cada passagem do Doppler (1 Hz)"
+    },
+    {
+      "inst": "bass",
+      "grid": {
+        "type": "every",
+        "from": 290,
+        "to": 359,
+        "period": 5
+      },
+      "notes": [
+        [
+          290,
+          "D2"
+        ],
+        [
+          310,
+          "Bb1"
+        ],
+        [
+          350,
+          "G1"
+        ]
+      ],
+      "level": [
+        [
+          290,
+          0.2
+        ],
+        [
+          359,
+          0.6
+        ]
+      ]
+    },
+    {
+      "inst": "riser",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          360
+        ]
+      },
+      "length_ticks": 30,
+      "level": [
+        [
+          360,
+          1.0
+        ]
+      ],
+      "why": "a subida para os jatos"
+    },
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          360
+        ]
+      },
+      "notes": [
+        "F1"
+      ],
+      "level": [
+        [
+          360,
+          1.0
+        ]
+      ],
+      "decay": 1.4
+    },
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "every",
+        "from": 370,
+        "to": 389,
+        "period": 10
+      },
+      "notes": [
+        "F1"
+      ],
+      "level": [
+        [
+          370,
+          0.8
+        ],
+        [
+          389,
+          0.6
+        ]
+      ]
+    },
+    {
+      "inst": "bass",
+      "grid": {
+        "type": "every",
+        "from": 362,
+        "to": 389,
+        "period": 5
+      },
+      "notes": [
+        "F1"
+      ],
+      "level": [
+        [
+          362,
+          0.8
+        ],
+        [
+          389,
+          0.5
+        ]
+      ]
+    },
+    {
+      "inst": "shaker",
+      "grid": {
+        "type": "every",
+        "from": 362,
+        "to": 389,
+        "period": 2.5
+      },
+      "level": [
+        [
+          362,
+          0.5
+        ],
+        [
+          389,
+          0.3
+        ]
+      ]
+    },
+    {
+      "inst": "tick",
+      "grid": {
+        "type": "every",
+        "from": 390,
+        "to": 419,
+        "period": 10
+      },
+      "notes": [
+        "A5"
+      ],
+      "level": [
+        [
+          390,
+          0.3
+        ],
+        [
+          419,
+          0.2
+        ]
+      ],
+      "why": "o olho do mundo: o ritmo respira, só o tique de madeira"
+    },
+    {
+      "inst": "bass",
+      "grid": {
+        "type": "accel",
+        "from": 420,
+        "to": 538,
+        "periods": [
+          6,
+          2
+        ]
+      },
+      "notes": [
+        [
+          420,
+          "D2"
+        ],
+        [
+          440,
+          "C#2"
+        ],
+        [
+          460,
+          "C2"
+        ],
+        [
+          480,
+          "B1"
+        ],
+        [
+          500,
+          "Bb1"
+        ],
+        [
+          520,
+          "A1"
+        ]
+      ],
+      "level": [
+        [
+          420,
+          0.35
+        ],
+        [
+          538,
+          1.0
+        ]
+      ],
+      "why": "Ato V: a maré, cada vez mais rápido, o baixo descendo junto com o pedal"
+    },
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "accel",
+        "from": 420,
+        "to": 538,
+        "periods": [
+          12,
+          4
+        ]
+      },
+      "notes": [
+        "D1"
+      ],
+      "level": [
+        [
+          420,
+          0.4
+        ],
+        [
+          538,
+          1.0
+        ]
+      ]
+    },
+    {
+      "inst": "shaker",
+      "grid": {
+        "type": "accel",
+        "from": 440,
+        "to": 538,
+        "periods": [
+          3,
+          1
+        ]
+      },
+      "level": [
+        [
+          440,
+          0.1
+        ],
+        [
+          538,
+          0.5
+        ]
+      ]
+    },
+    {
+      "inst": "dust",
+      "grid": {
+        "type": "every",
+        "from": 420,
+        "to": 538,
+        "period": 1.5,
+        "jitter": 1.0
+      },
+      "level": [
+        [
+          420,
+          0.1
+        ],
+        [
+          538,
+          0.35
+        ]
+      ],
+      "why": "a terra se desfazendo em grão"
+    },
+    {
+      "inst": "riser",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          540
+        ]
+      },
+      "length_ticks": 40,
+      "level": [
+        [
+          540,
+          0.9
+        ]
+      ]
+    },
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          540,
+          544,
+          549,
+          555,
+          562,
+          570,
+          579,
+          589
+        ]
+      },
+      "notes": [
+        "A0"
+      ],
+      "level": [
+        [
+          540,
+          0.9
+        ],
+        [
+          589,
+          0.2
+        ]
+      ],
+      "muffle": 400,
+      "why": "Ato VI: o pulso que alonga, o tempo dilatando (os intervalos crescem como o stutter da câmera)"
+    },
+    {
+      "inst": "bass",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          540,
+          549,
+          562,
+          579
+        ]
+      },
+      "notes": [
+        "A1"
+      ],
+      "level": [
+        [
+          540,
+          0.6
+        ],
+        [
+          579,
+          0.2
+        ]
+      ],
+      "muffle": 300
+    },
+    {
+      "inst": "tick",
+      "grid": {
+        "type": "accel",
+        "from": 640,
+        "to": 695,
+        "periods": [
+          10,
+          4
+        ]
+      },
+      "notes": [
+        "D6",
+        "A5",
+        "F#6",
+        "A5"
+      ],
+      "level": [
+        [
+          640,
+          0.12
+        ],
+        [
+          699,
+          0.4
+        ]
+      ],
+      "why": "Ato VII: tiques de vidro acelerando até o clarão"
+    },
+    {
+      "inst": "riser",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          697
+        ]
+      },
+      "length_ticks": 30,
+      "level": [
+        [
+          700,
+          0.45
+        ]
+      ],
+      "soft": true,
+      "why": "sobe e é engolida pelo drop-out (697–699)"
+    },
+    {
+      "inst": "tom",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          700
+        ]
+      },
+      "notes": [
+        "D1"
+      ],
+      "level": [
+        [
+          700,
+          0.55
+        ]
+      ],
+      "decay": 2.0,
+      "why": "o clarão: um golpe grave e longo, sem violência"
+    },
+    {
+      "inst": "tick",
+      "grid": {
+        "type": "list",
+        "ticks": [
+          702,
+          707,
+          714,
+          724,
+          738
+        ]
+      },
+      "notes": [
+        "D6",
+        "A5",
+        "F#5",
+        "D5",
+        "A4"
+      ],
+      "level": [
+        [
+          702,
+          0.35
+        ],
+        [
+          738,
+          0.08
+        ]
+      ],
+      "why": "o eco do clarão se espalhando, cada vez mais longe"
+    }
   ]
 }

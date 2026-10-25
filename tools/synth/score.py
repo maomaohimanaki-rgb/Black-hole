@@ -15,6 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
+import act7
 import dsp
 from dsp import SR, TICK, time
 
@@ -209,9 +210,12 @@ def render_full(end_tick=760):
     a, b = rc["from"] * TICK, rc["to"] * TICK
     ris[a:b] = risset(b - a, rc, rng) * rc["level"] * sample_curve(rc["dynamics"], ticks[a:b])
 
+    ris += act7.risset_up(n, 0, rng, risset, sample_curve)  # v0.2.6: a subida sem fim do Ato VII
+
     # Estéreo: pedal no centro (o grave largo vem do reverb), coral e órgão abertos, relógio um pouco à direita.
     dry = (dsp.stereo(pedal) * 0.9 + dsp.stereo(organ, 0.6) + dsp.stereo(choir, 1.0) * 0.8
            + dsp.pan(ost * 0.5, 0.25) + dsp.stereo(ris, 0.8))
+    dry += act7.world(n, 0, rng)  # v0.2.6: a cratera e o vento, ouvidos de dentro
 
     R = S["reverb"]
     T = S["tape_stop"]
@@ -235,7 +239,11 @@ def render_full(end_tick=760):
             x[ta:tb] = dsp.varispeed(x[ta:tb], rate)
             x[ta:tb] *= np.interp(np.arange(tb - ta), [0, (tb - ta) * 0.75, tb - ta - 1], [1, 0.5, 0])[:, None]
         out += x
-    return out
+    # v0.2.6: Ato VII pelo ponto de audição: abafado → zumbido → drop-out → o estéreo abre no clarão
+    out = act7.muffle(out, 0)
+    out += act7.tinnitus(n, 0, rng)
+    out *= act7.dropout(n, 0)[:, None]
+    return act7.widen(out, 0)
 
 
 def part(start_tick, end_tick):
