@@ -768,6 +768,56 @@
         "part": "Ato VII (Ré maior)"
       },
       "notes": "Trilha, Ato VII: do silêncio até o clarão em Ré maior."
+    },
+    {
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [],
+      "id": "sgx_rhythm_a",
+      "file": "sgx_rhythm_a.ogg",
+      "tick": 0,
+      "end_tick": 600,
+      "volume": 1.0,
+      "centroid_hint_hz": [
+        80,
+        3000
+      ],
+      "recipe": {
+        "type": "rhythm",
+        "source": "spec/rhythm.json",
+        "part": "Atos I–VI"
+      },
+      "notes": "Camada rítmica: baixo pulsante, tons graves, shaker, poeira, subidas. Pedido do usuário em 25/10/2026 (Mountains)."
+    },
+    {
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [],
+      "id": "sgx_rhythm_b",
+      "file": "sgx_rhythm_b.ogg",
+      "tick": 620,
+      "end_tick": 760,
+      "volume": 1.0,
+      "centroid_hint_hz": [
+        200,
+        4000
+      ],
+      "recipe": {
+        "type": "rhythm",
+        "source": "spec/rhythm.json",
+        "part": "Ato VII"
+      },
+      "notes": "Camada rítmica do Ato VII: tiques de vidro acelerando, o golpe do clarão e o eco."
     }
   ]
 }

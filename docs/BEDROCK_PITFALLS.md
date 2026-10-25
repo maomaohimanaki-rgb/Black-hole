@@ -66,6 +66,7 @@ Este addon começa do zero, **sem nenhum arquivo de projeto anterior**. Mas o us
 - **P-41 · Noite forçada gera monstros.** Desligue `doMobSpawning` no filme e restaure no fim (e também depois de crash).
 - **P-42 · Lua do jogo.** Às 18000 ela fica no zênite e entra nos planos para cima. Use 14500 ou 21500 (~37° acima do horizonte, do lado oposto ao olhar do jogador).
 - **P-43 · Nuvens no Y 192.** Jatos e planos de céu devem considerar isso.
+- **P-55 · Distância de SIMULAÇÃO, não de renderização** (medido pelo usuário em 25/10/2026, build 0.2.4). Com a cena maior (escala B), o centro do filme ficou além da distância de simulação do jogador e nada do addon aparecia lá: entidade e partícula só "acontecem" em chunk simulando. Aumentar a distância de simulação (exige sair e entrar no mundo) resolveu, o que prova a causa. A solução no addon é uma ticking area SÓ durante o filme (P-40): `world.tickingAreaManager.createTickingArea` (estável na 2.10), cuja promessa resolve quando os chunks estão carregados e simulando. O filme espera essa promessa antes de começar.
 - **P-44 · Restaurar depois de crash.** Grave o estado original (regras, hora, modo de jogo, HUD) numa propriedade do jogador e restaure no próximo `playerSpawn` inicial.
 
 ## Áudio

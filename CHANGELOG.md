@@ -2,6 +2,20 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.5 (em teste) · out/2026 — a camada rítmica + o palco (ticking area)
+
+**Por quê:** o retorno da 0.2.4 aprovou a trilha e os efeitos, mas faltava a terceira camada de "Mountains": o ritmo que une a trilha e os efeitos e deixa o relógio respirar. E, com a escala B, o centro do filme saiu da distância de simulação do jogador (P-55, medido pelo usuário).
+
+- **Camada rítmica** (`spec/rhythm.json` → `tools/synth/rhythm.py`, sons `sgx_rhythm_a`/`b`), com instrumentos sintetizados: baixo pulsante, tom grave tipo taiko, shaker, poeira granular, tique de madeira/vidro e subidas que terminam secas no impacto. O pulso nasce da mesma matemática do filme:
+  - **Ato I:** dois golpes distantes (o ponto e o gêmeo) e poeira granular crescendo;
+  - **Ato II:** o baixo pulsa nas **meias-órbitas** (o relógio do chirp), seguindo a raiz dos acordes da trilha; o tom grave entra a cada meia-órbita, o shaker no fim, e uma subida para dentro da fusão;
+  - **Ato IV:** um golpe a cada passagem do **Doppler de 1 Hz** do disco, baixo em colcheias, subida para os jatos e o ritmo pleno; no "olho do mundo" só fica um tique de madeira;
+  - **Ato V:** tudo **acelerando** com a maré, com o baixo descendo junto com o pedal;
+  - **Ato VI:** um pulso cujos intervalos **alongam** (o tempo dilatando, como o stutter da câmera);
+  - **Ato VII:** tiques de vidro acelerando até o clarão, um golpe longo e o eco se espalhando.
+- **Palco (ticking area):** o filme abre uma área em volta da mira, **espera ela carregar** ("Carregando a área…") e só então começa; a área some 60 s depois do fim (P-40). Os spikes com cena longe (S-01, S-03) também abrem a própria área. Sobra de crash é removida na carga do mundo.
+- Testes novos: a área abre antes do filme, cobre a cratera e o disco, e some depois de 60 s. 60 testes.
+
 ## 0.2.4 (em teste) · out/2026 — escala B (o buraco negro 3,5× maior)
 
 **Por quê:** a pergunta do usuário sobre a física (um horizonte de 1,6 m teria a massa de Saturno e mataria o planeta) levou à decisão D-14 → T-18: a escala B.

@@ -2475,6 +2475,22 @@ export const DATA = {
    "volume": 0.7,
    "cutscene": true,
    "outside": false
+  },
+  {
+   "id": "sgx_rhythm_a",
+   "tick": 0,
+   "end": 600,
+   "volume": 1.0,
+   "cutscene": true,
+   "outside": false
+  },
+  {
+   "id": "sgx_rhythm_b",
+   "tick": 620,
+   "end": 760,
+   "volume": 1.0,
+   "cutscene": true,
+   "outside": false
   }
  ],
  "flashColors": [

@@ -349,6 +349,30 @@
         }
       ]
     },
+    "singularity:sgx2d_rhythm_a": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_rhythm_a",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx2d_rhythm_b": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_rhythm_b",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
     "singularity:sgx2d_spike_pan": {
       "category": "ui",
       "sounds": [
