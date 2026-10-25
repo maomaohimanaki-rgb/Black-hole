@@ -59,16 +59,20 @@ def to_ogg(x, path):
 
 
 def _marks(s, parts, peak):
-    """Marcas de articulação: clique de 5 ms filtrado, nível fixo (60 % do pico), não escala com o evento."""
-    rng = np.random.default_rng(sum(map(ord, s["id"])))
+    """Marcas de articulação: v0.2.3, um BRILHO AFINADO (seno de 30 ms na nota da marca) e não mais um clique
+    de ruído (o "SFX de YouTube"). Nível relativo ao TRECHO (45 % do pico local, ±2 ticks), não ao pico do
+    arquivo: num trecho baixo (o começo do chirp) um brilho no nível do pico inflava o RMS do tick."""
     out = np.zeros((parts.n, 2))
-    for tick, lo, hi in parts.marks:
+    m = int(0.09 * SR)
+    t = dsp.time(m)
+    for tick, f in parts.marks:
         st = (tick - s["tick"]) * TICK
-        m = min(int(0.005 * SR), parts.n - st)
-        click = np.zeros(parts.n)
-        click[st:st + m] = rng.standard_normal(m) * np.hanning(2 * m)[m:]
-        click = dsp.bp(click, lo, hi)
-        out += dsp.stereo(click / (np.abs(click).max() + 1e-12) * 0.6 * peak)
+        k = min(m, parts.n - st)
+        if k <= 0:
+            continue
+        local = np.abs(peak[max(0, st - 2 * TICK):st + 2 * TICK]).max()
+        g = np.sin(2 * np.pi * f * t) * np.clip(t / 0.0015, 0, 1) * np.exp(-t / 0.012)
+        out[st:st + k] += dsp.stereo(g[:k] * 0.45 * local)
     return out
 
 
@@ -122,7 +126,7 @@ def calibrate(s, parts, iters=80):
 
     solve()
     if parts.marks:
-        bed += _marks(s, parts, np.abs(mix()).max())
+        bed += _marks(s, parts, mix())
         solve(scale=False)  # só ajuste fino: um reescalonamento grande afogaria as marcas
     return mix(), gains
 

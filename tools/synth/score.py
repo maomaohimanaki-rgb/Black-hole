@@ -167,23 +167,6 @@ def _ostinato_times(o, half_orbits):
     raise ValueError(o["on"])
 
 
-def cathedral(x, R, rng):
-    """Reverb do tamanho de um planeta: pré-delay, reflexões esparsas, cauda longa que escurece."""
-    n_ir = int(R["seconds"] * SR)
-    t = time(n_ir)
-    pre = int(R["predelay_ms"] / 1000 * SR)
-    tail = np.stack([dsp.white(rng, n_ir), dsp.white(rng, n_ir)], axis=1) * np.exp(-t / R["decay"])[:, None]
-    tail = dsp.lp(tail, R["lowpass_hz"]) * (np.clip(1 - t / R["seconds"], 0, 1) ** 0.3)[:, None]
-    ir = np.zeros((n_ir + pre, 2))
-    ir[pre:] = tail
-    for d, g in R["early"]:
-        k = int(d * SR)
-        ir[k, 0] += g * 30
-        ir[int(k * 1.13), 1] += g * 30
-    ir /= np.sqrt((ir ** 2).sum(axis=0, keepdims=True))  # energia unitária: o molhado tem o nível do seco
-    return dsp.convolve(x, ir)
-
-
 @lru_cache(maxsize=1)
 def render_full(end_tick=760):
     S = json.loads((ROOT / "spec/score.json").read_text(encoding="utf-8"))
@@ -237,7 +220,7 @@ def render_full(end_tick=760):
         a, b = a_t * TICK, min(n, b_t * TICK)
         seg = np.zeros((n, 2))
         seg[a:b] = dry[a:b]
-        x = seg * (1 - R["wet"]) + cathedral(seg, R, rng) * R["wet"] * 1.4
+        x = seg * (1 - R["wet"]) + dsp.cathedral(seg, R, rng) * R["wet"] * 1.4
         x[b:] = 0
         if b_t == 268:
             # o vazio respira: a cauda do Ato III some suave até o 268 (quase-silêncio até o 279)

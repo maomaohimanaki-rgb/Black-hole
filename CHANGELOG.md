@@ -2,6 +2,30 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.3 · out/2026 — efeitos de cinema (redesenho do SFX)
+
+**Por quê:** com a trilha boa, os efeitos ficaram "SFX de YouTube de 2015" por cima de uma catedral: secos, fora do tom, cliques de ruído e bitcrush. Três regras para os 16 efeitos:
+
+1. **O mesmo espaço da trilha:** todos passam pela mesma catedral (`dsp.cathedral`, parâmetros em `spec/score.json`). A dose varia: quase seco no chirp, que é a coisa mais perto do filme.
+2. **O mesmo tom:** afinados em Ré, nas notas dos acordes da trilha naquele instante.
+   - o ponto em Lá e o gêmeo em Fá (a terça menor da trilha);
+   - os anéis do disco subindo Lá2 → Ré4 (a temperatura sobe, a nota sobe);
+   - a maré como gemidos afinados que cedem;
+   - o rasante do 500 em Lá dobrando para baixo;
+   - os brilhos de Hawking no pentatônico de Ré maior;
+   - o ringdown em Ré4;
+   - o rugido do disco "canta" em Ré.
+3. **Impacto tonal em vez de explosão:**
+   - a fusão é um "braam" de metais graves em Ré com sub caindo até o Ré1 (o bitcrush saiu);
+   - os jatos são um braam em Fá;
+   - as subidas são o acorde da trilha em reverb invertido.
+
+Também mudou:
+- **Marcas de articulação:** viraram brilhos afinados de 12 ms, no nível do trecho, no lugar dos cliques de ruído.
+- **Reverb:** as reflexões iniciais estavam ×30 e viravam filtro pente (um tom que varre oscilava ±3 dB tick a tick). Isso melhora a trilha também.
+- **Ida e volta:** os testes pegaram duas caudas de sala vazando no vazio de 268–279. Corrigido: o quase-silêncio vale também para o reverb.
+- **Ferramenta nova:** `tools/synth/diagnose.py <som>`, que mostra por que um onset falhou.
+
 ## 0.2.2 (em teste) · out/2026 — a trilha com "escala"
 
 **Por quê:** a trilha da 0.2.1 melhorou, mas faltava "noção de escala": o poder do buraco negro, angelical e destrutivo ao mesmo tempo, sem precisar de explosão (referência do usuário: o Gargantua de Interestelar). A pesquisa virou técnica:

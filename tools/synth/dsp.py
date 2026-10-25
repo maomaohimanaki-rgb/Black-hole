@@ -194,6 +194,26 @@ def varispeed(x, rate):
     return np.interp(pos, np.arange(len(x)), x)
 
 
+def cathedral(x, R, rng):
+    """Reverb do tamanho de um planeta: pré-delay, reflexões esparsas, cauda longa que escurece."""
+    n_ir = int(R["seconds"] * SR)
+    t = time(n_ir)
+    pre = int(R["predelay_ms"] / 1000 * SR)
+    tail = np.stack([white(rng, n_ir), white(rng, n_ir)], axis=1) * np.exp(-t / R["decay"])[:, None]
+    tail = lp(tail, R["lowpass_hz"]) * (np.clip(1 - t / R["seconds"], 0, 1) ** 0.3)[:, None]
+    ir = np.zeros((n_ir + pre, 2))
+    ir[pre:] = tail
+    # v0.2.3: reflexões iniciais discretas (eram ×30 e dominavam a energia do IR: filtro pente que fazia um
+    # som tonal, como o chirp, oscilar de volume tick a tick conforme a frequência sobe)
+    ref = np.sqrt((tail ** 2).sum(axis=0).mean() / n_ir) * 40
+    for d, g in R["early"]:
+        k = int(d * SR)
+        ir[k, 0] += g * ref
+        ir[int(k * 1.13), 1] += g * ref
+    ir /= np.sqrt((ir ** 2).sum(axis=0, keepdims=True))  # energia unitária: o molhado tem o nível do seco
+    return convolve(x, ir)
+
+
 # ------------------------------------------------------------------ estéreo
 
 
