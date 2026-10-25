@@ -119,13 +119,20 @@ def choir_note(f, n, rng, voices=6):
     return dsp.lp(out, 6000) * 0.6
 
 
-def clock(f, dur_s, accent=False):
-    """O tique: nota curta e limpa (piano abafado / celesta), a mesma nota repetida."""
-    n = int(dur_s * SR)
+def mech_tick(dur_s, accent=False, rng=None, tock=False):
+    """Tique MECÂNICO (o relógio de pulso de "Mountains"), sem nota. v0.2.7: o relógio afinado (Lá5/Ré6) soava
+    "pim pom" de campainha. Impulso curto em ressonâncias largas de metal + um 'toc' grave de caixa."""
+    rng = rng or np.random.default_rng(7)
+    n = int(max(dur_s, 0.08) * SR)
+    imp = np.zeros(n)
+    k = int(0.0015 * SR)
+    imp[:k] = rng.standard_normal(k) * np.hanning(2 * k)[k:]
+    hi = (2400, 3900) if tock else (3300, 5200)
+    x = dsp.resonator(imp, hi[0], 7) * 1.0 + dsp.resonator(imp, hi[1], 9) * 0.6
     t = time(n)
-    env = np.clip(t / 0.003, 0, 1) * np.exp(-t / (0.22 if accent else 0.14))
-    x = np.sin(2 * np.pi * f * t) + 0.25 * np.sin(4 * np.pi * f * t) * np.exp(-t / 0.05) + 0.08 * np.sin(2 * np.pi * f * 3.01 * t) * np.exp(-t / 0.03)
-    return x * env * (1.3 if accent else 1.0)
+    x += np.sin(2 * np.pi * 190 * t) * np.exp(-t / 0.012) * 0.25  # a caixa do relógio
+    x *= np.exp(-t / (0.02 if accent else 0.012))
+    return x / (np.abs(x).max() + 1e-12) * (1.0 if accent else 0.7)
 
 
 def risset(n, cfg, rng):
@@ -200,7 +207,7 @@ def render_full(end_tick=760):
         for i, (t0, acc) in enumerate(ts):
             gap = (ts[i + 1][0] - t0) if i + 1 < len(ts) else 6
             name = o["accent"] if acc and "accent" in o else o["notes"][i % len(o["notes"])]
-            p = clock(freq(name), max(0.15, gap / 20 * 1.8), accent=acc)
+            p = mech_tick(0.15, accent=acc, rng=rng, tock=(i % 2 == 1))
             st = int(t0 * TICK)
             e_ = min(n, st + len(p))
             ost[st:e_] += p[: e_ - st] * o["level"]
@@ -239,6 +246,11 @@ def render_full(end_tick=760):
             x[ta:tb] = dsp.varispeed(x[ta:tb], rate)
             x[ta:tb] *= np.interp(np.arange(tb - ta), [0, (tb - ta) * 0.75, tb - ta - 1], [1, 0.5, 0])[:, None]
         out += x
+    # v0.2.7: a partir do 540 o horizonte CONGELA o som do filme (sgx_horizon): a trilha dá passagem
+    tk = np.arange(n) / TICK
+    duck = np.interp(tk, [0, 540, 546, 598], [1, 1, 0.12, 0])
+    duck[tk >= 620] = 1.0
+    out *= duck[:, None]
     # v0.2.6: Ato VII pelo ponto de audição: abafado → zumbido → drop-out → o estéreo abre no clarão
     out = act7.muffle(out, 0)
     out += act7.tinnitus(n, 0, rng)

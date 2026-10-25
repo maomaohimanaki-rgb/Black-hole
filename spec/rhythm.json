@@ -305,16 +305,13 @@
       ]
     },
     {
-      "inst": "tick",
+      "inst": "clock",
       "grid": {
         "type": "every",
         "from": 390,
         "to": 419,
         "period": 10
       },
-      "notes": [
-        "A5"
-      ],
       "level": [
         [
           390,
@@ -325,7 +322,7 @@
           0.2
         ]
       ],
-      "why": "o olho do mundo: o ritmo respira, só o tique de madeira"
+      "why": "o olho do mundo: o ritmo respira, só o tique-taque mecânico (v0.2.7: sem nota)"
     },
     {
       "inst": "bass",
@@ -461,7 +458,7 @@
       ]
     },
     {
-      "inst": "tom",
+      "inst": "clock",
       "grid": {
         "type": "list",
         "ticks": [
@@ -475,47 +472,17 @@
           589
         ]
       },
-      "notes": [
-        "A0"
-      ],
       "level": [
         [
           540,
-          0.9
+          1.0
         ],
         [
           589,
-          0.2
+          0.35
         ]
       ],
-      "muffle": 400,
-      "why": "Ato VI: o pulso que alonga, o tempo dilatando (os intervalos crescem como o stutter da câmera)"
-    },
-    {
-      "inst": "bass",
-      "grid": {
-        "type": "list",
-        "ticks": [
-          540,
-          549,
-          562,
-          579
-        ]
-      },
-      "notes": [
-        "A1"
-      ],
-      "level": [
-        [
-          540,
-          0.6
-        ],
-        [
-          579,
-          0.2
-        ]
-      ],
-      "muffle": 300
+      "why": "Ato VI: o tique-taque do relógio desacelerando até parar (o tempo parando; os intervalos crescem como o stutter da câmera)"
     },
     {
       "inst": "tick",

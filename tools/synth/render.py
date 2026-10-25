@@ -59,19 +59,24 @@ def to_ogg(x, path):
 
 
 def _marks(s, parts, peak):
-    """Marcas de articulação: v0.2.3, um BRILHO AFINADO (seno de 30 ms na nota da marca) e não mais um clique
-    de ruído (o "SFX de YouTube"). Nível relativo ao TRECHO (45 % do pico local, ±2 ticks), não ao pico do
-    arquivo: num trecho baixo (o começo do chirp) um brilho no nível do pico inflava o RMS do tick."""
+    """Marcas de articulação. v0.2.7: um TIQUE MECÂNICO (impulso em ressonância larga, sem nota) e não mais um
+    brilho afinado: os brilhos afinados soavam "pim pom" de campainha. Nível relativo ao TRECHO (45 % do pico
+    local, ±2 ticks), não ao pico do arquivo; a nota da marca só dá a cor da ressonância."""
     out = np.zeros((parts.n, 2))
-    m = int(0.09 * SR)
+    m = int(0.05 * SR)
     t = dsp.time(m)
+    rng = np.random.default_rng(sum(map(ord, s["id"])))
     for tick, f in parts.marks:
         st = (tick - s["tick"]) * TICK
         k = min(m, parts.n - st)
         if k <= 0:
             continue
         local = np.abs(peak[max(0, st - 2 * TICK):st + 2 * TICK]).max()
-        g = np.sin(2 * np.pi * f * t) * np.clip(t / 0.0015, 0, 1) * np.exp(-t / 0.012)
+        imp = np.zeros(m)
+        q = int(0.001 * SR)
+        imp[:q] = rng.standard_normal(q)
+        g = dsp.resonator(imp, min(f, 6000), 5) * np.exp(-t / 0.008)
+        g = g / (np.abs(g).max() + 1e-12)
         out[st:st + k] += dsp.stereo(g[:k] * 0.45 * local)
     return out
 

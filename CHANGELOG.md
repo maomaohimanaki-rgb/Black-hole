@@ -2,6 +2,28 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.7 (em teste) · out/2026 — identidade sonora: o gesto GW150914
+
+**Por quê:** ouvindo às cegas, os efeitos eram bem feitos mas GENÉRICOS. Nas palavras do usuário:
+- o "plim plom" do começo "parece acertar uma questão do JLPT";
+- o whoosh do 12 s "parece transição do Discovery";
+- o "pim pom" do 22 s soava como campainha;
+- a dilatação "até o ZA WARUDO do Dio é mais insano".
+
+Faltava um som que só este filme tem. Como o BRAAAM de *A Origem* nasceu de uma música da Edith Piaf em câmera lenta, aqui todo grande evento nasce de **um material só: a onda da fusão GW150914** (a subida que acelera, para seca, e o anel), em escalas, velocidades e sentidos diferentes (`tools/synth/gw.py`).
+
+- **Nascimento (20, 40):** sem sino. É a fusão **de trás pra frente**: a nota desce de 250 a 35 Hz ("PWOOOM"), porque um buraco negro aparecendo é o tempo invertido de dois se fundindo. Os brilhos de lente são o mesmo gesto como **sopro de ar**, sem nota.
+- **Fusão (240):** sem reverb invertido (a subida já é o chirp). Cai o gesto em velocidade física real (o "bwip" do LIGO) sobre o mesmo gesto esticado 4× (o corpo), com sub. No 241, o espaço-tempo racha (o anel em ruído caindo).
+- **Jatos (360):** a pré-carga é o gesto como ar subindo, e o disparo é o gesto para cima, saturado.
+- **Relógio:** a trilha, o ritmo e as marcas viram um **tique-taque mecânico** (o relógio de pulso de "Mountains"), sem nota. Era o "pim pom".
+- **Dilatação, o "ZA WARUDO" deste filme:**
+  - de 510 a 539, o **puxão**: o golpe do congelamento de trás pra frente, terminando seco no 540;
+  - no 540, o **golpe do congelamento**: o gesto GW invertido, devagar e grave;
+  - o som do filme naquele instante **congela** (congelamento espectral da trilha + ritmo de 530–540) num drone que afina para baixo;
+  - em cima, o mesmo instante **pula como disco arranhado nos ticks do stutter da câmera** ([1, 1, 2, 2, 3, 4, 6, 8], depois de 8 em 8), cada pulo mais grave (o redshift);
+  - o tique-taque desacelera até parar;
+  - a trilha dá passagem e tudo para em zero no 600.
+
 ## 0.2.6 (em teste) · out/2026 — o Ato VII pelo ponto de audição
 
 **Por quê:** o usuário aprovou o áudio como "funcional", mas o B20–B22 era "sumiu, sumiu e mais nada, o som não induz nada" (no mixdown, o B20 estava em −37 LUFS, o mais baixo do filme). A pesquisa levou ao **ponto de audição** (point-of-audition): depois do trauma, o som é o que o OUVIDO escuta (o zumbido de *O Resgate do Soldado Ryan*, *Vá e Veja*). E um clímax só aterrissa com contraste antes.

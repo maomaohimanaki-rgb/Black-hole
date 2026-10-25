@@ -204,9 +204,12 @@ def void_in(s):
     return P
 
 
-def point(s, root="A"):
-    """Nascer de um ponto: sino de vidro afinado (Lá, a nota do coral) + a massa chegando num sub de Ré.
-    O gêmeo é a mesma coisa em Fá: a terça menor da trilha no 40 ("algo errado")."""
+def point(s, root="A", ratio=1.0):
+    """Nascer de um ponto. v0.2.7 (identidade: "o plim parecia acertar questão do JLPT"): sem sino. Um buraco
+    negro aparecendo é a FUSÃO TOCADA DE TRÁS PRA FRENTE: o gesto GW150914 invertido (a nota DESCE de 250 a
+    35 Hz, "PWOOOM") com o sub; os brilhos de lente são o mesmo gesto como sopro de ar, sem nota.
+    O gêmeo é o mesmo nascimento um tom abaixo (×0,85)."""
+    import gw
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
@@ -214,17 +217,20 @@ def point(s, root="A"):
     for i, o in enumerate(s["onsets_intended"]):
         st = at(o["tick"], S)
         m = sl(n, st)
-        x = bell(hz(f"{root}6"), m, rng, 0.45) + 0.5 * bell(hz(f"{root}5"), m, rng, 0.55)
         if i == 0:
-            x += 1.2 * sub_drop(hz("D2"), hz("D1"), m, 0.15, 0.12) + 0.4 * bloom(hz(f"{root}3"), m, rng, 0.01, 0.15)
+            birth = gw.gesture(T=0.3, f0=35 * ratio, f1=250 * ratio, ring_s=0.03, ring_tau=0.02, reverse=True, drive=1.5)
+            birth *= np.exp(-time(len(birth)) / 0.11)  # nasce e some: os brilhos de lente vêm por cima
+            x = place(m, 0, birth) + 0.9 * sub_drop(hz("D2") * ratio, hz("D1") * ratio, m, 0.15, 0.1)
+            x += place(m, 0, gw.breath_gesture(rng, 0.12, 900, 6000, reverse=True)) * 0.5
         else:
-            P.mark(o["tick"], f"{root}7")
-        P.add_event(o["tick"], dsp.stereo(place(n, st, x), 0.7))
-    return P.room(0.25, rng)
+            x = place(m, 0, gw.breath_gesture(rng, 0.07, 2200 * ratio, 9500 * ratio, reverse=(i % 2 == 1)))
+            P.mark(o["tick"], "D7")
+        P.add_event(o["tick"], dsp.stereo(place(n, st, x), 0.8))
+    return P.room(0.3, rng)
 
 
 def twin(s):
-    return point(s, root="F")
+    return point(s, ratio=0.85)
 
 
 # ------------------------------------------------------------------ Ato II–III
@@ -272,25 +278,40 @@ def chirp(s):
 
 
 def merge(s):
-    """A fusão: o acorde da trilha (Lá7sus4) invertido crescendo até o 240, e o impacto TONAL: braam em Ré,
-    sub caindo até o Ré1 e ar grave. No 241, o "rasgo no tempo": um braam uma quinta acima puxado para baixo."""
+    """A fusão. v0.2.7 (identidade: "o whoosh do 12 s parecia transição do Discovery"): sem reverb invertido.
+    O chirp do filme já é a subida; no 240 o GESTO GW150914 em velocidade física REAL (o "bwip" do LIGO, 0,2 s)
+    por cima do mesmo gesto esticado 4× uma oitava abaixo (o corpo), com sub caindo até o Ré1. No 241, o
+    espaço-tempo racha: o anel do ringdown em ruído granular caindo."""
+    import gw
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     i240 = at(240, S)
-    swell = reverse_swell(["A3", "D4", "E4", "G4", "C#5"], i240, rng, 0.4)
-    P.add_bed(dsp.stereo(place(n, 0, swell) * 0.35, 1.0))
+    # pré-roll: só o ar ficando rarefeito (sem nota, sem whoosh)
+    pre = dsp.hp(dsp.pink(rng, i240), 2500) * np.linspace(0, 1, i240) ** 3 * 0.15
+    P.add_bed(dsp.stereo(place(n, 0, pre), 1.0))
     m = sl(n, i240)
-    hit = braam([hz("D1"), hz("A1"), hz("D2")], m, rng, 0.04, 0.5) + 1.1 * sub_drop(hz("D2"), hz("D1"), m, 0.3, 0.35)
-    hit += dsp.lp(dsp.white(rng, m), 900) * np.exp(-time(m) / 0.05) * 0.4  # ar, não estalo
-    P.add_event(240, dsp.stereo(place(n, i240, hit), 0.6))
+    real = gw.gesture(T=0.2, f0=70, f1=500, ring_s=0.4, ring_tau=0.08, drive=2.5)       # o "bwip" (oitava acima, audível)
+    body = gw.gesture(T=0.8, f0=35, f1=250, ring_s=1.2, ring_tau=0.35, drive=3.0)      # o mesmo gesto esticado 4×
+    # os dois inspirals TERMINAM juntos no 240: a cama leva a subida, o evento leva o anel
+    body_at = place(m, 0, body[int(0.8 * SR):])
+    real_at = place(m, 0, real[int(0.2 * SR):])
+    hit = body_at * 1.0 + real_at * 0.7 + 1.1 * sub_drop(hz("D2"), hz("D1"), m, 0.3, 0.4)
+    P.add_event(240, dsp.stereo(place(n, i240, hit), 0.5))
+    # o inspiral dos dois termina exatamente no 240 (vai na cama: é a subida final)
+    insp = np.zeros(n)
+    a = max(0, i240 - int(0.8 * SR))
+    insp[a:i240] = body[int(0.8 * SR) - (i240 - a):int(0.8 * SR)] * 0.6
+    a2 = max(0, i240 - int(0.2 * SR))
+    insp[a2:i240] += real[int(0.2 * SR) - (i240 - a2):int(0.2 * SR)] * 0.5
+    P.add_bed(dsp.stereo(insp, 0.4))
     P.mark(240, "D6")
     i241 = at(241, S)
-    m = sl(n, i241)
-    tear = braam([hz("A1"), hz("E2")], m, rng, 0.08, 0.25, 1200)
-    tear = dsp.varispeed(tear, np.linspace(1.0, 0.6, m))
-    P.add_event(241, dsp.stereo(place(n, i241, tear), 0.8))
+    m2 = sl(n, i241)
+    crack = dsp.tv_filter(dsp.white(rng, m2), np.interp(time(m2), [0, 0.5], [4000, 300]), "band", width=0.7)
+    crack *= np.clip(time(m2) / 0.003, 0, 1) * np.exp(-time(m2) / 0.18)
+    P.add_event(241, dsp.stereo(place(n, i241, crack), 1.0))
     P.mark(241, "A6")
     return P.room(0.3, rng)
 
@@ -368,29 +389,34 @@ def disk_loop(s):
 
 
 def jet(s):
-    """Jatos: a subida é o acorde de Fá da trilha invertido, o disparo é um braam em Fá com sub, o estalo é
-    vidro em Dó/Lá, e o zumbido de síncrotron fica afinado em Fá2."""
+    """Jatos. v0.2.7 (identidade): sem reverb invertido. A pré-carga é o gesto GW como ar subindo; o disparo é o
+    gesto PARA CIMA esticado e saturado (40 → 600 Hz), com sub; o estalo é o anel em ruído; o síncrotron
+    continua afinado em Fá2."""
+    import gw
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     i360, i362 = at(360, S), at(362, S)
-    swell = reverse_swell(["F3", "A3", "C4", "F4"], i360, rng, i360 / SR)
-    P.add_bed(dsp.stereo(place(n, 0, swell) * 0.4, 1.0))
+    charge = gw.breath_gesture(rng, i360 / SR - 0.05, 300, 7000, reverse=False, q_oct=0.8)
+    P.add_bed(dsp.stereo(place(n, i360 - len(charge) + int(0.05 * SR), charge) * 0.35, 1.0))
     m = sl(n, i360)
     t = time(m)
-    hit = braam([hz("F1"), hz("C2"), hz("F2")], m, rng, 0.2, 0.8, 3200) + sub_drop(hz("F2"), hz("F1"), m, 0.3, 0.5)
+    up = gw.gesture(T=0.3, f0=hz("F1"), f1=hz("F4"), ring_s=0.9, ring_tau=0.12, drive=2.4)
+    up = up[int(0.3 * SR) - int(0.02 * SR):]  # o disparo começa no fim do inspiral (o golpe)
+    hit = (place(m, 0, up) + sub_drop(hz("F2"), hz("F1"), m, 0.2, 0.14)) * np.exp(-time(m) / 0.09)  # o peso no 1º tick
     P.add_event(360, dsp.stereo(place(n, i360, hit), 0.7))
     P.mark(360, "F6")
     m2 = sl(n, i362)
-    crack = bell(hz("C6"), m2, rng, 0.8) + 0.6 * bell(hz("A6"), m2, rng, 0.6)
+    crack = dsp.tv_filter(dsp.white(rng, m2), np.interp(time(m2), [0, 0.3], [6000, 1500]), "band", width=0.6)
+    crack *= np.clip(time(m2) / 0.002, 0, 1) * np.exp(-time(m2) / 0.12)
     P.add_event(362, dsp.stereo(place(n, i362, crack), 0.9))
     P.mark(362, "C7")
     saw = dsp.saw_bl(hz("F2") * (1 + 0.006 * np.sin(2 * np.pi * 3 * t)), m)
     fc = 500 + 2000 * (0.5 + 0.5 * np.sin(2 * np.pi * 0.5 * t))
     syn = dsp.tv_filter(saw, fc, "band", width=0.8) * np.exp(-t / 0.9) * np.clip(t / 0.15, 0, 1) * 0.8
     P.add_bed(dsp.stereo(place(n, i360, syn), 0.5))
-    return P.room(0.45, rng)
+    return P.room(0.4, rng)
 
 
 def pad(s):
@@ -435,6 +461,26 @@ def tidal(s):
     return P.room(0.12, rng)
 
 
+STUTTER = [1, 1, 2, 2, 3, 4, 6, 8]  # o stutter da câmera no B17 (spec/storyboard.json); depois, 8 em 8 (B18)
+
+
+def freeze_hit(rng, seconds=2.0):
+    """O golpe do congelamento (o "ZA WARUDO" deste filme): o gesto GW150914 de trás pra frente, devagar e
+    grave: o anel cresce num instante e a nota DESCE de Lá2 até o fundo, com sub."""
+    import gw
+    g = gw.gesture(T=seconds, f0=hz("A0") * 0.75, f1=hz("A2"), ring_s=0.05, ring_tau=0.03, reverse=True, drive=2.6)
+    m = len(g)
+    return g + 0.8 * sub_drop(hz("A1"), hz("A0") * 0.75, m, seconds, seconds * 0.6)
+
+
+def moment(start_tick, end_tick):
+    """O som do filme naquele instante (trilha + ritmo, tempo absoluto), para congelar e arranhar."""
+    import rhythm
+    import score
+    a, b = int(start_tick * TICK), int(end_tick * TICK)
+    return score.render_full()[a:b] + rhythm.render_full()[a:b]
+
+
 def fall_speed(ticks):
     """Velocidade relativa do pedaço-herói (a mesma forma da câmera do B15–B16)."""
     return np.interp(ticks, [460, 500, 539], [0.3, 1.0, 0.7])
@@ -470,35 +516,49 @@ def fall(s):
     rate = np.interp(ticks, [510, 539], [1.0, 0.5])
     P.room(0.35, rng, tail_fade=0.05)
     P.map(lambda x: dsp.varispeed(x, rate))
+    # v0.2.7: o tempo sendo PUXADO: o golpe do congelamento de trás pra frente, terminando seco no 540
+    suck = freeze_hit(rng)[::-1]
+    suck = suck / (np.abs(suck).max() + 1e-12) * np.linspace(0, 1, len(suck)) ** 2
+    P.add_bed(dsp.stereo(place(n, n - len(suck), suck) * 0.5, 0.6))
     return P
 
 
 def horizon(s):
-    """O rugido + o coral numa parada de fita (0,5 → 0,05), o coração abafado (ouvido de dentro) alongando,
-    e silêncio digital exato no 600."""
+    """O horizonte, o tempo parando (o "ZA WARUDO" deste filme). v0.2.7 (identidade: "a dilatação não impressiona"):
+    1. no 540, o GOLPE do congelamento (o gesto GW de trás pra frente, descendo até o fundo);
+    2. o som do filme naquele instante CONGELA (congelamento espectral da trilha + ritmo de 530–540), um
+       drone que vai afinando para baixo (redshift);
+    3. em cima, o mesmo instante PULA como disco arranhado nos ticks do stutter da câmera [1,1,2,2,3,4,6,8]
+       (depois 8 em 8), cada pulo mais grave e mais baixo;
+    4. o coração abafado alongando (os onsets do spec);
+    5. silêncio digital exato no 600."""
+    import gw
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     t = time(n)
-    src_n = n * 3
-    mix = roar(rng, src_n, 300, 2000, 0.2, key=("A1", "E2", "A2", "C#3")) * 0.8
-    tp = time(src_n)
-    mix += dsp.stereo(sum(np.sin(2 * np.pi * hz(nm) * tp) for nm in ("A2", "E3", "C#4")) * 0.08)
-    rate = np.interp(t, [0, 3.0], [0.5, 0.05]) ** 1.2
-    bed = dsp.varispeed(mix, rate) * np.interp(t, [0, 0.12, 0.6, 1.3, 2.2, 2.98], [0.6, 1.0, 0.4, 0.26, 0.13, 0])[:, None]
-    P.add_bed(dsp.lp(bed, 1500))
+    hit = freeze_hit(rng)
+    P.add_bed(dsp.stereo(place(n, 0, hit / (np.abs(hit).max() + 1e-12)) * 0.9, 0.5))
+    src = moment(0, 541)  # absoluto até o 540
+    fr = gw.freeze(src[int(530 * TICK):int(540 * TICK)], n / SR + 0.5, rng)
+    rate = np.interp(t, [0, 3.0], [1.0, 0.35])
+    drone = dsp.varispeed(np.concatenate([fr, fr]), rate)[:n] * np.interp(t, [0, 0.08, 1.2, 2.5, 2.98], [0, 0.55, 0.35, 0.15, 0])
+    P.add_bed(dsp.stereo(dsp.lp(drone, 2500), 0.8))
+    st = gw.stutter(src, 540, STUTTER, 600, pitch_step=0.93, gain_step=0.86, grain_ticks=3)
+    st = st / (np.abs(st).max() + 1e-12) * 0.6
+    P.add_bed(st * np.interp(t, [0, 2.5, 2.98], [1, 0.4, 0])[:, None])
     for o in s["onsets_intended"]:
-        st = at(o["tick"], S)
-        m = sl(n, st)
+        so = at(o["tick"], S)
+        m = sl(n, so)
         tt = time(m)
         hb = dsp.sat(np.sin(2 * np.pi * hz("D1") * 1.5 * tt) * dsp.env_ad(m, 0.008, 0.14) * 1.6, 2.2)
         k2 = int(0.24 * SR)
         if k2 < m:
             hb[k2:] += 0.5 * dsp.sat(np.sin(2 * np.pi * hz("D1") * 1.4 * time(m - k2)) * dsp.env_ad(m - k2, 0.008, 0.12), 2.2)
-        P.add_event(o["tick"], dsp.stereo(place(n, st, dsp.lp(hb, 600))))
+        P.add_event(o["tick"], dsp.stereo(place(n, so, dsp.lp(hb, 600))))
         P.mark(o["tick"], "D6")
-    P.room(0.25, rng, tail_fade=0.05)
+    P.room(0.35, rng, tail_fade=0.05)
     # silêncio digital exato no fim (o filme fica mudo de 600 a 619)
     P.map(lambda x: x * np.interp(t, [0, 2.97, 2.995], [1, 1, 0])[:, None])
     return P

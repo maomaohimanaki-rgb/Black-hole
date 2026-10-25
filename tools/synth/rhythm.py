@@ -19,7 +19,7 @@ import numpy as np
 import act7
 import dsp
 from dsp import SR, TICK, time
-from score import freq
+from score import freq, mech_tick
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -160,6 +160,8 @@ def render_full(end_tick=760):
                 put(t0, shaker(rng) * lv * 0.5, 0.35 if i % 2 else -0.35)
             elif inst == "dust":
                 put(t0, dust(rng) * lv * 0.35, rng.uniform(-0.8, 0.8))
+            elif inst == "clock":
+                put(t0, mech_tick(0.15, accent=(i % 2 == 0), rng=rng, tock=(i % 2 == 1)) * lv * 0.5, 0.15 if i % 2 else -0.15)
             elif inst == "tick":
                 put(t0, tick(freq(_note(p["notes"], t0, i)), rng) * lv * 0.4, rng.uniform(-0.5, 0.5))
             elif inst == "riser":
