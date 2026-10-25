@@ -2,6 +2,24 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.0 (em teste) · out/2026 — F2: o motor de áudio
+
+**Por quê:** o som do filme agora é o de verdade, sintetizado em Python a partir do spec, e não mais um bipe por onset. O storyboard vem antes do som (T-03), e o som sai da mesma matemática da imagem (T-05).
+
+- **`tools/synth/`** (numpy + scipy, sem nenhum sample de terceiros):
+  - `recipes.py`: os 16 sons do AUDIO_DESIGN, do ar sendo sugado à última luz;
+  - `render.py`: calibra, masteriza (−16 LUFS, pico −1 dBFS), exporta .ogg estéreo (2D) e mono (posicional) e gera o mixdown;
+  - `analyze.py`: a ida e volta.
+- **O chirp do LIGO** (35 → 245 Hz em 9 s) usa a **mesma fase** da órbita visual: os 19 acentos caem nas meias-órbitas (testado). Ele tem camadas 2Φ e 4Φ para o celular ouvir (P-48) e termina seco no 240, onde a fusão assume.
+- **Ida e volta (o build falha se não bater):** cada um dos 62 onsets pedidos é re-detectado no áudio a ±0,5 tick e com rms_norm a ±0,15. O silêncio de 600–619 é digital (zero absoluto) e o ringdown fica abaixo de 5 % a partir do 268.
+- **Mixdown:** `dist/DoomsDay_0.2.0_mixdown.mp3`, o filme inteiro como se ouve na cutscene, para ouvir no fone e no celular antes do jogo.
+- **No jogo:** `timeline_data.js` (gerado) diz o que tocar e quando, com a envelope e os onsets detectados para a imagem seguir o som da F4 em diante.
+- **Achados no caminho** (cada um travado por teste ou pela ida e volta):
+  - o estéreo "largo" por atraso curto virava filtro pente na soma mono, e o chirp afundava ao passar por 150 Hz. Agora é L = x + s, R = x − s, que soma mono exata;
+  - a frequência do chirp vai ao infinito no último tick e achatava o volume do resto. Agora f ≤ 245 Hz;
+  - o envelope do chirp segue a curva do spec (T-16);
+  - o calibrador começa com ganhos pequenos e tem busca de escala global.
+
 ## 0.1.1 (em teste) · out/2026 — correções do primeiro teste no aparelho
 
 **Por quê:** o retorno do teste-1 (vídeo, relatos e print do chat) aprovou os 10 spikes e o ritmo da câmera, mas mostrou dois bugs.

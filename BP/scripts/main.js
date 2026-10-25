@@ -68,7 +68,7 @@ function play(player, { from = 0, lenient = true } = {}) {
 }
 
 async function openMenu(player) {
-  precache(player, BLACKHOLE.data.sounds);
+  precache(player);
   const form = new ActionFormData()
     .title(tr("sgx.menu.title"))
     .body(tr("sgx.menu.body"))

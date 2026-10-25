@@ -19,6 +19,7 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
 - **T-13 · Resultado da F0** (24/10/2026, `docs/SPIKES.md`): as 10 técnicas passaram, nenhum plano B. Billboard de entidade usa `q.rotation_to_camera` (o `q.camera_rotation` não segue a câmera da cutscene). Impostor = 1 id de partícula com as inclinações em linhas do atlas (`v.incl`). Estéreo 2D vale (pan do Doppler fica). `poly_mesh` disponível.
 - **T-14 · FOV máximo 110** (24/10/2026). O storyboard pede 120 no fim do B16 e no B17; o jogo só aceita 30–110. O motor prende em 110. *Divergência JSON × jogo:* o efeito de "lente olho de peixe" do 120 vai precisar vir de overlay (anel de aberração, canal `AB`) na F6.
 - **T-15 · Ritmo de câmera do animatic aprovado** (24/10/2026). A duração de 36 s fica (D-02/T-09 confirmado).
+- **T-16 · Envelope do chirp segue o spec, não só a lei de amplitude** (25/10/2026). A lei A ∝ f^(2/3) do AUDIO_DESIGN daria 0,6 no tick 232, mas o `audio_cues.json` pede 0,92 (o grito final achata). Vale o JSON: o envelope é a curva dos onsets pedidos, que coincide com a lei até ~200. A FASE continua a fórmula exata (som e órbita sincronizados). Com o envelope pela lei, o calibrador inflava os cliques 27×, o pico segurava o master e o B04–B06 ficava a −40 LUFS no mixdown.
 
 ## Em aberto (decidir antes ou durante a fase indicada)
 
