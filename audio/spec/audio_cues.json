@@ -1,0 +1,823 @@
+{
+  "meta": {
+    "tick_rate": 20,
+    "film_ticks": 720,
+    "audio_end_tick": 760,
+    "format": {
+      "container": "ogg vorbis",
+      "quality": 6,
+      "sample_rate": 44100
+    },
+    "loudness": {
+      "peak_dbfs": -1.0,
+      "integrated_lufs": -16,
+      "note": "celular: compressão leve no master; graves com harmônicos (fundamental < 150 Hz some no alto-falante)"
+    },
+    "mixes": {
+      "cutscene_2d": "id singularity:sgx2d_<id>, is3D false, stream false, categoria 'ui' — estéreo permitido",
+      "positional_3d": "id singularity:<id>, mono, alcance 256, tocado no ponto O para quem está fora da cutscene"
+    },
+    "silences": [
+      [
+        268,
+        279,
+        "quase"
+      ],
+      [
+        600,
+        619,
+        "absoluto"
+      ]
+    ],
+    "pipeline": "spec/audio_cues.json → tools/synth (Python) → RP/sounds/singularity/*.ogg + build/timeline.json (spec/schemas/timeline.schema.json) → tools/build_timeline.py → BP/scripts/singularity/timeline_data.js",
+    "round_trip_rule": "O analisador re-detecta os onsets do áudio renderizado; cada onset_intended tem que aparecer a ±0,5 tick, senão o build falha."
+  },
+  "sounds": [
+    {
+      "id": "sgx_void_in",
+      "file": "sgx_void_in.ogg",
+      "tick": 0,
+      "end_tick": 40,
+      "volume": 0.9,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 0,
+          "rms_norm": 0.2
+        },
+        {
+          "tick": 12,
+          "rms_norm": 0.7
+        },
+        {
+          "tick": 19,
+          "rms_norm": 0.35
+        }
+      ],
+      "centroid_hint_hz": [
+        300,
+        1500
+      ],
+      "recipe": {
+        "type": "reverse_swell",
+        "layers": [
+          "ruído rosa → passa-baixa 400→1500 Hz",
+          "reverb longo invertido",
+          "queda de sub 55→32 Hz no tick 12 (com 2º e 3º harmônicos)"
+        ],
+        "end": "corta quase a zero no 19 (respiração antes do ponto)"
+      },
+      "notes": "O ar sendo sugado. Sem melodia."
+    },
+    {
+      "id": "sgx_point",
+      "file": "sgx_point.ogg",
+      "tick": 20,
+      "end_tick": 40,
+      "volume": 1.0,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 20,
+          "rms_norm": 1.0
+        },
+        {
+          "tick": 24,
+          "rms_norm": 0.5
+        },
+        {
+          "tick": 28,
+          "rms_norm": 0.4
+        },
+        {
+          "tick": 32,
+          "rms_norm": 0.35
+        }
+      ],
+      "centroid_hint_hz": [
+        2500,
+        6000
+      ],
+      "recipe": {
+        "type": "glint_thump",
+        "glint": "sino inarmônico 2,1 k / 3,4 k / 5,7 kHz, ataque 2 ms, decaimento 0,4 s",
+        "thump": "sub 40 Hz + saturação suave (audível no celular)",
+        "pings": "3 repetições do glint a −6, −8, −9 dB"
+      },
+      "notes": "Nasce o ponto A; pings = brilhos de lente."
+    },
+    {
+      "id": "sgx_twin",
+      "file": "sgx_twin.ogg",
+      "tick": 40,
+      "end_tick": 60,
+      "volume": 0.9,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 40,
+          "rms_norm": 1.0
+        },
+        {
+          "tick": 44,
+          "rms_norm": 0.5
+        },
+        {
+          "tick": 48,
+          "rms_norm": 0.4
+        }
+      ],
+      "centroid_hint_hz": [
+        2200,
+        5000
+      ],
+      "recipe": {
+        "type": "glint_thump",
+        "pitch_factor": 0.85,
+        "variation": "glint um tom abaixo do sgx_point"
+      },
+      "notes": "Nasce B."
+    },
+    {
+      "id": "sgx_chirp",
+      "file": "sgx_chirp.ogg",
+      "tick": 60,
+      "end_tick": 240,
+      "volume": 1.0,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 74,
+          "rms_norm": 0.3
+        },
+        {
+          "tick": 87,
+          "rms_norm": 0.32
+        },
+        {
+          "tick": 99,
+          "rms_norm": 0.34
+        },
+        {
+          "tick": 112,
+          "rms_norm": 0.36
+        },
+        {
+          "tick": 124,
+          "rms_norm": 0.38
+        },
+        {
+          "tick": 135,
+          "rms_norm": 0.4
+        },
+        {
+          "tick": 146,
+          "rms_norm": 0.43
+        },
+        {
+          "tick": 156,
+          "rms_norm": 0.46
+        },
+        {
+          "tick": 166,
+          "rms_norm": 0.5
+        },
+        {
+          "tick": 176,
+          "rms_norm": 0.54
+        },
+        {
+          "tick": 185,
+          "rms_norm": 0.58
+        },
+        {
+          "tick": 194,
+          "rms_norm": 0.62
+        },
+        {
+          "tick": 202,
+          "rms_norm": 0.67
+        },
+        {
+          "tick": 209,
+          "rms_norm": 0.72
+        },
+        {
+          "tick": 216,
+          "rms_norm": 0.77
+        },
+        {
+          "tick": 222,
+          "rms_norm": 0.82
+        },
+        {
+          "tick": 227,
+          "rms_norm": 0.87
+        },
+        {
+          "tick": 232,
+          "rms_norm": 0.92
+        },
+        {
+          "tick": 236,
+          "rms_norm": 0.96
+        },
+        {
+          "tick": 239,
+          "rms_norm": 1.0
+        }
+      ],
+      "centroid_hint_hz": [
+        150,
+        1200
+      ],
+      "recipe": {
+        "type": "gw_inspiral",
+        "math": "spec/layout.json → binary (f_gw, τ, fase): o MESMO Φ(t) do Molang da órbita",
+        "waveform": "h(t) = A(t)·cos Φ_gw(t), A ∝ f^(2/3), Φ_gw = 2·φ_orb·S (fase real da onda; a órbita visual é a mesma fase ÷ S)",
+        "audible_layers": [
+          "fundamental real 35→245 Hz",
+          "saturação suave (gera 2º/3º harmônico: o celular não toca < ~150 Hz)",
+          "camada ×4 a −12 dB",
+          "acento (clique filtrado 2–4 kHz) em cada meia-órbita"
+        ],
+        "end": "termina EXATAMENTE no tick 240 (sem rabo: o sgx_merge assume)"
+      },
+      "notes": "O coração do filme. Precisa soar como o chirp do LIGO, mas audível em alto-falante de celular."
+    },
+    {
+      "id": "sgx_merge",
+      "file": "sgx_merge.ogg",
+      "tick": 232,
+      "end_tick": 252,
+      "volume": 1.0,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 240,
+          "rms_norm": 1.0
+        },
+        {
+          "tick": 241,
+          "rms_norm": 0.95
+        }
+      ],
+      "centroid_hint_hz": [
+        80,
+        3000
+      ],
+      "recipe": {
+        "type": "reverse_into_impact",
+        "preroll": "prato invertido + ruído subindo de 232 a 240",
+        "impact": "boom de sub (45 Hz) + ruído branco curto + 'tape crunch'",
+        "peak_at_tick": 240
+      },
+      "notes": "A fusão."
+    },
+    {
+      "id": "sgx_ringdown",
+      "file": "sgx_ringdown.ogg",
+      "tick": 241,
+      "end_tick": 280,
+      "volume": 0.9,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 241,
+          "rms_norm": 0.9
+        }
+      ],
+      "centroid_hint_hz": [
+        250,
+        1800
+      ],
+      "recipe": {
+        "type": "damped_sinusoid",
+        "f_hz": 250,
+        "tau_s": 0.6,
+        "note": "o ringdown real dura ~4 ms (τ); esticado 150×",
+        "shimmer": "eco com chorus lento",
+        "tail": "rms < 0,05 a partir do 268 (quase-silêncio 268–279)"
+      },
+      "notes": "O sino da fusão se apagando."
+    },
+    {
+      "id": "sgx_disk_ignite",
+      "file": "sgx_disk_ignite.ogg",
+      "tick": 280,
+      "end_tick": 310,
+      "volume": 0.9,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 280,
+          "rms_norm": 0.5
+        },
+        {
+          "tick": 286,
+          "rms_norm": 0.6
+        },
+        {
+          "tick": 292,
+          "rms_norm": 0.7
+        },
+        {
+          "tick": 298,
+          "rms_norm": 0.85
+        },
+        {
+          "tick": 304,
+          "rms_norm": 1.0
+        }
+      ],
+      "centroid_hint_hz": [
+        800,
+        6000
+      ],
+      "recipe": {
+        "type": "rising_roar",
+        "source": "ruído marrom → passa-banda varrendo 300 → 4 000 Hz",
+        "accents": "um 'whoomp' de ignição por anel nos onsets",
+        "crackle": "estalos esparsos (granular)"
+      },
+      "notes": "Centroide sobe = cor esquenta (vermelho → branco-azul)."
+    },
+    {
+      "id": "sgx_disk_loop",
+      "file": "sgx_disk_loop.ogg",
+      "tick": 310,
+      "end_tick": 420,
+      "volume": 0.75,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 310,
+          "rms_norm": 0.6
+        }
+      ],
+      "centroid_hint_hz": [
+        1500,
+        4000
+      ],
+      "recipe": {
+        "type": "doppler_roar",
+        "source": "mesmo ruído do ignite, estável",
+        "am": "modulação 1 Hz (a matéria do lado que se aproxima passa)",
+        "pan": "estéreo L↔R em 1 Hz, em fase com a AM (só no mix 2D)"
+      },
+      "notes": "Só na cutscene (estéreo)."
+    },
+    {
+      "id": "sgx_disk_loop_ext",
+      "file": "sgx_disk_loop_ext.ogg",
+      "tick": 310,
+      "end_tick": 620,
+      "volume": 0.75,
+      "pitch": 1.0,
+      "heard_in_cutscene": false,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "mono",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 310,
+          "rms_norm": 0.6
+        }
+      ],
+      "centroid_hint_hz": [
+        1500,
+        4000
+      ],
+      "recipe": {
+        "type": "doppler_roar",
+        "note": "versão mono e mais longa para quem está FORA da cutscene (o disco continua lá enquanto o invocador cai)"
+      },
+      "notes": "Só fora (posicional)."
+    },
+    {
+      "id": "sgx_jet",
+      "file": "sgx_jet.ogg",
+      "tick": 358,
+      "end_tick": 400,
+      "volume": 1.0,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 360,
+          "rms_norm": 1.0
+        },
+        {
+          "tick": 362,
+          "rms_norm": 0.7
+        }
+      ],
+      "centroid_hint_hz": [
+        400,
+        5000
+      ],
+      "recipe": {
+        "type": "precharge_blast_buzz",
+        "precharge": "assobio subindo 358–359",
+        "blast": "impacto largo no 360",
+        "buzz": "dente-de-serra filtrado 90 Hz + harmônicos (síncrotron), decai até 400"
+      },
+      "notes": "Jatos."
+    },
+    {
+      "id": "sgx_pad",
+      "file": "sgx_pad.ogg",
+      "tick": 400,
+      "end_tick": 460,
+      "volume": 0.5,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 400,
+          "rms_norm": 0.3
+        }
+      ],
+      "centroid_hint_hz": [
+        300,
+        1200
+      ],
+      "recipe": {
+        "type": "formant_pad",
+        "voice": "'ah' sintetizado (formantes 700/1220/2600 Hz), acorde menor grave",
+        "dynamics": "entra suave, segura, sai antes da maré"
+      },
+      "notes": "Respiro musical. Só na cutscene."
+    },
+    {
+      "id": "sgx_tidal",
+      "file": "sgx_tidal.ogg",
+      "tick": 420,
+      "end_tick": 460,
+      "volume": 1.0,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 420,
+          "rms_norm": 0.6
+        },
+        {
+          "tick": 430,
+          "rms_norm": 0.7
+        },
+        {
+          "tick": 438,
+          "rms_norm": 0.8
+        },
+        {
+          "tick": 446,
+          "rms_norm": 0.9
+        },
+        {
+          "tick": 452,
+          "rms_norm": 0.95
+        },
+        {
+          "tick": 457,
+          "rms_norm": 1.0
+        }
+      ],
+      "centroid_hint_hz": [
+        200,
+        1500
+      ],
+      "recipe": {
+        "type": "creaks_rumble",
+        "creaks": "impulsos em filtros ressonantes (madeira 180–600 Hz, pedra 80–300 Hz), esticados 4× (granular)",
+        "rumble": "sub 30–60 Hz contínuo, saturado"
+      },
+      "notes": "O chão se soltando."
+    },
+    {
+      "id": "sgx_fall",
+      "file": "sgx_fall.ogg",
+      "tick": 460,
+      "end_tick": 540,
+      "volume": 1.0,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 460,
+          "rms_norm": 0.5
+        },
+        {
+          "tick": 500,
+          "rms_norm": 1.0
+        }
+      ],
+      "centroid_hint_hz": [
+        600,
+        3000
+      ],
+      "recipe": {
+        "type": "wind_doppler_tapeslow",
+        "wind": "ruído com passa-banda subindo (velocidade)",
+        "pass": "whoosh Doppler no 500 (cruza o disco)",
+        "dilation": "a partir do 510 a velocidade de reprodução cai 1,0 → 0,5 até o 539 (afina e desacelera junto)"
+      },
+      "notes": "Ponto de vista da câmera. Só na cutscene."
+    },
+    {
+      "id": "sgx_horizon",
+      "file": "sgx_horizon.ogg",
+      "tick": 540,
+      "end_tick": 600,
+      "volume": 0.9,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 540,
+          "rms_norm": 0.8
+        },
+        {
+          "tick": 552,
+          "rms_norm": 0.6
+        },
+        {
+          "tick": 566,
+          "rms_norm": 0.45
+        },
+        {
+          "tick": 584,
+          "rms_norm": 0.3
+        }
+      ],
+      "centroid_hint_hz": [
+        60,
+        400
+      ],
+      "recipe": {
+        "type": "tapestop_heartbeat",
+        "bed": "o 'mix' (roar + pad) desacelerando 0,5 → 0,05",
+        "heartbeats": "pulsos de sub com intervalos que alongam (12, 14, 18 ticks)",
+        "end": "SILÊNCIO DIGITAL exato no tick 600"
+      },
+      "notes": "Dentro. Termina em zero absoluto."
+    },
+    {
+      "id": "sgx_hawking",
+      "file": "sgx_hawking.ogg",
+      "tick": 620,
+      "end_tick": 700,
+      "volume": 0.7,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 660,
+          "rms_norm": 0.3
+        },
+        {
+          "tick": 672,
+          "rms_norm": 0.4
+        },
+        {
+          "tick": 682,
+          "rms_norm": 0.5
+        },
+        {
+          "tick": 690,
+          "rms_norm": 0.6
+        },
+        {
+          "tick": 696,
+          "rms_norm": 0.75
+        },
+        {
+          "tick": 699,
+          "rms_norm": 0.9
+        }
+      ],
+      "centroid_hint_hz": [
+        7000,
+        10000
+      ],
+      "recipe": {
+        "type": "glitter",
+        "blips": "senos curtos 6–14 kHz, densidade aleatória crescente",
+        "tone": "seno 2 → 8 kHz muito baixo a partir do 660",
+        "room": "ruído de ambiente quase inaudível 620–660"
+      },
+      "notes": "Evaporação."
+    },
+    {
+      "id": "sgx_burst",
+      "file": "sgx_burst.ogg",
+      "tick": 700,
+      "end_tick": 760,
+      "volume": 1.0,
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": true,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [
+        {
+          "tick": 700,
+          "rms_norm": 1.0
+        }
+      ],
+      "centroid_hint_hz": [
+        500,
+        3000
+      ],
+      "recipe": {
+        "type": "bloom_chord",
+        "chord": "acorde maior com 9ª, ataque de vidro (sinos) + pad",
+        "decay": "3 s, passa do fim do filme (cai no outro)",
+        "rule": "nada de sub-grave violento: é o branco de PAZ"
+      },
+      "notes": "O último clarão."
+    },
+    {
+      "file": "sgx_score_a.ogg",
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "id": "sgx_score_a",
+      "tick": 0,
+      "end_tick": 600,
+      "volume": 0.7,
+      "onsets_intended": [],
+      "centroid_hint_hz": [
+        150,
+        1500
+      ],
+      "recipe": {
+        "type": "score",
+        "source": "spec/score.json",
+        "part": "Atos I–VI (para em zero no 600)"
+      },
+      "notes": "Trilha: a música por baixo dos efeitos (órgão, ostinato nas meias-órbitas, sub). Pedido do usuário em 25/10/2026."
+    },
+    {
+      "file": "sgx_score_b.ogg",
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "id": "sgx_score_b",
+      "tick": 620,
+      "end_tick": 760,
+      "volume": 0.7,
+      "onsets_intended": [],
+      "centroid_hint_hz": [
+        300,
+        3000
+      ],
+      "recipe": {
+        "type": "score",
+        "source": "spec/score.json",
+        "part": "Ato VII (Ré maior)"
+      },
+      "notes": "Trilha, Ato VII: do silêncio até o clarão em Ré maior."
+    },
+    {
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [],
+      "id": "sgx_rhythm_a",
+      "file": "sgx_rhythm_a.ogg",
+      "tick": 0,
+      "end_tick": 600,
+      "volume": 1.0,
+      "centroid_hint_hz": [
+        80,
+        3000
+      ],
+      "recipe": {
+        "type": "rhythm",
+        "source": "spec/rhythm.json",
+        "part": "Atos I–VI"
+      },
+      "notes": "Camada rítmica: baixo pulsante, tons graves, shaker, poeira, subidas. Pedido do usuário em 25/10/2026 (Mountains)."
+    },
+    {
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "onsets_intended": [],
+      "id": "sgx_rhythm_b",
+      "file": "sgx_rhythm_b.ogg",
+      "tick": 620,
+      "end_tick": 760,
+      "volume": 1.0,
+      "centroid_hint_hz": [
+        200,
+        4000
+      ],
+      "recipe": {
+        "type": "rhythm",
+        "source": "spec/rhythm.json",
+        "part": "Ato VII"
+      },
+      "notes": "Camada rítmica do Ato VII: tiques de vidro acelerando, o golpe do clarão e o eco."
+    }
+  ]
+}
