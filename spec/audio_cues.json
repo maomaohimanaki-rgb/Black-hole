@@ -732,12 +732,7 @@
       "tick": 0,
       "end_tick": 600,
       "volume": 0.7,
-      "onsets_intended": [
-        {
-          "tick": 0,
-          "rms_norm": 0.02
-        }
-      ],
+      "onsets_intended": [],
       "centroid_hint_hz": [
         150,
         1500
@@ -762,12 +757,7 @@
       "tick": 620,
       "end_tick": 760,
       "volume": 0.7,
-      "onsets_intended": [
-        {
-          "tick": 620,
-          "rms_norm": 0.02
-        }
-      ],
+      "onsets_intended": [],
       "centroid_hint_hz": [
         300,
         3000

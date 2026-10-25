@@ -2,6 +2,18 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.2 (em teste) · out/2026 — a trilha com "escala"
+
+**Por quê:** a trilha da 0.2.1 melhorou, mas faltava "noção de escala": o poder do buraco negro, angelical e destrutivo ao mesmo tempo, sem precisar de explosão (referência do usuário: o Gargantua de Interestelar). A pesquisa virou técnica:
+
+- **Pedal de "32 pés resultante":** fundamental + quinta, e o ouvido reconstrói uma oitava abaixo (o truque dos órgãos grandes, como o da Temple Church, onde Interestelar foi gravado). Tem batimento lento, a massa "respirando". Ele cai meio tom a cada passo na maré (Ré → Lá).
+- **Extremos sem meio:** coral "aah" sintetizado no agudo (o angelical) sobre o pedal profundo (o destrutivo). No plano-herói do anel o meio fica vazio de propósito, e essa distância soa vasta.
+- **Harmonia lenta sobre o Ré pedal**, a gravidade puxando tudo para uma nota, e poucos acordes longos.
+- **O relógio de Interestelar:** a mesma nota repetida, presa às meias-órbitas (acentuada na meia-órbita, subdividida no meio).
+- **Shepard–Risset descendo na queda** (460–600): a ilusão de um som que cai para sempre (o Zimmer usou em Dunkirk).
+- **Espaço gigante:** reverb de 9 s com pré-delay de 95 ms e reflexões esparsas, com a cauda escurecendo (a distância come o agudo). Ele é aplicado por trecho e não vaza no corte do 240, no vazio de 268–279 nem no preto de 600–619 (um teste pegou o vazamento no 268 durante o desenvolvimento).
+- A composição continua toda em `spec/score.json`: pedal, órgão, coral, dinâmicas por voz, relógio e Risset.
+
 ## 0.2.1 (em teste) · out/2026 — a trilha (score)
 
 **Por quê:** ouvindo o mixdown da 0.2.0, o usuário achou o som "bem sintético, bem SFX", com falta de "um fundo, como o Hans Zimmer em Interestelar": a composição melódica que corre por baixo dos efeitos o tempo todo.

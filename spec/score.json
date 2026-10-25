@@ -1,50 +1,779 @@
 {
-  "about": "Trilha (score) do buraco negro: a música que corre POR BAIXO dos efeitos, o tempo todo (pedido do usuário em 25/10/2026: 'falta o fundo, à la Hans Zimmer em Interestelar'). Ré menor → Ré maior no fim (o perdão do Ato VII). Órgão de tubos + ostinato + sub, com reverb de catedral. Lido por tools/synth/score.py. Ticks do filme (20/s). Notas em notação científica (A4 = 440 Hz).",
-  "reverb": {"seconds": 4.5, "decay": 1.6, "wet": 0.45, "lowpass_hz": 5000},
-  "chords": [
-    {"t": 0,   "notes": ["D1", "D2"],                                  "stops": 0.15, "why": "Ato I: só o pedal, quase nada"},
-    {"t": 20,  "notes": ["D1", "D2", "A4"],                            "stops": 0.2,  "why": "o ponto: um harmônico agudo no ar"},
-    {"t": 40,  "notes": ["D1", "D2", "F4", "A4"],                      "stops": 0.25, "why": "o gêmeo: a terça menor, algo errado"},
-    {"t": 80,  "notes": ["D2", "A2", "D3", "F3", "A3"],                "stops": 0.3,  "why": "Ato II: Dm, a dança começa"},
-    {"t": 120, "notes": ["Bb1", "F2", "Bb2", "D3", "F3"],              "stops": 0.4},
-    {"t": 160, "notes": ["A1", "F2", "A2", "C3", "F3"],                "stops": 0.5},
-    {"t": 190, "notes": ["C2", "G2", "C3", "E3", "G3"],                "stops": 0.65},
-    {"t": 215, "notes": ["G1", "D2", "G2", "Bb2", "D3", "G3"],         "stops": 0.8},
-    {"t": 228, "notes": ["A1", "E2", "A2", "C#3", "E3", "A3"],         "stops": 1.0,  "why": "dominante: tensão máxima até o corte seco no 240"},
-    {"t": 242, "notes": ["D1", "A1"],                                  "stops": 0.1,  "why": "Ato III: depois do boom, só o grave respirando"},
-    {"t": 280, "notes": ["D2", "A2", "D3", "F3", "A3", "D4"],          "stops": 0.5,  "why": "Ato IV: o disco acende, o órgão abre"},
-    {"t": 310, "notes": ["Bb1", "F2", "A2", "D3", "F3", "A3", "C4"],   "stops": 0.7,  "why": "o anel (plano-herói): Bb maj9, majestoso"},
-    {"t": 350, "notes": ["G1", "D2", "Bb2", "D3", "F3", "A3"],         "stops": 0.8},
-    {"t": 360, "notes": ["F1", "C2", "F2", "A2", "C3", "F3", "A3", "C4"], "stops": 1.0, "why": "os jatos: órgão pleno"},
-    {"t": 390, "notes": ["D2", "A2", "E3", "F3", "A3"],                "stops": 0.45, "why": "o olho do mundo: Dm add9, respiro (o coral entra no 400)"},
-    {"t": 420, "notes": ["D2", "D4", "E4", "F4"],                      "stops": 0.6,  "why": "Ato V: cluster dissonante, o baixo começa a cair"},
-    {"t": 440, "notes": ["C#2", "D4", "E4", "F4"],                     "stops": 0.65},
-    {"t": 460, "notes": ["C2", "C#4", "E4", "F4"],                     "stops": 0.7},
-    {"t": 480, "notes": ["B1", "C4", "E4", "F4"],                      "stops": 0.8},
-    {"t": 500, "notes": ["Bb1", "C4", "D4", "F4"],                     "stops": 0.9},
-    {"t": 520, "notes": ["A1", "C#4", "E4", "G4"],                     "stops": 1.0},
-    {"t": 540, "notes": ["A1", "A2", "E3", "C#4"],                     "stops": 0.8,  "why": "Ato VI: a dominante fica sem resolver, a fita para"},
-    {"t": 620, "notes": ["F#5", "A5"],                                 "stops": 0.05, "why": "Ato VII: do silêncio, Ré MAIOR bem no alto (flautas)"},
-    {"t": 640, "notes": ["D5", "F#5", "A5"],                           "stops": 0.1},
-    {"t": 670, "notes": ["D4", "A4", "D5", "F#5", "A5", "E6"],         "stops": 0.25},
-    {"t": 700, "notes": ["D2", "A2", "D3", "F#3", "A3", "E4", "F#4", "D5"], "stops": 1.0, "why": "o clarão: Ré maior com 9ª, órgão pleno, sem violência"}
+  "about": "Trilha (score) do buraco negro, v2 'escala' (25/10/2026). Pedido do usuário: falta 'noção de escala', o poder do buraco negro ao mesmo tempo angelical e destrutivo, sem precisar de explosão (referência: Hans Zimmer, Interestelar / Gargantua). Técnicas: (1) pedal com o 32 pés 'resultante' (fundamental + quinta → o ouvido ouve uma oitava abaixo, como nos órgãos grandes); (2) extremos sem meio: grave profundo + coral agudo; (3) harmonia lenta sobre um Ré pedal (a gravidade puxando tudo para uma nota); (4) espaço gigante: pré-delay longo, cauda longa, agudos abafados pela distância; (5) glissando de Shepard–Risset descendo na queda (cair para sempre); (6) o tique como nota repetida (relógio). Ré menor → Ré maior no fim. Lido por tools/synth/score.py. Ticks do filme (20/s). Notas em notação científica (A4 = 440 Hz).",
+  "reverb": {
+    "predelay_ms": 95,
+    "seconds": 9.0,
+    "decay": 2.6,
+    "wet": 0.55,
+    "lowpass_hz": 4200,
+    "early": [
+      [
+        0.023,
+        0.5
+      ],
+      [
+        0.041,
+        0.35
+      ],
+      [
+        0.067,
+        0.3
+      ],
+      [
+        0.089,
+        0.22
+      ]
+    ]
+  },
+  "segments": [
+    [
+      0,
+      240
+    ],
+    [
+      240,
+      268
+    ],
+    [
+      280,
+      600
+    ],
+    [
+      620,
+      760
+    ]
   ],
-  "dynamics": [
-    {"t": 0, "v": 0.0}, {"t": 15, "v": 0.12}, {"t": 79, "v": 0.22},
-    {"t": 80, "v": 0.25}, {"t": 239, "v": 1.0, "ease": "inQuad"}, {"t": 240, "v": 0.0},
-    {"t": 242, "v": 0.18}, {"t": 262, "v": 0.0},
-    {"t": 280, "v": 0.0}, {"t": 310, "v": 0.7, "ease": "outSine"}, {"t": 350, "v": 0.6}, {"t": 360, "v": 0.95}, {"t": 380, "v": 0.7}, {"t": 390, "v": 0.45}, {"t": 419, "v": 0.4},
-    {"t": 420, "v": 0.45}, {"t": 539, "v": 1.0, "ease": "inQuad"},
-    {"t": 545, "v": 0.8}, {"t": 598, "v": 0.0, "ease": "inSine"}, {"t": 600, "v": 0.0},
-    {"t": 620, "v": 0.0}, {"t": 640, "v": 0.18}, {"t": 690, "v": 0.45, "ease": "inSine"}, {"t": 700, "v": 1.0}, {"t": 759, "v": 0.0, "ease": "outSine"}
+  "pedal": [
+    {
+      "t": 0,
+      "note": "D1"
+    },
+    {
+      "t": 242,
+      "note": "D1"
+    },
+    {
+      "t": 280,
+      "note": "D1"
+    },
+    {
+      "t": 310,
+      "note": "Bb0"
+    },
+    {
+      "t": 350,
+      "note": "G0"
+    },
+    {
+      "t": 360,
+      "note": "F1"
+    },
+    {
+      "t": 390,
+      "note": "D1"
+    },
+    {
+      "t": 420,
+      "note": "D1"
+    },
+    {
+      "t": 440,
+      "note": "C#1"
+    },
+    {
+      "t": 460,
+      "note": "C1"
+    },
+    {
+      "t": 480,
+      "note": "B0"
+    },
+    {
+      "t": 500,
+      "note": "Bb0"
+    },
+    {
+      "t": 520,
+      "note": "A0"
+    },
+    {
+      "t": 540,
+      "note": "A0"
+    },
+    {
+      "t": 700,
+      "note": "D1"
+    }
   ],
+  "organ": [
+    {
+      "t": 60,
+      "notes": [
+        "D3",
+        "A3"
+      ],
+      "stops": 0.15
+    },
+    {
+      "t": 80,
+      "notes": [
+        "D3",
+        "F3",
+        "A3",
+        "E4"
+      ],
+      "stops": 0.25,
+      "why": "Dm9 sobre o Ré pedal: a dança"
+    },
+    {
+      "t": 130,
+      "notes": [
+        "Bb2",
+        "D3",
+        "F3",
+        "C4"
+      ],
+      "stops": 0.4,
+      "why": "Bb maj9"
+    },
+    {
+      "t": 175,
+      "notes": [
+        "C3",
+        "F3",
+        "A3",
+        "G4"
+      ],
+      "stops": 0.6,
+      "why": "F add9 (com o Ré embaixo vira Dm7)"
+    },
+    {
+      "t": 205,
+      "notes": [
+        "C3",
+        "E3",
+        "G3",
+        "D4"
+      ],
+      "stops": 0.8,
+      "why": "C sus2 sobre Ré: a tensão sobe"
+    },
+    {
+      "t": 228,
+      "notes": [
+        "A2",
+        "D3",
+        "E3",
+        "G3",
+        "C#4"
+      ],
+      "stops": 1.0,
+      "why": "A7 sus4 → corte seco no 240"
+    },
+    {
+      "t": 280,
+      "notes": [
+        "D2",
+        "A2",
+        "D3"
+      ],
+      "stops": 0.35,
+      "why": "o disco acende: oco, grave"
+    },
+    {
+      "t": 304,
+      "notes": [
+        "D2",
+        "A2",
+        "D3",
+        "A3"
+      ],
+      "stops": 0.6
+    },
+    {
+      "t": 310,
+      "notes": [
+        "F2",
+        "C3"
+      ],
+      "stops": 0.75,
+      "why": "plano-herói: o MEIO VAZIO entre o pedal Bb e o coral lá em cima"
+    },
+    {
+      "t": 350,
+      "notes": [
+        "D2",
+        "G2",
+        "D3"
+      ],
+      "stops": 0.85
+    },
+    {
+      "t": 360,
+      "notes": [
+        "C2",
+        "F2",
+        "C3",
+        "F3",
+        "A3"
+      ],
+      "stops": 1.0,
+      "why": "os jatos: órgão pleno"
+    },
+    {
+      "t": 390,
+      "notes": [
+        "A2",
+        "D3"
+      ],
+      "stops": 0.4
+    },
+    {
+      "t": 420,
+      "notes": [
+        "D4",
+        "E4",
+        "F4"
+      ],
+      "stops": 0.55,
+      "why": "Ato V: cluster no meio, o pedal desce embaixo"
+    },
+    {
+      "t": 480,
+      "notes": [
+        "C#4",
+        "E4",
+        "F4"
+      ],
+      "stops": 0.75
+    },
+    {
+      "t": 520,
+      "notes": [
+        "C#4",
+        "E4",
+        "G4",
+        "Bb4"
+      ],
+      "stops": 1.0,
+      "why": "A7(b9): a fome"
+    },
+    {
+      "t": 540,
+      "notes": [
+        "E3",
+        "A3",
+        "C#4"
+      ],
+      "stops": 0.8
+    },
+    {
+      "t": 680,
+      "notes": [
+        "D3",
+        "F#3",
+        "A3"
+      ],
+      "stops": 0.2
+    },
+    {
+      "t": 700,
+      "notes": [
+        "D2",
+        "A2",
+        "D3",
+        "F#3",
+        "A3",
+        "E4"
+      ],
+      "stops": 1.0,
+      "why": "o clarão: Ré maior com 9ª"
+    }
+  ],
+  "choir": [
+    {
+      "t": 20,
+      "notes": [
+        "A5"
+      ],
+      "why": "o ponto: uma voz no ar"
+    },
+    {
+      "t": 40,
+      "notes": [
+        "F5",
+        "A5"
+      ],
+      "why": "o gêmeo: a terça menor"
+    },
+    {
+      "t": 160,
+      "notes": [
+        "D5",
+        "F5",
+        "A5"
+      ],
+      "why": "o angelical por cima da dança"
+    },
+    {
+      "t": 205,
+      "notes": [
+        "E5",
+        "G5",
+        "C6"
+      ]
+    },
+    {
+      "t": 228,
+      "notes": [
+        "E5",
+        "G5",
+        "C#6"
+      ]
+    },
+    {
+      "t": 244,
+      "notes": [
+        "D6"
+      ],
+      "why": "o sino da fusão, sozinho no alto"
+    },
+    {
+      "t": 300,
+      "notes": [
+        "A5"
+      ]
+    },
+    {
+      "t": 310,
+      "notes": [
+        "D5",
+        "F5",
+        "A5",
+        "C6"
+      ],
+      "why": "o anel: coral alto e aberto"
+    },
+    {
+      "t": 350,
+      "notes": [
+        "Bb4",
+        "D5",
+        "F5",
+        "A5"
+      ]
+    },
+    {
+      "t": 360,
+      "notes": [
+        "A4",
+        "C5",
+        "F5",
+        "A5",
+        "C6"
+      ]
+    },
+    {
+      "t": 390,
+      "notes": [
+        "E5",
+        "F5",
+        "A5"
+      ]
+    },
+    {
+      "t": 440,
+      "notes": [
+        "A5"
+      ]
+    },
+    {
+      "t": 480,
+      "notes": [
+        "A5",
+        "Bb5"
+      ],
+      "why": "a segunda menor no alto: o anjo apavorado"
+    },
+    {
+      "t": 540,
+      "notes": [
+        "C#6",
+        "E6"
+      ]
+    },
+    {
+      "t": 620,
+      "notes": [
+        "F#5",
+        "A5"
+      ],
+      "why": "Ato VII: do silêncio, Ré MAIOR, perdão"
+    },
+    {
+      "t": 660,
+      "notes": [
+        "D5",
+        "F#5",
+        "A5",
+        "E6"
+      ]
+    },
+    {
+      "t": 700,
+      "notes": [
+        "D5",
+        "F#5",
+        "A5",
+        "D6",
+        "E6"
+      ]
+    }
+  ],
+  "dynamics": {
+    "pedal": [
+      {
+        "t": 0,
+        "v": 0.0
+      },
+      {
+        "t": 30,
+        "v": 0.45,
+        "ease": "outSine"
+      },
+      {
+        "t": 239,
+        "v": 1.0
+      },
+      {
+        "t": 240,
+        "v": 0.0
+      },
+      {
+        "t": 242,
+        "v": 0.6
+      },
+      {
+        "t": 262,
+        "v": 0.0
+      },
+      {
+        "t": 280,
+        "v": 0.0
+      },
+      {
+        "t": 310,
+        "v": 0.85,
+        "ease": "inSine"
+      },
+      {
+        "t": 360,
+        "v": 1.0
+      },
+      {
+        "t": 390,
+        "v": 0.55
+      },
+      {
+        "t": 419,
+        "v": 0.5
+      },
+      {
+        "t": 420,
+        "v": 0.6
+      },
+      {
+        "t": 539,
+        "v": 1.0
+      },
+      {
+        "t": 598,
+        "v": 0.0,
+        "ease": "inSine"
+      },
+      {
+        "t": 620,
+        "v": 0.0
+      },
+      {
+        "t": 699,
+        "v": 0.0
+      },
+      {
+        "t": 700,
+        "v": 0.9
+      },
+      {
+        "t": 759,
+        "v": 0.0,
+        "ease": "outSine"
+      }
+    ],
+    "organ": [
+      {
+        "t": 0,
+        "v": 0.0
+      },
+      {
+        "t": 60,
+        "v": 0.0
+      },
+      {
+        "t": 79,
+        "v": 0.2
+      },
+      {
+        "t": 239,
+        "v": 1.0,
+        "ease": "inQuad"
+      },
+      {
+        "t": 240,
+        "v": 0.0
+      },
+      {
+        "t": 280,
+        "v": 0.0
+      },
+      {
+        "t": 310,
+        "v": 0.6,
+        "ease": "outSine"
+      },
+      {
+        "t": 359,
+        "v": 0.6
+      },
+      {
+        "t": 360,
+        "v": 1.0
+      },
+      {
+        "t": 385,
+        "v": 0.6
+      },
+      {
+        "t": 419,
+        "v": 0.35
+      },
+      {
+        "t": 420,
+        "v": 0.3
+      },
+      {
+        "t": 539,
+        "v": 1.0,
+        "ease": "inQuad"
+      },
+      {
+        "t": 598,
+        "v": 0.0,
+        "ease": "inSine"
+      },
+      {
+        "t": 620,
+        "v": 0.0
+      },
+      {
+        "t": 680,
+        "v": 0.0
+      },
+      {
+        "t": 699,
+        "v": 0.3
+      },
+      {
+        "t": 700,
+        "v": 1.0
+      },
+      {
+        "t": 759,
+        "v": 0.0,
+        "ease": "outSine"
+      }
+    ],
+    "choir": [
+      {
+        "t": 0,
+        "v": 0.0
+      },
+      {
+        "t": 20,
+        "v": 0.0
+      },
+      {
+        "t": 30,
+        "v": 0.25
+      },
+      {
+        "t": 79,
+        "v": 0.3
+      },
+      {
+        "t": 159,
+        "v": 0.3
+      },
+      {
+        "t": 239,
+        "v": 0.85,
+        "ease": "inSine"
+      },
+      {
+        "t": 240,
+        "v": 0.0
+      },
+      {
+        "t": 244,
+        "v": 0.0
+      },
+      {
+        "t": 248,
+        "v": 0.35
+      },
+      {
+        "t": 264,
+        "v": 0.0
+      },
+      {
+        "t": 299,
+        "v": 0.0
+      },
+      {
+        "t": 310,
+        "v": 0.6
+      },
+      {
+        "t": 360,
+        "v": 1.0
+      },
+      {
+        "t": 390,
+        "v": 0.5
+      },
+      {
+        "t": 419,
+        "v": 0.3
+      },
+      {
+        "t": 440,
+        "v": 0.25
+      },
+      {
+        "t": 539,
+        "v": 0.8,
+        "ease": "inSine"
+      },
+      {
+        "t": 598,
+        "v": 0.0,
+        "ease": "inSine"
+      },
+      {
+        "t": 620,
+        "v": 0.0
+      },
+      {
+        "t": 650,
+        "v": 0.5,
+        "ease": "outSine"
+      },
+      {
+        "t": 699,
+        "v": 0.7
+      },
+      {
+        "t": 700,
+        "v": 1.0
+      },
+      {
+        "t": 759,
+        "v": 0.0,
+        "ease": "outSine"
+      }
+    ]
+  },
   "ostinato": [
-    {"from": 74, "to": 239, "on": "half_orbits", "subdivide": 2, "notes": ["A4", "D5", "A4", "F5"], "level": 0.5,
-     "why": "o 'tique' de Interestelar preso às meias-órbitas: acelera com a dança (o mesmo relógio do chirp e das ondulações)"},
-    {"from": 420, "to": 538, "on": "accel", "period_ticks": [6, 2], "notes": ["D5", "F5", "E5", "F5"], "level": 0.4,
-     "why": "Ato V: a maré, cada vez mais rápido"},
-    {"from": 660, "to": 699, "on": "every", "period_ticks": 5, "notes": ["D5", "E5", "F#5", "A5", "D6", "A5", "F#5", "E5"], "level": 0.3,
-     "why": "Ato VII: arpejo subindo até o clarão"}
+    {
+      "from": 74,
+      "to": 239,
+      "on": "half_orbits",
+      "subdivide": 2,
+      "notes": [
+        "A5"
+      ],
+      "accent": "D6",
+      "level": 0.45,
+      "why": "o relógio de Interestelar: a MESMA nota repetida, presa às meias-órbitas (acelera com a dança); o tempo de verdade acentua uma oitava acima"
+    },
+    {
+      "from": 420,
+      "to": 538,
+      "on": "accel",
+      "period_ticks": [
+        6,
+        2
+      ],
+      "notes": [
+        "D6"
+      ],
+      "level": 0.35,
+      "why": "Ato V: o relógio volta, cada vez mais rápido"
+    },
+    {
+      "from": 660,
+      "to": 699,
+      "on": "every",
+      "period_ticks": 5,
+      "notes": [
+        "D5",
+        "E5",
+        "F#5",
+        "A5",
+        "D6",
+        "E6",
+        "F#6",
+        "A6"
+      ],
+      "level": 0.25,
+      "why": "Ato VII: arpejo subindo até o clarão"
+    }
   ],
-  "tape_stop": {"from": 540, "to": 600, "rate": [1.0, 0.25], "why": "Ato VI: a trilha desacelera e afina para baixo com o tempo parando"}
+  "risset": {
+    "from": 460,
+    "to": 600,
+    "direction": "down",
+    "octaves_per_second": 0.45,
+    "center_hz": 220,
+    "voices": 8,
+    "level": 0.35,
+    "dynamics": [
+      {
+        "t": 460,
+        "v": 0.0
+      },
+      {
+        "t": 500,
+        "v": 0.6
+      },
+      {
+        "t": 539,
+        "v": 1.0
+      },
+      {
+        "t": 598,
+        "v": 0.0
+      }
+    ],
+    "why": "a queda: um som que desce para sempre (Shepard–Risset, como o Zimmer em Dunkirk)"
+  },
+  "tape_stop": {
+    "from": 540,
+    "to": 600,
+    "rate": [
+      1.0,
+      0.25
+    ],
+    "why": "Ato VI: a trilha desacelera e afina para baixo com o tempo parando"
+  },
+  "segments_why": "Trechos de reverb: a cauda não atravessa o corte seco do 240, o quase-silêncio de 268–279 (o vazio respirando) nem o preto de 600–619."
 }
