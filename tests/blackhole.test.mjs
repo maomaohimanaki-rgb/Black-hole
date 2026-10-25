@@ -13,7 +13,7 @@ import { len, sub } from "../BP/scripts/singularity/engine/vec.js";
 const spec = (f) => JSON.parse(readFileSync(new URL(`../spec/${f}`, import.meta.url), "utf8"));
 const SB = spec("storyboard.json");
 const LY = spec("layout.json");
-const layout = makeLayout({ x: 0, y: 64, z: 0 }, { x: 0, y: 64, z: 60 }, DATA);
+const layout = makeLayout({ x: 0, y: 64, z: 0 }, { x: 0, y: 64, z: 90 }, DATA);
 
 test("spec ↔ código: storyboard_data.js bate com spec/storyboard.json", () => {
   assert.equal(DATA.blocks.length, SB.blocks.length);
@@ -26,13 +26,15 @@ test("spec ↔ código: storyboard_data.js bate com spec/storyboard.json", () =>
 
 test("órbita ↔ áudio: as 19 meias-órbitas da fórmula = spec/layout.json", () => {
   assert.deepEqual(halfOrbitTicks(), LY.binary.half_orbit_ticks);
-  assert.ok(Math.abs(separation(60) - 8) < 1e-9);
-  assert.ok(Math.abs(separation(239) - 2.18) < 0.01);
+  // v0.2.4: escala B; a separação vem do spec (d0) e as sombras se tocam no 239
+  assert.ok(Math.abs(separation(60) - LY.binary.d0) < 1e-9);
+  assert.ok(Math.abs(separation(239) - LY.binary.d0 * Math.pow(0.05 / 9, 0.25)) < 1e-9);
+  assert.ok(separation(239) <= LY.black_hole.shadow_A + LY.black_hole.shadow_B + 0.5, "as sombras se tocam no 239");
   assert.ok(Math.abs(fGw(60) - 35) < 1e-9);
 });
 
-test("layout: O = G + 14, frame ortonormal, R à direita de F", () => {
-  assert.equal(layout.O.y - layout.G.y, 14);
+test("layout: O = G + O_height, frame ortonormal, R à direita de F", () => {
+  assert.equal(layout.O.y - layout.G.y, LY.O_height);
   assert.deepEqual(layout.F, { x: 0, y: 0, z: 1 });
   assert.deepEqual(layout.R, { x: -1, y: 0, z: 0 }); // olhando para +Z, a direita é −X
   // A e B do lado oposto de O, com as massas certas
@@ -49,26 +51,26 @@ test("câmera: todos os keyframes resolvem e a câmera não salta sem corte", ()
     const s = tr.sample(t);
     for (const v of [s.p.x, s.p.y, s.p.z, s.rot.pitch, s.rot.yaw, s.fov]) assert.ok(Number.isFinite(v), `t=${t}`);
     const jump = len(sub(s.p, prev.p));
-    // Sem corte, um tick anda no máximo ~8 blocos (a viagem mais rápida é a do B08/B15).
-    if (!cuts.has(t) && !s.cut) assert.ok(jump < 8, `salto de ${jump.toFixed(1)} blocos no tick ${t}`);
+    // Sem corte, um tick anda no máximo ~8 blocos × K (a viagem mais rápida é a do B08/B15).
+    if (!cuts.has(t) && !s.cut) assert.ok(jump < 8 * LY.scene_scale.k, `salto de ${jump.toFixed(1)} blocos no tick ${t}`);
     prev = s;
   }
 });
 
-test("câmera: mira a ≥ 40 blocos → o corpo do jogador fica fora da cratera (raio 30)", () => {
-  const G = layout.G;
-  const P = { x: 0, y: 64, z: 0 };
-  assert.ok(Math.hypot(G.x - P.x, G.z - P.z) >= 40);
+test("mira mínima deixa o corpo do jogador fora da cratera (com margem)", () => {
+  const P = JSON.parse(readFileSync(new URL("../spec/project.json", import.meta.url), "utf8"));
+  assert.ok(P.targeting.min_distance >= LY.crater.radius + 10);
+  for (const k of layout.cameraKeys()) assert.ok(len(sub(k.p(k.t), layout.O)) <= LY.scene_scale.camera_max_distance + 1, `câmera longe demais no ${k.t}`);
 });
 
 test("pedaço-herói: contínuo e chega perto da sombra no 539", () => {
   let prev = layout.heroChunk(460);
   for (let t = 461; t <= 539; t++) {
     const p = layout.heroChunk(t);
-    assert.ok(len(sub(p, prev)) < 2, `t=${t}`);
+    assert.ok(len(sub(p, prev)) < 2 * LY.scene_scale.k, `t=${t}`);
     prev = p;
   }
-  assert.ok(len(sub(layout.heroChunk(539), layout.O)) < 3);
+  assert.ok(len(sub(layout.heroChunk(539), layout.O)) < LY.black_hole.shadow_final * 1.5);
 });
 
 test("letterbox: 16:9 no começo, fechado 600–619 (preto), aberto de novo no fim", () => {

@@ -2,7 +2,7 @@
   "title": "DOOMS DAY",
   "title_pt": "DOOMS DAY",
   "title_note": "D-01 (out/2026): o addon se chama Dooms Day. \"Doom\" = destino inevitável, a mesma palavra que se associa a buracos negros. Os ids internos (singularity:, sgx:, SGXB, sgx_) ficam como estão: o jogador não vê, e o item continua sendo o Núcleo da Singularidade.",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "namespace": "singularity",
   "short": "sgx",
   "prefixes": {
@@ -32,9 +32,9 @@
     "seconds": 36.0
   },
   "targeting": {
-    "min_distance": 40,
-    "max_distance": 128,
-    "reason": "o corpo do jogador fica onde estava; a cratera tem raio 30 (+10 de margem)"
+    "min_distance": 60,
+    "max_distance": 160,
+    "reason": "o corpo do jogador fica onde estava; a cratera tem raio 45 (+15 de margem). v0.2.4: escala B (T-18)"
   },
   "bedrock": {
     "min_engine_version": [

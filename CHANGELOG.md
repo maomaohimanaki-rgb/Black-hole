@@ -2,6 +2,21 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.4 (em teste) · out/2026 — escala B (o buraco negro 3,5× maior)
+
+**Por quê:** a pergunta do usuário sobre a física (um horizonte de 1,6 m teria a massa de Saturno e mataria o planeta) levou à decisão D-14 → T-18: a escala B.
+
+- **Toda distância da cena ×3,5** (`spec/layout.json → scene_scale`):
+  - sombra de ~7 blocos e disco de 84 de diâmetro;
+  - centro 49 blocos acima do chão;
+  - o par começa a 28 blocos;
+  - jatos mais grossos;
+  - onda gravitacional mais rápida (passa pela câmera no mesmo tick 247);
+  - o disco gira a **metade da velocidade** (coisa grande gira devagar).
+- **Câmera ×3,5 também**, então os enquadramentos aprovados ficam iguais. O teto é de 150 blocos (render 12 = 192). As alturas rente ao chão não escalam: o olho humano olhando para cima é a régua.
+- **Cratera:** raio 45 (×1,5, P-06). **Mira:** 60–160 blocos, e sem mira válida usa o chão 90 blocos à frente.
+- Os tamanhos saem do spec (`DATA.scene`), sem número fixo no código. Os testes conferem a separação do par contra o spec, nenhuma câmera passando de 150 blocos e a mira mínima fora da cratera.
+
 ## 0.2.3 · out/2026 — efeitos de cinema (redesenho do SFX)
 
 **Por quê:** com a trilha boa, os efeitos ficaram "SFX de YouTube de 2015" por cima de uma catedral: secos, fora do tom, cliques de ruído e bitcrush. Três regras para os 16 efeitos:

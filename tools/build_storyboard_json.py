@@ -5,8 +5,14 @@ import json
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
-def orb(r, az, el, around="O"): return {"around": around, "r": r, "az": az, "el": el}
-def loc(f, r, u): return {"rel": "G", "f": f, "r": r, "u": u}
+# v0.2.4 (T-18, escala B): toda distância ×K, com a câmera limitada a CAM_MAX blocos (render 12 = 192). Altura de
+# câmera rente ao chão (≤ 1 bloco) NÃO escala: o olho humano olhando para cima é o que dá escala.
+_L = json.loads((ROOT / "spec/layout.json").read_text(encoding="utf-8"))["scene_scale"]
+K, CAM_MAX = _L["k"], _L["camera_max_distance"]
+def _k(x): return round(x * K, 2)
+def _ku(u): return u if abs(u) <= 1 else _k(u)
+def orb(r, az, el, around="O"): return {"around": around, "r": min(_k(r), CAM_MAX), "az": az, "el": el}
+def loc(f, r, u): return {"rel": "G", "f": _k(f), "r": _k(r), "u": _ku(u)}
 def kf(t, pos, look="O", fov=None, ease="inOutSine", **kw):
     k = {"t": t, "pos": pos, "look": look, "ease": ease}
     if fov is not None: k["fov"] = fov
@@ -29,8 +35,8 @@ ACTS = [
 B = []
 B.append({"id": "B01", "act": "I", "name": "O SILÊNCIO ERRADO", "ticks": [0, 19],
   "audio": ["sgx_void_in"],
-  "camera": [kf(0, loc(-10, 0, 0.6), {"rel": "G", "f": 0, "r": 0, "u": 3}, 50, "linear"),
-             kf(19, loc(-8, 0, 0.6), {"rel": "G", "f": 0, "r": 0, "u": 6}, 48)],
+  "camera": [kf(0, loc(-10, 0, 0.6), loc(0, 0, 3), 50, "linear"),
+             kf(19, loc(-8, 0, 0.6), loc(0, 0, 6), 48)],
   "vfx": [{"t": 0, "fx": "dust_inflow", "to": "O", "rate": "baixa", "note": "poeira e pólen derivam devagar para um ponto vazio 14 blocos acima do chão"},
           {"t": 12, "fx": "grass_lean", "note": "partículas de folha/grama inclinam para O junto com o sub-grave"}],
   "hud": [hud(4, "SB", "ANOMALY DETECTED", 30), hud(8, "HD", "GRAV. GRADIENT +0.003 g", 19)],
@@ -194,7 +200,7 @@ B.append({"id": "B15", "act": "V", "name": "ESPAGUETE", "ticks": [460, 499],
 B.append({"id": "B16", "act": "V", "name": "A QUEDA", "ticks": [500, 539],
   "audio": ["sgx_fall"],
   "camera": [kf(500, {"follow": "hero_chunk", "back": 3, "up": 0.5}, "O", 90, "linear", note="cruza o plano do disco (clarão)"),
-             kf(539, {"along": "O", "dist_to_shadow": 6}, "O", 120, "inCubic", note="FOV abre: o anel de fótons vira um círculo gigante")],
+             kf(539, {"along": "O", "dist_to_shadow": _k(6)}, "O", 120, "inCubic", note="FOV abre: o anel de fótons vira um círculo gigante")],
   "vfx": [{"t": 500, "fx": "disk_plane_cross"}, {"t": 505, "fx": "aberration_ring", "note": "o universo de fora comprime num anel (overlay assado)"},
           {"t": 510, "fx": "redshift_grade", "from": 0.0, "to": 0.5, "until": 539}, {"t": 520, "fx": "chunk_to_thread"}],
   "hud": [hud(505, "HD", "r → r_s", 524), hud(525, "HD", "z = 9.0", 539)],
@@ -204,15 +210,15 @@ B.append({"id": "B16", "act": "V", "name": "A QUEDA", "ticks": [500, 539],
   "intent": "Mergulho. O tempo começa a ficar mole (o som afunda)."})
 B.append({"id": "B17", "act": "VI", "name": "O ÚLTIMO OLHAR", "ticks": [540, 579],
   "audio": ["sgx_horizon"],
-  "camera": [kf(540, {"along": "O", "dist_to_shadow": 6}, "O", 120, "linear"),
-             kf(579, {"along": "O", "dist_to_shadow": 2.5}, "O", 100, "outSine", stutter=[1, 1, 2, 2, 3, 4, 6, 8], note="dilatação: a pose segura por cada vez mais ticks")],
+  "camera": [kf(540, {"along": "O", "dist_to_shadow": _k(6)}, "O", 120, "linear"),
+             kf(579, {"along": "O", "dist_to_shadow": _k(2.5)}, "O", 100, "outSine", stutter=[1, 1, 2, 2, 3, 4, 6, 8], note="dilatação: a pose segura por cada vez mais ticks")],
   "vfx": [{"t": 540, "fx": "redshift_grade", "from": 0.5, "to": 0.95, "until": 579}, {"t": 540, "fx": "aberration_ring_shrink"}],
   "hud": [hud(545, "HD", "t → ∞", 559), hud(560, "HD", "SIGNAL LOST", 579, ), hud(560, "HT", "3")],
   "flash": [], "shake": [{"t": 540, "level": 2}, {"t": 560, "level": 1}],
   "intent": "Congelamento. Tudo fica vermelho, lento, distante."})
 B.append({"id": "B18", "act": "VI", "name": "CRUZAMENTO", "ticks": [580, 599],
   "audio": ["sgx_horizon"],
-  "camera": [kf(580, {"along": "O", "dist_to_shadow": 2.5}, "O", 100, "linear", stutter=[8]), kf(599, {"along": "O", "dist_to_shadow": 0.5}, "O", 96, "inSine")],
+  "camera": [kf(580, {"along": "O", "dist_to_shadow": _k(2.5)}, "O", 100, "linear", stutter=[8]), kf(599, {"along": "O", "dist_to_shadow": _k(0.5)}, "O", 96, "inSine")],
   "vfx": [{"t": 580, "fx": "iris_close", "until": 590}, {"t": 590, "fx": "last_photon", "until": 599, "note": "um ponto de luz no centro que encolhe"}],
   "hud": [], "flash": [], "shake": [],
   "letterbox": "3,2 → fechado (preto) entre 580 e 590",

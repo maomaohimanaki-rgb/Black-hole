@@ -69,7 +69,7 @@ LANG = {
         "bp": ("Dooms Day (BP)", "Two cinematic events about the strangest objects in the universe: a black hole (binary merger, accretion disk, jets, the fall) and a magnetar (SGR 1806-20). Real destruction. Use the Singularity Core."),
         "rp": ("Dooms Day (RP)", "Dooms Day resources: black hole impostors (Schwarzschild ray tracer), accretion disk, jets, magnetar field lines, synthesized audio, NASA starfield."),
         "item": "§5Singularity Core",
-        "keys": {"sgx.menu.title": "§l§4DOOMS DAY§r", "sgx.menu.subtitle": "§8SINGULARITY CORE", "sgx.menu.body": "§7Aim at the ground 40–128 blocks away.",
+        "keys": {"sgx.menu.title": "§l§4DOOMS DAY§r", "sgx.menu.subtitle": "§8SINGULARITY CORE", "sgx.menu.body": "§7Aim at the ground 60–160 blocks away.",
                  "sgx.menu.play": "§5BLACK HOLE", "sgx.menu.play.sub": "§7Binary, merger, disk, jets, the fall", "sgx.menu.magnetar": "§bMAGNETAR", "sgx.menu.magnetar.sub": "§7SGR 1806-20 · the flare of 2004", "sgx.menu.options": "§5OPTIONS",
                  "sgx.menu.options.sub": "§7Destruction, damage, protections, quality, camera", "sgx.menu.cancel": "§8Cancel",
                  "sgx.msg.too_close": "§cToo close. Aim at the ground at least %1 blocks away.", "sgx.msg.busy": "§8Another cinematic is already playing.",
@@ -78,7 +78,7 @@ LANG = {
         "bp": ("Dooms Day (BP)", "Dois eventos cinematográficos sobre os objetos mais estranhos do universo: um buraco negro (fusão, disco, jatos, a queda) e um magnetar (SGR 1806-20). Destruição real. Use o Núcleo da Singularidade."),
         "rp": ("Dooms Day (RP)", "Recursos do Dooms Day: impostores do buraco negro (traçado de raios de Schwarzschild), disco de acreção, jatos, linhas de campo do magnetar, áudio sintetizado, céu da NASA."),
         "item": "§5Núcleo da Singularidade",
-        "keys": {"sgx.menu.title": "§l§4DOOMS DAY§r", "sgx.menu.subtitle": "§8NÚCLEO DA SINGULARIDADE", "sgx.menu.body": "§7Mire no chão a 40–128 blocos.",
+        "keys": {"sgx.menu.title": "§l§4DOOMS DAY§r", "sgx.menu.subtitle": "§8NÚCLEO DA SINGULARIDADE", "sgx.menu.body": "§7Mire no chão a 60–160 blocos.",
                  "sgx.menu.play": "§5BURACO NEGRO", "sgx.menu.play.sub": "§7Par, fusão, disco, jatos, a queda", "sgx.menu.magnetar": "§bMAGNETAR", "sgx.menu.magnetar.sub": "§7SGR 1806-20 · a erupção de 2004", "sgx.menu.options": "§5OPÇÕES",
                  "sgx.menu.options.sub": "§7Destruição, dano, proteções, qualidade, câmera", "sgx.menu.cancel": "§8Cancelar",
                  "sgx.msg.too_close": "§cPerto demais. Mire no chão a pelo menos %1 blocos.", "sgx.msg.busy": "§8Já tem uma cinemática tocando.",
@@ -140,7 +140,7 @@ dump("RP/entity/sgx_disk.entity.json", {"format_version": FV["client_entity"], "
     "textures": {"cold": "textures/sgx/disk/disk_cold", "lit": "textures/sgx/disk/disk_lit"},
     "geometry": {"default": f"geometry.{NS}.sgx_disk"},
     "animations": {"kepler": f"animation.{NS}.sgx_disk.kepler"},
-    "scripts": {"pre_animation": ["v.ang = (v.ang ?? 0) + q.delta_time * 180;"], "animate": ["kepler"]},
+    "scripts": {"pre_animation": [f"v.ang = (v.ang ?? 0) + q.delta_time * {LY['disk'].get('omega_in_deg_s', 180)};"], "animate": ["kepler"]},
     "render_controllers": [f"controller.render.{NS}.sgx_disk"]}}})
 dump("RP/animations/sgx_disk.animation.json", {"format_version": FV["animations"], "animations": {f"animation.{NS}.sgx_disk.kepler": {
     "loop": True,
@@ -164,7 +164,7 @@ dump("BP/entities/sgx_debris.json", {"format_version": FV["entity_bp"], "minecra
     "events": {f"{NS}:despawn": {"add": {"component_groups": [f"{NS}:gone"]}}}}})
 dump("RP/models/entity/sgx_debris.geo.json", {"format_version": FV["geometry"], "minecraft:geometry": [{
     "description": {"identifier": f"geometry.{NS}.sgx_debris", "texture_width": 64, "texture_height": 32,   # v0.1.0: UV de caixa de um cubo 16³ ocupa 64×32
-                    "visible_bounds_width": 64, "visible_bounds_height": 64, "visible_bounds_offset": [0, 0, 0]},   # P-31
+                    "visible_bounds_width": 128, "visible_bounds_height": 128, "visible_bounds_offset": [0, 0, 0]},   # P-31 (v0.2.4: escala B, ossos até ~50 blocos)
     "bones": [{"name": "root", "pivot": [0, 0, 0]},
               {"name": "body", "parent": "root", "pivot": [0, 8, 0],
                "cubes": [{"origin": [-8, 0, -8], "size": [16, 16, 16], "uv": [0, 0]}]}]}]})

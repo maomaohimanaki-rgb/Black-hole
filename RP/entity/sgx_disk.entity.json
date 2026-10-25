@@ -19,7 +19,7 @@
       },
       "scripts": {
         "pre_animation": [
-          "v.ang = (v.ang ?? 0) + q.delta_time * 180;"
+          "v.ang = (v.ang ?? 0) + q.delta_time * 90;"
         ],
         "animate": [
           "kepler"

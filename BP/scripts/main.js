@@ -12,13 +12,14 @@ import { runSpike, stopSpike, spikeRunning } from "./singularity/spikes/index.js
 
 const { world, system } = mc;
 const ITEM = "singularity:core";
-const MIN_DIST = 40;
-const MAX_DIST = 128;
+// v0.2.4: escala B (T-18): cratera de raio 45 → mira a 60–160 (spec/project.json → targeting)
+const MIN_DIST = 60;
+const MAX_DIST = 160;
 const opts = { trace: true };
 
 const tr = (key, ...w) => ({ translate: key, with: w.map(String) });
 
-// Mira: bloco olhado a 40–128 blocos. Para teste (scriptevent), cai para o chão 60 blocos à frente.
+// Mira: bloco olhado a 60–160 blocos. Sem mira válida, cai para o chão 90 blocos à frente.
 function findTarget(player, { lenient = false } = {}) {
   const hit = player.getBlockFromViewDirection({ maxDistance: MAX_DIST + 8, includeLiquidBlocks: true });
   const P = player.location;
@@ -32,7 +33,7 @@ function findTarget(player, { lenient = false } = {}) {
   const auto = true;
   const d = player.getViewDirection();
   const h = Math.hypot(d.x, d.z) || 1;
-  const x = P.x + (d.x / h) * 60, z = P.z + (d.z / h) * 60;
+  const x = P.x + (d.x / h) * 90, z = P.z + (d.z / h) * 90;
   const top = player.dimension.getTopmostBlock({ x: Math.floor(x), z: Math.floor(z) });
   return { auto, G: { x: Math.floor(x) + 0.5, y: (top ? top.location.y : Math.floor(P.y)) + 1, z: Math.floor(z) + 0.5 } };
 }

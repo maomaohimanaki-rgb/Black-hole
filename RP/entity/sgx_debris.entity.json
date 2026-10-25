@@ -32,7 +32,7 @@
       },
       "scripts": {
         "pre_animation": [
-          "v.u = math.clamp(q.life_time / q.property('singularity:tc'), 0, 1);v.r = q.property('singularity:r0') * math.pow(1 - v.u, 0.6667);v.ang = q.property('singularity:phi0') + 900 * v.u * v.u;v.y = q.property('singularity:y0') * (1 - v.u) + 14 * (v.u * v.u * (3 - 2 * v.u));v.st = 1 + 5 * math.pow(v.u, 3);"
+          "v.u = math.clamp(q.life_time / q.property('singularity:tc'), 0, 1);v.r = q.property('singularity:r0') * math.pow(1 - v.u, 0.6667);v.ang = q.property('singularity:phi0') + 900 * v.u * v.u;v.y = q.property('singularity:y0') * (1 - v.u) + 49 * (v.u * v.u * (3 - 2 * v.u));v.st = 1 + 5 * math.pow(v.u, 3);"
         ],
         "animate": [
           "spiral"

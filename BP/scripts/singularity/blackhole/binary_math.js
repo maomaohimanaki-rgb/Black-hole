@@ -9,7 +9,7 @@ export const BIN = {
   tau0: 9, // s
   S: 24, // desaceleração visual
   f0: 35, // Hz no tick 60
-  d0: 8, // blocos no tick 60
+  d0: 28, // blocos no tick 60 (v0.2.4: escala B ×3,5; o teste confere com spec/layout.json → binary.d0)
 };
 
 // τ(t) = (240 − t)/20 s

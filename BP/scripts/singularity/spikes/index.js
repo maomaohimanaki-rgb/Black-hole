@@ -72,12 +72,13 @@ const SPIKES = {
   1: {
     ticks: 240,
     setup(env) {
-      const O = madd(env.P, [env.F, 30], [env.U, 10]);
+      // v0.2.4: escala B, o disco tem 42 blocos de raio
+      const O = madd(env.P, [env.F, 100], [env.U, 30]);
       spawnFx(env, `${NS}:sgx_disk`, O, { lit: 5, heat: 1.0, scale: 1.0 });
-      const cam = orbit(env, O, 26, 5, 12);
+      const cam = orbit(env, O, 90, 18, 12);
       return (t) => {
         cam(t);
-        if (t % 10 === 0) particle(env, `${NS}:sgx_spike_shadow`, O, { lf: [0.6, 0.01, 0.01], s: [2.6] });
+        if (t % 10 === 0) particle(env, `${NS}:sgx_spike_shadow`, O, { lf: [0.6, 0.01, 0.01], s: [9.1] });
       };
     },
   },
@@ -93,7 +94,7 @@ const SPIKES = {
   3: {
     ticks: 300,
     setup(env) {
-      spawnFx(env, `${NS}:sgx_disk`, madd(env.P, [env.F, 22], [env.U, 6]), { lit: 1, heat: 1.0, scale: 1.0 });
+      spawnFx(env, `${NS}:sgx_disk`, madd(env.P, [env.F, 70], [env.U, 20]), { lit: 1, heat: 1.0, scale: 1.0 });
       return () => {};
     },
   },
