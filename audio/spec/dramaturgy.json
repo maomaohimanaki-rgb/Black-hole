@@ -2,8 +2,7 @@
   "about": "Dramaturgia do som (v0.4.0, 25/10/2026). A quarta camada, por cima de trilha + ritmo + efeitos: não cria som, DIRIGE o que já existe no tempo absoluto do filme. Retorno do usuário: 'a ciência tem que ser gramática, não lei universal; a dilatação é bonita no papel e broxante no ouvido; falta o ZA WARUDO'. Lido por tools/synth/director.py (aplica) e tools/synth/psycho.py (mede e reprova). A teoria está em docs/SOUND_DIRECTION.md.",
   "roles": {
     "world": [
-      "sgx_score_a",
-      "sgx_rhythm_a",
+      "sgx_music_a",
       "sgx_fall",
       "sgx_disk_loop",
       "sgx_pad"
@@ -17,26 +16,18 @@
     "keys": [
       [
         0,
-        -2
-      ],
-      [
-        60,
-        -3
-      ],
-      [
-        180,
-        -4
-      ],
-      [
-        236,
-        -5
-      ],
-      [
-        240,
         0
       ],
       [
-        279,
+        60,
+        -2
+      ],
+      [
+        236,
+        -3
+      ],
+      [
+        240,
         0
       ],
       [
@@ -45,15 +36,11 @@
       ],
       [
         420,
-        -6
-      ],
-      [
-        470,
-        -8
+        -3
       ],
       [
         526,
-        -8
+        -4
       ],
       [
         600,
@@ -76,22 +63,6 @@
       "impact": 240,
       "phases": [
         {
-          "type": "hiccup",
-          "ticks": [
-            202,
-            216
-          ],
-          "depth": [
-            0.28,
-            0.4
-          ],
-          "length_ticks": [
-            5,
-            4
-          ],
-          "why": "prenúncio: o espaço-tempo soluça duas vezes antes de rasgar (os golpes de morph do v0.3.2 viram soluços que DEVOLVEM o tempo: a fase do chirp continua batendo com a órbita). O cérebro aprende o motivo e espera o grande (Huron: previsão)."
-        },
-        {
           "type": "inhale",
           "from": 222,
           "to": 238.2,
@@ -103,7 +74,7 @@
             0,
             2.5
           ],
-          "why": "o grave é SUGADO pela fusão: o mundo perde o chão enquanto o chirp sobe sozinho. Quando o grave voltar no 240, o corpo sente (o 'bass drop' de Solberg)."
+          "why": "o grave é SUGADO pela fusão: o 32' e o pedal somem enquanto o arpejo e o chirp sobem sozinhos. Quando o pedal volta no 240 (Si♭ com 32'), o corpo sente (o 'bass drop' de Solberg). v5: sem soluços aqui, a música tem grade e o accelerando já está escrito nela (subdivisões)."
         },
         {
           "type": "vacuum",
@@ -132,24 +103,21 @@
         {
           "type": "hiccup",
           "ticks": [
-            470,
-            500,
-            518,
-            531
+            480,
+            510,
+            525
           ],
           "depth": [
-            0.18,
-            0.3,
-            0.4,
-            0.5
+            0.15,
+            0.25,
+            0.35
           ],
           "length_ticks": [
             4,
-            5,
-            5,
-            6
+            4,
+            5
           ],
-          "why": "prenúncio: soluços de tempo cada vez mais fundos (o 500 casa com o cruzamento do disco). Substitui a rampa linear 1,0 → 0,5 do sgx_fall."
+          "why": "prenúncio: o relógio de Mountains soluça nos tempos fortes (A8:1, A8:3, A8:4), cada vez mais fundo. O tempo do mundo já está falhando antes do horizonte."
         },
         {
           "type": "inhale",
@@ -159,7 +127,7 @@
             25,
             480
           ],
-          "rate_to": 1.1,
+          "rate_to": 1.04,
           "gain_db": [
             0,
             7
@@ -182,31 +150,31 @@
               1.0
             ],
             [
-              540.8,
-              0.2
+              541.5,
+              0.6
             ],
             [
-              543.5,
-              0.74
+              544,
+              0.9
             ],
             [
-              547,
-              0.42
+              548,
+              0.68
             ],
             [
-              552,
-              0.5
+              555,
+              0.55
             ],
             [
-              560,
-              0.26
+              565,
+              0.3
             ],
             [
-              575,
+              580,
               0.1
             ],
             [
-              590,
+              592,
               0.03
             ],
             [
@@ -281,7 +249,7 @@
               -90
             ]
           ],
-          "why": "o golpe e a CONTORÇÃO: a taxa do mundo despenca (0,2), ricocheteia (0,74), balança como mola amortecida (3,4 Hz) e só depois afunda de vez, assintótica, rumo a zero (desvio para o vermelho infinito). A física dá as condições de contorno (afina e desacelera juntos, como fita; tende a zero no horizonte); a FORMA da curva é direção. O golpe do 540 segue o relógio a 70 % (impact_follow): é arrastado e balança, mas não some no infrassom.",
+          "why": "o golpe e a CONTORÇÃO, v5: o tutti em Ré menor é ouvido inteiro por meio segundo e só então o tempo cede: a taxa cai (0,6), ricocheteia (0,9), balança como mola amortecida e afunda assintótica rumo a zero. O relógio de bolso continua regular no tempo do mundo, então são os tiques que se espaçam até parar. A física dá as condições de contorno (afina e desacelera juntos; tende a zero); a FORMA da curva é direção. O golpe do 540 segue o relógio a 70 % (impact_follow).",
           "highpass_hz": [
             [
               540,
@@ -302,8 +270,8 @@
         "flux_is_max_s": 1.5,
         "rate": {
           "anticipation_min": 1.04,
-          "slam_max": 0.35,
-          "rebound_min": 0.25,
+          "slam_max": 0.7,
+          "rebound_min": 0.15,
           "wobble_extrema_min": 3,
           "end_max": 0.05
         }

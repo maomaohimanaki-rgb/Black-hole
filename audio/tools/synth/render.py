@@ -90,7 +90,9 @@ def calibrate(s, parts, iters=80):
     # v0.2.0: o rms_norm é relativo ao pico, então "todos os eventos maiores" também bate; começando
     # pequeno, a solução fica perto da cama e cada evento só cresce o necessário (o chirp ficava 10×
     # abaixo dos próprios acentos).
-    gains = {k: 0.05 for k in parts.events}
+    # v5: a receita pode sugerir o ponto de partida (parts.hints). Começando todos iguais, o horizonte caía num
+    # mínimo ruim: o solver baixava o golpe até o nível da cama e a ida e volta reprovava os batimentos.
+    gains = {k: getattr(parts, "hints", {}).get(k, 0.05) for k in parts.events}
     want = {o["tick"]: o["rms_norm"] for o in s["onsets_intended"]}
     bed = parts.bed.copy()
 
@@ -118,8 +120,8 @@ def calibrate(s, parts, iters=80):
 
     def solve(scale=True):
         for it in range(iters):
-            if scale and it % 10 == 0 and gains:
-                rescale()
+            if scale and it % 10 == 0 and gains and not getattr(parts, "hints", None):
+                rescale()  # com dica, a escala já é a pretendida
             rn = analyze.rms_norm(mix())
             worst = 0.0
             for k in gains:
@@ -127,7 +129,10 @@ def calibrate(s, parts, iters=80):
                     continue
                 meas = rn[k - start]
                 worst = max(worst, abs(meas - want[k]))
-                gains[k] = float(np.clip(gains[k] * (want[k] / max(meas, 1e-4)) ** 0.9, 1e-4, 1e4))
+                # v5: zona morta de 0,03 (a tolerância é 0,15). Sem ela, um onset cuja razão é fixada pela forma do
+                # próprio evento (o 540 do horizonte: TÁ 0,82 × BOOM 1,0) puxava o ganho para baixo até a cama
+                if abs(meas - want[k]) > 0.03:
+                    gains[k] = float(np.clip(gains[k] * (want[k] / max(meas, 1e-4)) ** 0.9, 1e-4, 1e4))
             if worst < 0.02:
                 break
 
@@ -197,6 +202,9 @@ def spectrogram(x, sid, path):
 
 
 def main():
+    # v5: o 32' resultante tem que existir antes de qualquer coisa (tools/synth/check_organ.py)
+    if subprocess.run([sys.executable, str(Path(__file__).resolve().parent / "check_organ.py")]).returncode:
+        sys.exit("✗ o 32' resultante do órgão não apareceu")
     events, library, report, failed = [], {}, [], []
     stems = {}
     for i, s in enumerate(AU["sounds"], start=1):

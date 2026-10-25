@@ -1,5 +1,5 @@
-"""Ato VII (B20–B22): o som pelo ponto de audição (v0.2.6). Envelopes compartilhados pela trilha, pela camada
-rítmica e pelos efeitos, a partir de spec/score.json → act7:
+"""Ato VII (B20–B22): o som pelo ponto de audição (v0.2.6). Envelopes compartilhados pela trilha e pelos efeitos,
+a partir de spec/music.json → act7 (v5: antes em spec/score.json; o Risset de subida era nota da trilha antiga e saiu):
 - muffle:   o mundo abafado (embaixo d'água) voltando: passa-baixa que abre de 160 Hz até ~16 kHz;
 - tinnitus: o zumbido do ouvido depois do horizonte, que desce e pousa na nota do coral;
 - dropout:  3 ticks de quase-silêncio antes do clarão (o contraste que faz o impacto aterrissar);
@@ -14,7 +14,7 @@ import dsp
 from dsp import SR, TICK, time
 
 ROOT = Path(__file__).resolve().parents[2]
-A7 = json.loads((ROOT / "spec/score.json").read_text(encoding="utf-8"))["act7"]
+A7 = json.loads((ROOT / "spec/music.json").read_text(encoding="utf-8"))["act7"]
 NOTE = {"C": -9, "D": -7, "E": -5, "F": -4, "G": -2, "A": 0, "B": 2}
 
 
@@ -90,15 +90,3 @@ def world(n, t0, rng):
     t = time(n)
     drone = sum(np.sin(2 * np.pi * hz(nm) * t + i) for i, nm in enumerate(W["drone"])) * 0.4
     return dsp.stereo((wind * 0.7 + drone) * env, 0.8)
-
-
-def risset_up(n, t0, rng, risset_fn, curve_fn):
-    R = A7["risset_up"]
-    tk = ticks_of(n, t0)
-    a = int(max(0, (R["from"] - t0) * TICK))
-    b = int(min(n, (R["to"] - t0) * TICK))
-    out = np.zeros(n)
-    if b > a:
-        cfg = {**R, "direction": "up"}
-        out[a:b] = risset_fn(b - a, cfg, rng) * R["level"] * curve_fn(R["dynamics"], tk[a:b])
-    return out

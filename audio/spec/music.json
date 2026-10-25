@@ -1,0 +1,1354 @@
+{
+  "about": "Trilha v5, escrita do zero (25/10/2026). Pedido do usuário: 'zerar a música, manter as ferramentas'. Referência de OFÍCIO: Interestelar (órgão de tubos com 32' resultante, ostinato que só soma camadas, o tique do relógio de Mountains como tempo que passa, quietude no fim). Nenhuma nota copiada. Lido por tools/synth/music.py. Posições na grade: 'A4:1' = grade A, compasso 4, tempo 1. Ver docs/SOUND_DIRECTION.md §10.",
+  "grids": {
+    "A": {
+      "origin": 0,
+      "ticks_per_beat": 15,
+      "beats_per_bar": 4,
+      "why": "80 BPM: 1 tempo = 15 ticks EXATOS, 1 compasso = 3 s. A música vem primeiro e a física cai nos tempos fortes: a fusão (240) no compasso 4, os jatos (360) no 6, a maré (420) no 7, o horizonte (540) no 9 e o preto (600) no 10."
+    },
+    "B": {
+      "origin": 620,
+      "ticks_per_beat": 20,
+      "beats_per_bar": 4,
+      "why": "Ato VII, 60 BPM: o tempo voltou, mais devagar. O clarão (700) cai no compasso 1 da grade nova (B1:1)."
+    }
+  },
+  "key": "Ré menor (tudo puxa para o Ré); o Ato VII abre em Ré maior",
+  "registrations": {
+    "pedal_soft": [
+      [
+        "16",
+        "bourdon",
+        0.7
+      ],
+      [
+        "10.67",
+        "bourdon",
+        0.45
+      ],
+      [
+        "32",
+        "bourdon",
+        0.25
+      ],
+      [
+        "8",
+        "principal",
+        0.12
+      ]
+    ],
+    "pedal": [
+      [
+        "16",
+        "bourdon",
+        0.8
+      ],
+      [
+        "10.67",
+        "bourdon",
+        0.5
+      ],
+      [
+        "32",
+        "bourdon",
+        0.3
+      ],
+      [
+        "8",
+        "principal",
+        0.25
+      ],
+      [
+        "4",
+        "principal",
+        0.1
+      ]
+    ],
+    "pedal_tutti": [
+      [
+        "16",
+        "bourdon",
+        0.8
+      ],
+      [
+        "10.67",
+        "bourdon",
+        0.5
+      ],
+      [
+        "32",
+        "bourdon",
+        0.35
+      ],
+      [
+        "16",
+        "reed",
+        0.35
+      ],
+      [
+        "8",
+        "principal",
+        0.35
+      ],
+      [
+        "4",
+        "principal",
+        0.15
+      ]
+    ],
+    "pedal_pulse": [
+      [
+        "16",
+        "reed",
+        0.6
+      ],
+      [
+        "16",
+        "bourdon",
+        0.5
+      ],
+      [
+        "10.67",
+        "bourdon",
+        0.3
+      ],
+      [
+        "8",
+        "principal",
+        0.2
+      ]
+    ],
+    "great_soft": [
+      [
+        "8",
+        "flute",
+        0.6
+      ],
+      [
+        "8",
+        "principal",
+        0.25
+      ]
+    ],
+    "great": [
+      [
+        "8",
+        "principal",
+        0.55
+      ],
+      [
+        "4",
+        "principal",
+        0.3
+      ],
+      [
+        "8",
+        "flute",
+        0.3
+      ]
+    ],
+    "great_tutti": [
+      [
+        "16",
+        "principal",
+        0.35
+      ],
+      [
+        "8",
+        "principal",
+        0.6
+      ],
+      [
+        "4",
+        "principal",
+        0.4
+      ],
+      [
+        "2.67",
+        "principal",
+        0.15
+      ],
+      [
+        "2",
+        "principal",
+        0.22
+      ],
+      [
+        "mix",
+        "principal",
+        0.18
+      ],
+      [
+        "8",
+        "reed",
+        0.3
+      ]
+    ],
+    "great_light": [
+      [
+        "16",
+        "principal",
+        0.3
+      ],
+      [
+        "8",
+        "principal",
+        0.55
+      ],
+      [
+        "4",
+        "principal",
+        0.35
+      ],
+      [
+        "2",
+        "principal",
+        0.2
+      ],
+      [
+        "mix",
+        "principal",
+        0.14
+      ]
+    ],
+    "ost_1": [
+      [
+        "8",
+        "flute",
+        0.6
+      ]
+    ],
+    "ost_2": [
+      [
+        "8",
+        "flute",
+        0.55
+      ],
+      [
+        "4",
+        "principal",
+        0.3
+      ]
+    ],
+    "ost_3": [
+      [
+        "8",
+        "flute",
+        0.5
+      ],
+      [
+        "4",
+        "principal",
+        0.35
+      ],
+      [
+        "2",
+        "principal",
+        0.2
+      ],
+      [
+        "mix",
+        "principal",
+        0.12
+      ]
+    ],
+    "ost_air": [
+      [
+        "4",
+        "flute",
+        0.5
+      ],
+      [
+        "2",
+        "flute",
+        0.25
+      ]
+    ]
+  },
+  "pedal": [
+    {
+      "at": "A0:1",
+      "to": "A1:1",
+      "note": "D2",
+      "reg": "pedal_soft",
+      "why": "Ato I: antes do tempo existir, só a massa: o 32' resultante chegando do nada"
+    },
+    {
+      "at": "A1:1",
+      "to": "A2:1",
+      "note": "D2",
+      "reg": "pedal"
+    },
+    {
+      "at": "A2:1",
+      "to": "A2:3",
+      "note": "Bb2",
+      "reg": "pedal"
+    },
+    {
+      "at": "A2:3",
+      "to": "A3:1",
+      "note": "G2",
+      "reg": "pedal"
+    },
+    {
+      "at": "A3:1",
+      "to": "A3:3",
+      "note": "A2",
+      "reg": "pedal"
+    },
+    {
+      "at": "A3:3",
+      "to": 238.2,
+      "note": "A2",
+      "reg": "pedal"
+    },
+    {
+      "at": "A4:1",
+      "to": 264,
+      "note": "Bb2",
+      "reg": "pedal_tutti",
+      "why": "a fusão: cadência de engano (esperava Ré, vem Si♭). O espanto: o buraco negro nasce fora de casa"
+    },
+    {
+      "at": "A5:1",
+      "to": "A5:3",
+      "note": "D2",
+      "reg": "pedal"
+    },
+    {
+      "at": "A5:3",
+      "to": "A6:1",
+      "note": "Bb2",
+      "reg": "pedal"
+    },
+    {
+      "at": "A6:1",
+      "to": "A6:3",
+      "note": "F2",
+      "reg": "pedal_tutti",
+      "why": "os jatos: Fá maior, o único momento heroico"
+    },
+    {
+      "at": "A6:3",
+      "to": "A7:1",
+      "note": "D2",
+      "reg": "pedal_soft"
+    },
+    {
+      "at": "A9:1",
+      "to": 600,
+      "note": "D2",
+      "reg": "pedal_tutti",
+      "why": "o horizonte: a CASA. A fusão evitou o Ré; o horizonte chega nele. É o destino (doom)"
+    },
+    {
+      "at": "B1:1",
+      "to": 756,
+      "note": "D2",
+      "reg": "pedal_soft"
+    }
+  ],
+  "pulse": [
+    {
+      "from": "A7:1",
+      "to": "A8:3",
+      "every": 7.5,
+      "notes": [
+        "D2",
+        "D2",
+        "D2",
+        "Eb2"
+      ],
+      "gate": 0.55,
+      "reg": "pedal_pulse",
+      "why": "Ato V: o pedal vira pulso (palheta em staccato). O Mi♭ a cada quatro é a ameaça frígia"
+    },
+    {
+      "from": "A8:3",
+      "to": "A8:4",
+      "every": 3.75,
+      "notes": [
+        "G2"
+      ],
+      "gate": 0.6,
+      "reg": "pedal_pulse"
+    },
+    {
+      "from": "A8:4",
+      "to": 538.4,
+      "every": 3.75,
+      "notes": [
+        "A2"
+      ],
+      "gate": 0.6,
+      "reg": "pedal_pulse"
+    }
+  ],
+  "chords": [
+    {
+      "at": 20,
+      "to": "A1:1",
+      "notes": [
+        "A5"
+      ],
+      "reg": "ost_air",
+      "level": 0.35,
+      "why": "o ponto: uma voz no ar"
+    },
+    {
+      "at": 40,
+      "to": "A1:1",
+      "notes": [
+        "F5"
+      ],
+      "reg": "ost_air",
+      "level": 0.3,
+      "why": "o gêmeo: a terça"
+    },
+    {
+      "at": "A1:1",
+      "to": "A2:1",
+      "notes": [
+        "D3",
+        "F3",
+        "A3"
+      ],
+      "reg": "great_soft"
+    },
+    {
+      "at": "A2:1",
+      "to": "A2:3",
+      "notes": [
+        "Bb2",
+        "D3",
+        "F3"
+      ],
+      "reg": "great_soft"
+    },
+    {
+      "at": "A2:3",
+      "to": "A3:1",
+      "notes": [
+        "G2",
+        "Bb2",
+        "D3"
+      ],
+      "reg": "great_soft"
+    },
+    {
+      "at": "A3:1",
+      "to": "A3:3",
+      "notes": [
+        "A2",
+        "C3",
+        "F3"
+      ],
+      "reg": "great"
+    },
+    {
+      "at": "A3:3",
+      "to": "A3:4",
+      "notes": [
+        "A2",
+        "D3",
+        "E3",
+        "G3"
+      ],
+      "reg": "great"
+    },
+    {
+      "at": "A3:4",
+      "to": 238.2,
+      "notes": [
+        "A2",
+        "C#3",
+        "E3",
+        "G3"
+      ],
+      "reg": "great"
+    },
+    {
+      "at": "A4:1",
+      "to": 264,
+      "notes": [
+        "Bb2",
+        "D3",
+        "F3",
+        "Bb3",
+        "D4",
+        "F4",
+        "C5"
+      ],
+      "reg": "great_tutti"
+    },
+    {
+      "at": "A5:1",
+      "to": "A5:3",
+      "notes": [
+        "D3",
+        "F3",
+        "A3"
+      ],
+      "reg": "great"
+    },
+    {
+      "at": "A5:3",
+      "to": "A6:1",
+      "notes": [
+        "Bb2",
+        "D3",
+        "F3"
+      ],
+      "reg": "great"
+    },
+    {
+      "at": "A6:1",
+      "to": "A6:3",
+      "notes": [
+        "F2",
+        "A2",
+        "C3",
+        "F3",
+        "A3",
+        "C4",
+        "F4"
+      ],
+      "reg": "great_tutti"
+    },
+    {
+      "at": "A6:3",
+      "to": "A7:1",
+      "notes": [
+        "D3",
+        "A3",
+        "E4",
+        "F4"
+      ],
+      "reg": "great_soft",
+      "level": 0.6,
+      "why": "o olho do mundo: o mesmo Rém9 do sgx_pad (400)"
+    },
+    {
+      "at": "A7:1",
+      "to": "A8:1",
+      "notes": [
+        "D3",
+        "F3",
+        "A3",
+        "Eb4"
+      ],
+      "reg": "great_soft",
+      "level": 0.55
+    },
+    {
+      "at": "A8:1",
+      "to": "A8:3",
+      "notes": [
+        "Bb2",
+        "D3",
+        "F3"
+      ],
+      "reg": "great"
+    },
+    {
+      "at": "A8:3",
+      "to": "A8:4",
+      "notes": [
+        "G2",
+        "Bb2",
+        "D3"
+      ],
+      "reg": "great"
+    },
+    {
+      "at": "A8:4",
+      "to": 538.4,
+      "notes": [
+        "A2",
+        "C#3",
+        "E3",
+        "G3",
+        "Bb3"
+      ],
+      "reg": "great_tutti",
+      "level": 0.8
+    },
+    {
+      "at": "A9:1",
+      "to": 600,
+      "notes": [
+        "D2",
+        "A2",
+        "D3",
+        "F3",
+        "A3",
+        "D4",
+        "F4",
+        "A4"
+      ],
+      "reg": "great_tutti"
+    },
+    {
+      "at": "B0:2",
+      "to": "B0:3",
+      "notes": [
+        "D5",
+        "F#5",
+        "A5"
+      ],
+      "reg": "ost_air",
+      "level": 0.4
+    },
+    {
+      "at": "B0:3",
+      "to": "B0:4",
+      "notes": [
+        "D5",
+        "G5",
+        "B5"
+      ],
+      "reg": "ost_air",
+      "level": 0.45
+    },
+    {
+      "at": "B0:4",
+      "to": 697,
+      "notes": [
+        "E5",
+        "A5",
+        "C#6"
+      ],
+      "reg": "ost_air",
+      "level": 0.5
+    },
+    {
+      "at": "B1:1",
+      "to": 750,
+      "notes": [
+        "D3",
+        "F#3",
+        "A3",
+        "D4",
+        "E4",
+        "F#4",
+        "A4"
+      ],
+      "reg": "great_light",
+      "why": "o clarão: luz sem violência (sem palhetas)"
+    }
+  ],
+  "ostinatos": [
+    {
+      "from": "A1:1",
+      "to": 238.2,
+      "cell": [
+        0,
+        2,
+        1,
+        2,
+        3,
+        2,
+        1,
+        2
+      ],
+      "reg_steps": [
+        [
+          "A1:1",
+          "ost_1"
+        ],
+        [
+          "A2:1",
+          "ost_2"
+        ],
+        [
+          "A3:1",
+          "ost_3"
+        ]
+      ],
+      "tones": [
+        [
+          "A1:1",
+          [
+            "D4",
+            "F4",
+            "A4",
+            "D5"
+          ]
+        ],
+        [
+          "A2:1",
+          [
+            "D4",
+            "F4",
+            "Bb4",
+            "D5"
+          ]
+        ],
+        [
+          "A2:3",
+          [
+            "D4",
+            "G4",
+            "Bb4",
+            "D5"
+          ]
+        ],
+        [
+          "A3:1",
+          [
+            "C4",
+            "F4",
+            "A4",
+            "C5"
+          ]
+        ],
+        [
+          "A3:3",
+          [
+            "D4",
+            "E4",
+            "A4",
+            "D5"
+          ]
+        ],
+        [
+          "A3:4",
+          [
+            "C#4",
+            "E4",
+            "A4",
+            "C#5"
+          ]
+        ]
+      ],
+      "subdivision": [
+        [
+          "A1:1",
+          7.5
+        ],
+        [
+          "A2:1",
+          5.0
+        ],
+        [
+          "A3:1",
+          3.75
+        ],
+        [
+          "A3:4",
+          2.5
+        ]
+      ],
+      "octave": [
+        [
+          "A1:1",
+          0
+        ],
+        [
+          "A3:3",
+          1
+        ]
+      ],
+      "gate": 0.8,
+      "why": "a dança: o MESMO arpejo, cada vez mais rápido pela subdivisão (colcheia → tercina → semicolcheia → sextina), em vez de acelerar o andamento. É o accelerando do chirp escrito em música, e cada compasso puxa um registro a mais"
+    },
+    {
+      "from": "A5:1",
+      "to": "A6:3",
+      "cell": [
+        0,
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "reg_steps": [
+        [
+          "A5:1",
+          "ost_2"
+        ],
+        [
+          "A6:1",
+          "ost_3"
+        ]
+      ],
+      "tones": [
+        [
+          "A5:1",
+          [
+            "A3",
+            "D4",
+            "F4",
+            "A4"
+          ]
+        ],
+        [
+          "A5:3",
+          [
+            "Bb3",
+            "D4",
+            "F4",
+            "Bb4"
+          ]
+        ],
+        [
+          "A6:1",
+          [
+            "A3",
+            "C4",
+            "F4",
+            "A4"
+          ]
+        ]
+      ],
+      "subdivision": [
+        [
+          "A5:1",
+          7.5
+        ],
+        [
+          "A5:3",
+          3.75
+        ]
+      ],
+      "octave": [
+        [
+          "A5:1",
+          0
+        ],
+        [
+          "A6:1",
+          1
+        ]
+      ],
+      "gate": 0.8,
+      "why": "o disco: o arpejo volta em seis (gira, como a matéria), e acelera até os jatos"
+    },
+    {
+      "from": "A8:1",
+      "to": 538.4,
+      "cell": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "reg_steps": [
+        [
+          "A8:1",
+          "ost_2"
+        ],
+        [
+          "A8:3",
+          "ost_3"
+        ]
+      ],
+      "tones": [
+        [
+          "A8:1",
+          [
+            "Bb3",
+            "D4",
+            "F4",
+            "Bb4"
+          ]
+        ],
+        [
+          "A8:3",
+          [
+            "G3",
+            "Bb3",
+            "D4",
+            "G4"
+          ]
+        ],
+        [
+          "A8:4",
+          [
+            "A3",
+            "C#4",
+            "E4",
+            "A4"
+          ]
+        ]
+      ],
+      "subdivision": [
+        [
+          "A8:1",
+          3.75
+        ],
+        [
+          "A8:4",
+          2.5
+        ]
+      ],
+      "octave": [
+        [
+          "A8:1",
+          0
+        ],
+        [
+          "A8:3",
+          1
+        ]
+      ],
+      "gate": 0.75,
+      "why": "a queda: arpejo só subindo (nunca volta), cada vez mais agudo"
+    },
+    {
+      "from": "B0:2",
+      "to": 697,
+      "cell": [
+        0,
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "reg_steps": [
+        [
+          "B0:2",
+          "ost_air"
+        ]
+      ],
+      "tones": [
+        [
+          "B0:2",
+          [
+            "A5",
+            "D6",
+            "F#6",
+            "A6"
+          ]
+        ],
+        [
+          "B0:3",
+          [
+            "B5",
+            "D6",
+            "G6",
+            "B6"
+          ]
+        ],
+        [
+          "B0:4",
+          [
+            "A5",
+            "C#6",
+            "E6",
+            "A6"
+          ]
+        ]
+      ],
+      "subdivision": [
+        [
+          "B0:2",
+          6.67
+        ]
+      ],
+      "octave": [
+        [
+          "B0:2",
+          0
+        ]
+      ],
+      "gate": 0.9,
+      "level": 0.35,
+      "why": "Ato VII: um arpejo de flautas no alto, como poeira de luz, subindo até o clarão"
+    }
+  ],
+  "choir": [
+    {
+      "at": "A2:1",
+      "to": "A3:1",
+      "notes": [
+        "A4",
+        "D5"
+      ],
+      "vowel": "u",
+      "level": 0.25
+    },
+    {
+      "at": "A3:1",
+      "to": 238.2,
+      "notes": [
+        "A4",
+        "E5",
+        "A5"
+      ],
+      "vowel": "a",
+      "level": 0.4
+    },
+    {
+      "at": "A4:1",
+      "to": 262,
+      "notes": [
+        "Bb4",
+        "D5",
+        "F5",
+        "C6"
+      ],
+      "vowel": "a",
+      "level": 0.6
+    },
+    {
+      "at": "A5:1",
+      "to": "A6:1",
+      "notes": [
+        "A4",
+        "D5",
+        "F5"
+      ],
+      "vowel": "o",
+      "level": 0.3
+    },
+    {
+      "at": "A6:1",
+      "to": "A6:3",
+      "notes": [
+        "A4",
+        "C5",
+        "F5",
+        "A5"
+      ],
+      "vowel": "a",
+      "level": 0.55
+    },
+    {
+      "at": "A7:3",
+      "to": 538.4,
+      "notes": [
+        "D5",
+        "Eb5",
+        "A5"
+      ],
+      "vowel": "a",
+      "level": 0.35,
+      "why": "a maré: segunda menor no coro (ameaça), crescendo até o vácuo"
+    },
+    {
+      "at": "A9:1",
+      "to": 598,
+      "notes": [
+        "D4",
+        "F4",
+        "A4",
+        "D5"
+      ],
+      "vowel": "a",
+      "level": 0.6
+    },
+    {
+      "at": "B1:1",
+      "to": 752,
+      "notes": [
+        "D5",
+        "F#5",
+        "A5",
+        "E6"
+      ],
+      "vowel": "a",
+      "level": 0.5
+    }
+  ],
+  "clock": [
+    {
+      "from": "A7:1",
+      "to": "A8:1",
+      "every": 15,
+      "level": 0.5,
+      "why": "Ato V: o relógio de Mountains entra: um tique por tempo. É o tempo do mundo de fora"
+    },
+    {
+      "from": "A8:1",
+      "to": "A8:4",
+      "every": 7.5,
+      "level": 0.6
+    },
+    {
+      "from": "A8:4",
+      "to": 538.4,
+      "every": 3.75,
+      "level": 0.7
+    },
+    {
+      "from": "A9:1",
+      "to": 600,
+      "every": 7.5,
+      "level": 0.8,
+      "why": "o horizonte: o relógio continua REGULAR no tempo do mundo. Quem espaça os tiques até parar é o relógio do diretor (dilatação de verdade, não uma lista de intervalos)"
+    }
+  ],
+  "swell": {
+    "pedal": [
+      [
+        0,
+        0.0
+      ],
+      [
+        55,
+        0.5
+      ],
+      [
+        60,
+        0.55
+      ],
+      [
+        238,
+        0.9
+      ],
+      [
+        240,
+        1.0
+      ],
+      [
+        262,
+        0.8
+      ],
+      [
+        300,
+        0.6
+      ],
+      [
+        358,
+        0.8
+      ],
+      [
+        360,
+        1.0
+      ],
+      [
+        390,
+        0.45
+      ],
+      [
+        420,
+        0.6
+      ],
+      [
+        536,
+        1.0
+      ],
+      [
+        600,
+        1.0
+      ],
+      [
+        620,
+        0.0
+      ],
+      [
+        700,
+        0.8
+      ],
+      [
+        760,
+        0.6
+      ]
+    ],
+    "great": [
+      [
+        0,
+        0.5
+      ],
+      [
+        60,
+        0.3
+      ],
+      [
+        200,
+        0.55
+      ],
+      [
+        238,
+        0.7
+      ],
+      [
+        240,
+        1.0
+      ],
+      [
+        300,
+        0.45
+      ],
+      [
+        358,
+        0.65
+      ],
+      [
+        360,
+        1.0
+      ],
+      [
+        390,
+        0.35
+      ],
+      [
+        420,
+        0.4
+      ],
+      [
+        536,
+        0.8
+      ],
+      [
+        540,
+        1.0
+      ],
+      [
+        640,
+        0.4
+      ],
+      [
+        700,
+        1.0
+      ],
+      [
+        760,
+        0.85
+      ]
+    ],
+    "ostinato": [
+      [
+        60,
+        0.35
+      ],
+      [
+        238,
+        0.85
+      ],
+      [
+        300,
+        0.45
+      ],
+      [
+        390,
+        0.9
+      ],
+      [
+        480,
+        0.5
+      ],
+      [
+        538,
+        0.9
+      ],
+      [
+        640,
+        0.3
+      ],
+      [
+        697,
+        0.7
+      ]
+    ],
+    "why": "a caixa expressiva de cada divisão (0 = fechada: −20 dB e escura; 1 = aberta). No órgão, a dinâmica é isto mais os registros"
+  },
+  "segments": [
+    [
+      0,
+      240
+    ],
+    [
+      240,
+      268
+    ],
+    [
+      280,
+      600
+    ],
+    [
+      620,
+      760
+    ]
+  ],
+  "segments_why": "a sala não atravessa o vácuo-corte do 240, o quase-silêncio de 268–279 nem o preto de 600–619",
+  "room": {
+    "predelay_ms": 70,
+    "seconds": 8.0,
+    "decay": 2.4,
+    "wet": 0.5,
+    "lowpass_hz": 5000,
+    "early": [
+      [
+        0.019,
+        0.5
+      ],
+      [
+        0.033,
+        0.4
+      ],
+      [
+        0.051,
+        0.3
+      ],
+      [
+        0.077,
+        0.2
+      ]
+    ],
+    "why": "uma igreja grande de pedra (o órgão precisa da sala: metade do som de um órgão é o prédio). Também é a sala dos efeitos"
+  },
+  "act7": {
+    "why": "o Ato VII pelo ponto de audição (mantido da v0.2.6: é direção, não nota): do preto nasce um zumbido, o mundo abafado volta, drop-out de 3 ticks antes do clarão e o estéreo abrindo.",
+    "tinnitus": {
+      "from": 620,
+      "glide": [
+        640,
+        668
+      ],
+      "notes": [
+        "D8",
+        "D6"
+      ],
+      "level": 0.07,
+      "fade_in_ticks": 8,
+      "beat_hz": 0.7
+    },
+    "world": {
+      "from": 620,
+      "to": 705,
+      "level": 0.3,
+      "drone": [
+        "D1",
+        "A1"
+      ]
+    },
+    "muffle": {
+      "from": 620,
+      "to": 668,
+      "cutoff_hz": [
+        160,
+        16000
+      ]
+    },
+    "dropout": {
+      "from": 697,
+      "to": 700,
+      "gain_db": -32
+    },
+    "width": [
+      [
+        620,
+        0.15
+      ],
+      [
+        699,
+        0.35
+      ],
+      [
+        700,
+        0.35
+      ],
+      [
+        730,
+        1.0
+      ]
+    ]
+  },
+  "pedal_why": "Notas do pedal escritas na altura de 8' (a tecla). O 16' soa uma oitava abaixo, o 10⅔' uma quinta acima do 16' e o 32' (resultante + de verdade) duas oitavas abaixo. Ré2 é a tecla mais grave da pedaleira usada: Ré é o chão (o 32' resultante dele é Ré0, 18,35 Hz)."
+}

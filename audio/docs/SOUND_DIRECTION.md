@@ -67,8 +67,8 @@ Regra prática: **se a física não proíbe e o corpo sente, pode.** Se a físic
 
 ```
 spec/audio_cues.json   QUANDO e QUANTO (o contrato com o storyboard)
-spec/score.json        a trilha               ┐
-spec/rhythm.json       a camada rítmica       ├─ os sons (receitas)
+spec/music.json        a trilha (v5)          ┐
+music.py / organ.py    órgão, coral, relógio  ├─ os sons (receitas)
 recipes.py / gw.py     os efeitos             ┘
 spec/dramaturgy.json   a DIREÇÃO: papéis, fader de tensão, momentos em fases, master de golpe   ← v0.4.0
         │
@@ -78,7 +78,7 @@ render.py: receita → calibra → master → ida e volta (som cru × storyboard
         → falha o build se qualquer um reprovar
 ```
 
-**Papéis** (`roles`): `world` (trilha, ritmo, vento, disco, coral) é o universo de fora, que o diretor encolhe, contorce e congela. `signal` (o chirp) só sofre os soluços e o fader de tensão, nunca o vácuo, porque ele é o riser. O resto é `event` ou corpo: a receita já nasce dirigida (o golpe do 540 usa o relógio do diretor por dentro, via `director.warp_from`).
+**Papéis** (`roles`): `world` (a trilha, o vento, o disco, o coral do 400) é o universo de fora, que o diretor encolhe, contorce e congela. `signal` (o chirp) só sofre os soluços e o fader de tensão, nunca o vácuo, porque ele é o riser. O resto é `event` ou corpo: a receita já nasce dirigida (o golpe do 540 usa o relógio do diretor por dentro, via `director.warp_from`).
 
 **Por que no stem e não no mix:** o jogo toca cada stem separado. Toda operação do diretor é linear e variante no tempo (ganho, filtro, reamostragem, pente), então aplicar a mesma cadeia em cada stem do mundo é igual a aplicar no barramento do mundo. O jogo soa como o mixdown.
 
@@ -130,10 +130,10 @@ Saídas: `build/psycho_report.md` e `build/psycho.png` (loudness, bandas, ataque
 ## 7. Os dois momentos como ficaram
 
 **M1 · Fusão (tick 240, 12,0 s)**
-`202, 216` soluços (com os golpes de morph do v0.3.2, agora menores, no mesmo tick) → `222–238` o grave é sugado (passa-alta 25 → 260 Hz) enquanto o chirp sobe sozinho e inteiro → `238,2–240` vácuo de 90 ms, só o último ciclo do chirp → `240` golpe em camadas (estalo + placa em Ré + braam + sub Ré2 → Lá0) com o mundo voltando inteiro → anel.
+*(na v5 a fusão não tem mais soluços, ver §10)* `222–238` o grave é sugado (passa-alta 25 → 260 Hz) enquanto o chirp sobe sozinho e inteiro → `238,2–240` vácuo de 90 ms, só o último ciclo do chirp → `240` golpe em camadas (estalo + placa em Ré + braam + sub Ré2 → Lá0) com o mundo voltando inteiro → anel.
 
 **M2 · Horizonte (tick 540, 27,0 s)**
-`470, 500, 518, 531` soluços cada vez mais fundos (o 500 casa com o cruzamento do disco) → `524–538,4` inspiração: o mundo acelera para 1,1×, sobe de tom e perde o grave, a sala do próprio golpe cresce de trás pra frente e o riser corta → `538,4–540` vácuo de 80 ms → `540` TÁ (estalo) e BOOM no tick seguinte (floração) → `540–556` contorção: a taxa despenca a 0,2, ricocheteia a 0,74 e balança a 3,4 Hz; a cauda do golpe vai junto a 70 % e o pente estica o espaço → `556–598` suspensão: o mundo afunda assintótico e escurece (passa-baixa até 180 Hz), a foto congelada e o disco arranhado nas poses da câmera, e o **coração seco** batendo fora do relógio → `600` zero digital.
+`480, 510, 525` (v5: nos tempos fortes) soluços cada vez mais fundos → `524–538,4` inspiração: o mundo acelera para 1,1×, sobe de tom e perde o grave, a sala do próprio golpe cresce de trás pra frente e o riser corta → `538,4–540` vácuo de 80 ms → `540` TÁ (estalo) e BOOM no tick seguinte (floração) → `540–556` contorção (v5: o tutti é ouvido inteiro e só então o tempo cede): a taxa cai a 0,6, ricocheteia a 0,9 e balança a 3,4 Hz; a cauda do golpe vai junto a 70 % e o pente estica o espaço → `556–598` suspensão: o mundo afunda assintótico e escurece (passa-baixa até 180 Hz), a foto congelada e o disco arranhado nas poses da câmera, e o **coração seco** batendo fora do relógio → `600` zero digital.
 
 ---
 
@@ -169,3 +169,29 @@ Tudo em `spec/dramaturgy.json`, sem tocar em código:
 - Thomas, F. & Johnston, O. *The Illusion of Life: Disney Animation* (1981): antecipação, overshoot, follow-through.
 - Mascaramento para frente: a recuperação leva de dezenas a algumas centenas de ms (literatura de psicoacústica; ver p. ex. Jesteadt, Bacon & Lehman, JASA 1982).
 - LIGO/Virgo, GW150914 (o chirp).
+
+---
+
+## 10. A trilha v5 (do zero, 25/10/2026)
+
+Pedido do usuário: "zerar só a música, manter as ferramentas". Referência de **ofício** (não de notas): Interestelar. Nenhuma melodia copiada. Partitura em `spec/music.json`, instrumentos em `organ.py`, render em `music.py`.
+
+**A música vem primeiro.** Grade de 80 BPM: 1 tempo = 15 ticks exatos, 1 compasso = 3 s. Os eventos do filme caem nos tempos fortes: fusão (240) = compasso 4, jatos (360) = 6, maré (420) = 7, horizonte (540) = 9, preto (600) = 10. O Ato VII tem grade própria, 60 BPM a partir do 620, e o clarão (700) cai no tempo 1 do compasso seguinte.
+
+**O órgão e o 32' resultante.** Um órgão não tem dinâmica por nota: ela vem dos registros puxados (crescendo por soma) e da caixa expressiva (persiana: fechada = −20 dB e escura). O pedal toca 16' + 10⅔' (Ré 36,7 Hz + Lá 55 Hz, razão 2:3). A soma só se repete a cada 1/18,35 s, e o ouvido ouve um Ré0 que nenhum tubo toca (a fundamental fantasma). `check_organ.py` prova isso antes de todo render: periodicidade de **18,35 Hz** com só os dois tubos, e 18,34 Hz depois de cortar tudo abaixo de 150 Hz (o celular). Por baixo vai um 32' de verdade, baixinho, para fone e TV. Os tubos ficam como num órgão real: semitons pares de um lado, ímpares do outro, então o arpejo anda pelo estéreo sozinho.
+
+**Forma (compasso a compasso):**
+
+| Compasso (ticks) | O quê | Ofício de referência |
+|---|---|---|
+| 0 (0–60) | só o pedal de 32' nascendo; uma flauta no ponto (20) e a terça no gêmeo (40) | antes do tempo existir |
+| 1–3 (60–240) | Rém → Si♭ → Solm → Fá/Lá → Lá7sus4 → Lá; o MESMO arpejo acelerando pela subdivisão (colcheia → tercina → semicolcheia → sextina), um registro a mais por compasso; o coral entra | o ostinato que só soma camadas (Cornfield Chase, No Time for Caution) |
+| 4 (240) | tutti em **Si♭** (cadência de engano: esperava Ré): o espanto de nascer fora de casa | |
+| 5–6 (300–420) | o arpejo volta em seis (gira como o disco) e acelera; no 360, tutti em **Fá** maior, o único momento heroico; no 390, calmaria em Rém9 (o mesmo acorde do sgx_pad) | a subida longa (Detach) |
+| 7–8 (420–540) | o pedal vira pulso de palheta com Mi♭ (frígio, ameaça); o **relógio** entra, um tique por tempo, depois colcheias, depois semicolcheias; o arpejo só sobe; Lá7(♭9) | o tique de Mountains (o tempo de fora passando) e o pulso de Coward |
+| 9 (540) | tutti em **Ré menor**, o primeiro em casa: o destino. O relógio continua regular no tempo do mundo, e é o relógio do diretor que espaça os tiques até parar | |
+| Ato VII (620–760) | do zumbido nascem flautas no alto em Ré maior; o clarão (700) em Ré maior com 9ª, sem palhetas (luz sem violência) | quietude (The Wormhole) |
+
+**A narrativa harmônica:** a fusão evita a tônica (Si♭), os jatos fogem para o maior (Fá) e o horizonte é a primeira vez que a música chega ao Ré com tudo. O buraco negro passa o filme inteiro puxando para o Ré, e no horizonte ele ganha.
+
+**O que ficou das ferramentas:** o diretor (vácuo, grave sugado, contorção e congelamento, agora sobre a trilha nova), o ouvido automático, a ida e volta, o `act7` (ponto de audição do Ato VII) e os efeitos. **O que saiu:** `score.py`/`score.json` e `rhythm.py`/`rhythm.json` (a música antiga), os soluços da fusão (a grade já acelera por subdivisão) e o Risset de subida do Ato VII.

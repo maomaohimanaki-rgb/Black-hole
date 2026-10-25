@@ -1,7 +1,7 @@
 """Receitas dos 16 efeitos do buraco negro (docs/AUDIO_DESIGN.md §3) + a trilha.
 v0.2.3 "efeitos de cinema" (retorno do usuário: a trilha ficou boa, mas os efeitos soavam "SFX de YouTube
 de 2015": secos, fora do tom, cliques e bitcrush por cima de uma catedral). Três regras para todos:
-  1. o MESMO espaço da trilha: todo efeito passa pela catedral (dsp.cathedral, spec/score.json → reverb);
+  1. o MESMO espaço da trilha: todo efeito passa pela mesma sala (dsp.cathedral, spec/music.json → room);
   2. o MESMO tom: afinados em Ré, nas notas dos acordes da trilha naquele instante;
   3. impacto TONAL em vez de explosão: "braam" de metais graves afinado, reverb invertido nas subidas,
      brilhos afinados no lugar de cliques de ruído.
@@ -17,7 +17,7 @@ import dsp
 from dsp import SR, TICK, time
 
 ROOT = Path(__file__).resolve().parents[2]
-REVERB = json.loads((ROOT / "spec/score.json").read_text(encoding="utf-8"))["reverb"]
+REVERB = json.loads((ROOT / "spec/music.json").read_text(encoding="utf-8"))["room"]  # v5: a sala da trilha nova
 NOTE = {"C": -9, "D": -7, "E": -5, "F": -4, "G": -2, "A": 0, "B": 2}
 
 
@@ -37,6 +37,7 @@ class Parts:
         self.bed = np.zeros((n, 2))
         self.events = {}
         self.marks = []  # (tick, Hz): brilho afinado de articulação, aplicado DEPOIS da calibração (nível fixo)
+        self.hints = {}  # tick → ganho inicial sugerido para a calibração (v5)
 
     def add_bed(self, x):
         self.bed += x if x.ndim == 2 else dsp.stereo(x)
@@ -462,13 +463,13 @@ def jet(s):
 
 def pad(s):
     """O único respiro musical dos efeitos: coral "aah" em Ré menor com 9ª, o mesmo acorde da trilha no 390."""
-    import score
+    import organ
     S = s["tick"]
     n = (s["end_tick"] - S) * TICK
     rng = rng_for(s["id"])
     P = Parts(n)
     t = time(n)
-    out = sum(score.choir_note(hz(nm), n, rng) for nm in ("D4", "A4", "E5", "F5"))
+    out = sum(organ.choir(hz(nm), n, rng, "a")[:n] for nm in ("D4", "A4", "E5", "F5"))
     out *= np.interp(t, [0, 0.6, 2.4, 3.0], [0.15, 1, 1, 0])
     P.add_bed(dsp.stereo(out, 1.0))
     P.start_event(400)
@@ -506,11 +507,10 @@ STUTTER = [1, 1, 2, 2, 3, 4, 6, 8]  # o stutter da câmera no B17 (spec/storyboa
 
 
 def moment(start_tick, end_tick):
-    """O som do filme naquele instante (trilha + ritmo, tempo absoluto), para congelar e arranhar."""
-    import rhythm
-    import score
+    """O som do filme naquele instante (a trilha, tempo absoluto), para congelar e arranhar."""
+    import music
     a, b = int(start_tick * TICK), int(end_tick * TICK)
-    return score.render_full()[a:b] + rhythm.render_full()[a:b]
+    return music.render_full()[a:b]
 
 
 def fall_speed(ticks):
@@ -635,6 +635,9 @@ def horizon(s):
             hb[k2:] += 0.5 * dsp.sat(np.sin(2 * np.pi * hz("D1") * 1.4 * time(m - k2)) * dsp.env_ad(m - k2, 0.008, 0.12), 2.2)
         P.add_event(o["tick"], dsp.stereo(place(n, so, dsp.lp(hb, 700))))
         P.mark(o["tick"], "D6")
+    # ponto de partida da calibração: o golpe cheio e cada batida já perto do nível que o spec pede em relação a
+    # ele (0,6 · 0,45 · 0,3 do pico do golpe; o batimento cru é ~9 dB mais forte que o golpe cru)
+    P.hints = {540: 1.0, 552: 0.2, 566: 0.15, 584: 0.09}
     # 5. silêncio digital exato no fim (o filme fica mudo de 600 a 619)
     P.map(lambda x: x * np.interp(t, [0, 2.94, 2.995], [1, 1, 0])[:, None])
     return P
@@ -714,21 +717,12 @@ def burst(s):
     return P.map(lambda x: act7.widen(x, S))  # v0.2.6: a luz se espalha: de quase mono a largo
 
 
-def score_part(s):
-    """A trilha (tools/synth/score.py + spec/score.json): sem eventos, só a cama (já tem o próprio espaço)."""
-    import score
+def music_part(s):
+    """A trilha v5 (tools/synth/music.py + spec/music.json): sem eventos, só a cama (já tem a própria sala)."""
+    import music
     n = (s["end_tick"] - s["tick"]) * TICK
     P = Parts(n)
-    P.add_bed(score.part(s["tick"], s["end_tick"]))
-    return P
-
-
-def rhythm_part(s):
-    """A camada rítmica (tools/synth/rhythm.py + spec/rhythm.json): só cama, com o espaço próprio."""
-    import rhythm
-    n = (s["end_tick"] - s["tick"]) * TICK
-    P = Parts(n)
-    P.add_bed(rhythm.part(s["tick"], s["end_tick"]))
+    P.add_bed(music.part(s["tick"], s["end_tick"]))
     return P
 
 
@@ -736,5 +730,5 @@ RECIPES = {
     "sgx_void_in": void_in, "sgx_point": point, "sgx_twin": twin, "sgx_chirp": chirp, "sgx_merge": merge,
     "sgx_ringdown": ringdown, "sgx_disk_ignite": disk_ignite, "sgx_disk_loop": disk_loop, "sgx_disk_loop_ext": disk_loop,
     "sgx_jet": jet, "sgx_pad": pad, "sgx_tidal": tidal, "sgx_fall": fall, "sgx_horizon": horizon,
-    "sgx_hawking": hawking, "sgx_burst": burst, "sgx_score_a": score_part, "sgx_score_b": score_part, "sgx_rhythm_a": rhythm_part, "sgx_rhythm_b": rhythm_part,
+    "sgx_hawking": hawking, "sgx_burst": burst, "sgx_music_a": music_part, "sgx_music_b": music_part,
 }

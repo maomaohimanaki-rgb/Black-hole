@@ -2,6 +2,15 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## Áudio v5.0 (pacote em `audio/`, fora do .mcaddon por enquanto) · 25/10/2026 — trilha nova, do zero
+
+**Por quê:** o usuário achou complicado demais consertar a trilha antiga e pediu para "zerar só a música e manter as ferramentas", com o ofício de Interestelar como referência: órgão de 32 pés com o efeito resultante, ostinato e o relógio.
+
+- Trilha nova em `audio/spec/music.json` + `music.py` + `organ.py`: órgão de tubos aditivo, coral por formantes e o tique do relógio, numa grade de 80 BPM (15 ticks por tempo) com a fusão, os jatos, a maré e o horizonte nos tempos fortes (T-17).
+- **32' resultante:** 16' + 10⅔' fazem o ouvido ouvir um Ré0 (18,35 Hz) que nenhum tubo toca. `check_organ.py` prova isso antes de cada render, inclusive depois do corte de 150 Hz do celular.
+- `sgx_score_*` e `sgx_rhythm_*` viraram `sgx_music_a/b`. Saíram `score.py`, `rhythm.py` e os specs deles. Diretor, ouvido automático, ida e volta, `act7` e efeitos ficaram.
+- Conferido: ida e volta 18/18, ouvido automático aprovado (golpe da fusão +2,2 dB, do horizonte +7,8 dB, respiração do filme 14,5 dB).
+
 ## Áudio v4.0 (pacote em `audio/`, fora do .mcaddon por enquanto) · 25/10/2026 — dramaturgia do som
 
 **Por quê:** retorno do usuário sobre o áudio v3.0, ouvido fora do jogo: "a ciência tem que ser gramática, não lei universal". O trecho de 12 a 22 s estava bom, mas o drop dos 11–12 s e a dilatação (21–30 s) eram "bonitos no papel e broxantes no ouvido". Medido: os dois golpes ficavam **abaixo** do build (−3,3 dB na fusão e −1,1 dB no horizonte), o grave sumia no golpe da fusão e a dilatação eram três rampas lineares sem relógio comum.
