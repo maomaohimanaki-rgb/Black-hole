@@ -718,6 +718,66 @@
         "rule": "nada de sub-grave violento: é o branco de PAZ"
       },
       "notes": "O último clarão."
+    },
+    {
+      "file": "sgx_score_a.ogg",
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "id": "sgx_score_a",
+      "tick": 0,
+      "end_tick": 600,
+      "volume": 0.7,
+      "onsets_intended": [
+        {
+          "tick": 0,
+          "rms_norm": 0.02
+        }
+      ],
+      "centroid_hint_hz": [
+        150,
+        1500
+      ],
+      "recipe": {
+        "type": "score",
+        "source": "spec/score.json",
+        "part": "Atos I–VI (para em zero no 600)"
+      },
+      "notes": "Trilha: a música por baixo dos efeitos (órgão, ostinato nas meias-órbitas, sub). Pedido do usuário em 25/10/2026."
+    },
+    {
+      "file": "sgx_score_b.ogg",
+      "pitch": 1.0,
+      "heard_in_cutscene": true,
+      "heard_outside_cutscene": false,
+      "channels": {
+        "cutscene_2d": "stereo",
+        "positional_3d": "mono"
+      },
+      "id": "sgx_score_b",
+      "tick": 620,
+      "end_tick": 760,
+      "volume": 0.7,
+      "onsets_intended": [
+        {
+          "tick": 620,
+          "rms_norm": 0.02
+        }
+      ],
+      "centroid_hint_hz": [
+        300,
+        3000
+      ],
+      "recipe": {
+        "type": "score",
+        "source": "spec/score.json",
+        "part": "Ato VII (Ré maior)"
+      },
+      "notes": "Trilha, Ato VII: do silêncio até o clarão em Ré maior."
     }
   ]
 }

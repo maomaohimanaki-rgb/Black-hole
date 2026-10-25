@@ -2,6 +2,22 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.2.1 (em teste) · out/2026 — a trilha (score)
+
+**Por quê:** ouvindo o mixdown da 0.2.0, o usuário achou o som "bem sintético, bem SFX", com falta de "um fundo, como o Hans Zimmer em Interestelar": a composição melódica que corre por baixo dos efeitos o tempo todo.
+
+- **Trilha nova**, `sgx_score_a` (0–600) e `sgx_score_b` (620–760), com a composição como dado em `spec/score.json` (acordes, dinâmica, ostinatos). Para mudar a música, mexe no spec, não no código.
+- **Ré menor → Ré maior:**
+  - Ato I: só o pedal grave, com uma nota aguda no ar a cada buraco negro que aparece.
+  - Ato II: Dm → Bb → F → C → Gm → A, crescendo até o grito, com **corte seco no 240**.
+  - Ato III: só o grave respirando.
+  - Ato IV: o órgão abre com o disco, Bb maj9 no plano-herói, órgão pleno nos jatos.
+  - Ato V: o baixo cai cromático sob um cluster dissonante.
+  - Ato VI: a dominante sem resolver, numa **parada de fita** (desacelera e afina para baixo até zero no 600).
+  - Ato VII: Ré maior nascendo no agudo até o clarão.
+- **Ostinato preso às meias-órbitas:** o "tique" acelera junto com a dança dos dois buracos negros (o mesmo relógio do chirp e das ondulações). Na maré ele volta cada vez mais rápido, e no fim vira um arpejo subindo até o clarão.
+- **Órgão de tubos** por síntese aditiva (registros que abrem com a intensidade, coro de 3 tubos, vento do fole) e **reverb de catedral** de 4,5 s, aplicado por trecho para não vazar nos silêncios.
+
 ## 0.2.0 (em teste) · out/2026 — F2: o motor de áudio
 
 **Por quê:** o som do filme agora é o de verdade, sintetizado em Python a partir do spec, e não mais um bipe por onset. O storyboard vem antes do som (T-03), e o som sai da mesma matemática da imagem (T-05).

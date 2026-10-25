@@ -2448,6 +2448,22 @@ export const DATA = {
    "volume": 1.0,
    "cutscene": true,
    "outside": true
+  },
+  {
+   "id": "sgx_score_a",
+   "tick": 0,
+   "end": 600,
+   "volume": 0.7,
+   "cutscene": true,
+   "outside": false
+  },
+  {
+   "id": "sgx_score_b",
+   "tick": 620,
+   "end": 760,
+   "volume": 0.7,
+   "cutscene": true,
+   "outside": false
   }
  ],
  "flashColors": [

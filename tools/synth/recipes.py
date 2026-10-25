@@ -500,9 +500,18 @@ def burst(s):
     return P
 
 
+def score_part(s):
+    """A trilha (tools/synth/score.py + spec/score.json): sem eventos, só a cama; o onset é o começo."""
+    import score
+    n = (s["end_tick"] - s["tick"]) * TICK
+    P = Parts(n)
+    P.add_bed(score.part(s["tick"], s["end_tick"]))
+    return P
+
+
 RECIPES = {
     "sgx_void_in": void_in, "sgx_point": point, "sgx_twin": twin, "sgx_chirp": chirp, "sgx_merge": merge,
     "sgx_ringdown": ringdown, "sgx_disk_ignite": disk_ignite, "sgx_disk_loop": disk_loop, "sgx_disk_loop_ext": disk_loop,
     "sgx_jet": jet, "sgx_pad": pad, "sgx_tidal": tidal, "sgx_fall": fall, "sgx_horizon": horizon,
-    "sgx_hawking": hawking, "sgx_burst": burst,
+    "sgx_hawking": hawking, "sgx_burst": burst, "sgx_score_a": score_part, "sgx_score_b": score_part,
 }

@@ -1,0 +1,50 @@
+{
+  "about": "Trilha (score) do buraco negro: a música que corre POR BAIXO dos efeitos, o tempo todo (pedido do usuário em 25/10/2026: 'falta o fundo, à la Hans Zimmer em Interestelar'). Ré menor → Ré maior no fim (o perdão do Ato VII). Órgão de tubos + ostinato + sub, com reverb de catedral. Lido por tools/synth/score.py. Ticks do filme (20/s). Notas em notação científica (A4 = 440 Hz).",
+  "reverb": {"seconds": 4.5, "decay": 1.6, "wet": 0.45, "lowpass_hz": 5000},
+  "chords": [
+    {"t": 0,   "notes": ["D1", "D2"],                                  "stops": 0.15, "why": "Ato I: só o pedal, quase nada"},
+    {"t": 20,  "notes": ["D1", "D2", "A4"],                            "stops": 0.2,  "why": "o ponto: um harmônico agudo no ar"},
+    {"t": 40,  "notes": ["D1", "D2", "F4", "A4"],                      "stops": 0.25, "why": "o gêmeo: a terça menor, algo errado"},
+    {"t": 80,  "notes": ["D2", "A2", "D3", "F3", "A3"],                "stops": 0.3,  "why": "Ato II: Dm, a dança começa"},
+    {"t": 120, "notes": ["Bb1", "F2", "Bb2", "D3", "F3"],              "stops": 0.4},
+    {"t": 160, "notes": ["A1", "F2", "A2", "C3", "F3"],                "stops": 0.5},
+    {"t": 190, "notes": ["C2", "G2", "C3", "E3", "G3"],                "stops": 0.65},
+    {"t": 215, "notes": ["G1", "D2", "G2", "Bb2", "D3", "G3"],         "stops": 0.8},
+    {"t": 228, "notes": ["A1", "E2", "A2", "C#3", "E3", "A3"],         "stops": 1.0,  "why": "dominante: tensão máxima até o corte seco no 240"},
+    {"t": 242, "notes": ["D1", "A1"],                                  "stops": 0.1,  "why": "Ato III: depois do boom, só o grave respirando"},
+    {"t": 280, "notes": ["D2", "A2", "D3", "F3", "A3", "D4"],          "stops": 0.5,  "why": "Ato IV: o disco acende, o órgão abre"},
+    {"t": 310, "notes": ["Bb1", "F2", "A2", "D3", "F3", "A3", "C4"],   "stops": 0.7,  "why": "o anel (plano-herói): Bb maj9, majestoso"},
+    {"t": 350, "notes": ["G1", "D2", "Bb2", "D3", "F3", "A3"],         "stops": 0.8},
+    {"t": 360, "notes": ["F1", "C2", "F2", "A2", "C3", "F3", "A3", "C4"], "stops": 1.0, "why": "os jatos: órgão pleno"},
+    {"t": 390, "notes": ["D2", "A2", "E3", "F3", "A3"],                "stops": 0.45, "why": "o olho do mundo: Dm add9, respiro (o coral entra no 400)"},
+    {"t": 420, "notes": ["D2", "D4", "E4", "F4"],                      "stops": 0.6,  "why": "Ato V: cluster dissonante, o baixo começa a cair"},
+    {"t": 440, "notes": ["C#2", "D4", "E4", "F4"],                     "stops": 0.65},
+    {"t": 460, "notes": ["C2", "C#4", "E4", "F4"],                     "stops": 0.7},
+    {"t": 480, "notes": ["B1", "C4", "E4", "F4"],                      "stops": 0.8},
+    {"t": 500, "notes": ["Bb1", "C4", "D4", "F4"],                     "stops": 0.9},
+    {"t": 520, "notes": ["A1", "C#4", "E4", "G4"],                     "stops": 1.0},
+    {"t": 540, "notes": ["A1", "A2", "E3", "C#4"],                     "stops": 0.8,  "why": "Ato VI: a dominante fica sem resolver, a fita para"},
+    {"t": 620, "notes": ["F#5", "A5"],                                 "stops": 0.05, "why": "Ato VII: do silêncio, Ré MAIOR bem no alto (flautas)"},
+    {"t": 640, "notes": ["D5", "F#5", "A5"],                           "stops": 0.1},
+    {"t": 670, "notes": ["D4", "A4", "D5", "F#5", "A5", "E6"],         "stops": 0.25},
+    {"t": 700, "notes": ["D2", "A2", "D3", "F#3", "A3", "E4", "F#4", "D5"], "stops": 1.0, "why": "o clarão: Ré maior com 9ª, órgão pleno, sem violência"}
+  ],
+  "dynamics": [
+    {"t": 0, "v": 0.0}, {"t": 15, "v": 0.12}, {"t": 79, "v": 0.22},
+    {"t": 80, "v": 0.25}, {"t": 239, "v": 1.0, "ease": "inQuad"}, {"t": 240, "v": 0.0},
+    {"t": 242, "v": 0.18}, {"t": 262, "v": 0.0},
+    {"t": 280, "v": 0.0}, {"t": 310, "v": 0.7, "ease": "outSine"}, {"t": 350, "v": 0.6}, {"t": 360, "v": 0.95}, {"t": 380, "v": 0.7}, {"t": 390, "v": 0.45}, {"t": 419, "v": 0.4},
+    {"t": 420, "v": 0.45}, {"t": 539, "v": 1.0, "ease": "inQuad"},
+    {"t": 545, "v": 0.8}, {"t": 598, "v": 0.0, "ease": "inSine"}, {"t": 600, "v": 0.0},
+    {"t": 620, "v": 0.0}, {"t": 640, "v": 0.18}, {"t": 690, "v": 0.45, "ease": "inSine"}, {"t": 700, "v": 1.0}, {"t": 759, "v": 0.0, "ease": "outSine"}
+  ],
+  "ostinato": [
+    {"from": 74, "to": 239, "on": "half_orbits", "subdivide": 2, "notes": ["A4", "D5", "A4", "F5"], "level": 0.5,
+     "why": "o 'tique' de Interestelar preso às meias-órbitas: acelera com a dança (o mesmo relógio do chirp e das ondulações)"},
+    {"from": 420, "to": 538, "on": "accel", "period_ticks": [6, 2], "notes": ["D5", "F5", "E5", "F5"], "level": 0.4,
+     "why": "Ato V: a maré, cada vez mais rápido"},
+    {"from": 660, "to": 699, "on": "every", "period_ticks": 5, "notes": ["D5", "E5", "F#5", "A5", "D6", "A5", "F#5", "E5"], "level": 0.3,
+     "why": "Ato VII: arpejo subindo até o clarão"}
+  ],
+  "tape_stop": {"from": 540, "to": 600, "rate": [1.0, 0.25], "why": "Ato VI: a trilha desacelera e afina para baixo com o tempo parando"}
+}
