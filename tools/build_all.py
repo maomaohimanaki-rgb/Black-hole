@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-STEPS = ["tools/check_spec.py", "tools/gen_templates.py", "tools/build_storyboard_data.py", "tools/gen_assets.py",
+STEPS = ["tools/check_spec.py", "tools/gen_templates.py", "tools/build_storyboard_data.py", "tools/gen_assets.py", "tools/bake/bh_engine.py",
          "tools/synth/render.py", "tools/build_timeline.py", "tools/gen_ui.py"]
 for s in STEPS:
     r = subprocess.run([sys.executable, str(ROOT / s)], cwd=ROOT)

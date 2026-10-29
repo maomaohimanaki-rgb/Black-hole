@@ -2,6 +2,39 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.3.0 (em teste) · out/2026 — F3: o motor de imagem e o impostor no jogo
+
+**Por quê:** o áudio ficou "funcional" em 0.2.7 e o usuário decidiu deixá-lo para o fim (sem loop eterno de perfeição; T-23). O filme ainda mostrava o buraco negro como bolinha preta + halo. Agora ele é a imagem de verdade: a sombra, o anel de fótons e o lado de trás do disco **dobrado por cima e por baixo** pela lente, como no *Interstellar*, com o Doppler que o *Interstellar* tirou.
+
+- **`tools/bake/bh_engine.py`:**
+  - traça o espaço-tempo de Schwarzschild: uma tabela RK4 de `u'' = −u + 1,5u²` para todos os raios de uma vez;
+  - o fóton cruza o plano do disco em φ₀ + kπ (imagem direta, secundária e o anel);
+  - disco de Novikov–Thorne;
+  - fator g com Doppler e gravitacional: brilho × g⁴, cor × g;
+  - turbulência fBm;
+  - tonemap pela luminância, que preserva o tom.
+- **Dois atlas:**
+  - `bh_atlas.png` (2048², 16 quadros de 512) com as inclinações que a câmera usa de 240 a 719 e um quadro "sem disco";
+  - `bh_small.png` (1024², 16 de 256) para A e B, que são vistos de −60° a +82,5°.
+  - Negativo = câmera abaixo do disco.
+  - Ficam em cache em `build/bake/` (o traçado leva ~1 min, e o `gen_assets.py` apaga o RP).
+- **Cor:** a rampa de corpo negro de `spec/palette.json`, igual ao STORYBOARD:
+  - borda laranja, meio âmbar, interno branco quente;
+  - lado que vem para a câmera azul-branco.
+  - Na primeira versão, o pico a 9 000 K pela fórmula pura deixava o disco todo bege-acinzentado. O Doppler usa β visual ×2 (no disco largo, o β real a 11 r_s é só 0,22 e a assimetria não aparecia; T-24).
+- **No jogo (`modules/impostor.js`):**
+  - partícula `lookat_xyz`, com o quadro escolhido pela inclinação da câmera a cada spawn e histerese de 1,5° (sem pisca-pisca);
+  - de 240 a 279 e na evaporação (620–699), o quadro sem disco;
+  - o disco entra por tinta, do preto à cor, enquanto os anéis acendem (280–310);
+  - os pontos dos anéis ficam só na ignição (até o 330);
+  - A e B trocam a bolinha pelo impostor pequeno.
+- **Testes:** `tests/impostor.test.mjs` confere que:
+  - toda pose da câmera de 280 a 619 cai a ≤ 5,25° de um quadro assado;
+  - cada trecho usa o quadro certo;
+  - o tamanho segue a sombra;
+  - os atlas e as partículas batem com `spec/bake.json`.
+  65/65 verdes.
+
 ## 0.2.7 (em teste) · out/2026 — identidade sonora: o gesto GW150914
 
 **Por quê:** ouvindo às cegas, os efeitos eram bem feitos mas GENÉRICOS. Nas palavras do usuário:

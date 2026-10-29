@@ -27,6 +27,12 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
 - **T-22 · Identidade sonora: o gesto GW150914** (25/10/2026, retorno do usuário: os efeitos eram genéricos, "JLPT", "Discovery", "ZA WARUDO é mais insano"). Todo grande evento nasce do mesmo material (a onda da fusão: inspiral que acelera, para seca, anel), em escalas, velocidades e sentidos diferentes (`tools/synth/gw.py`). **Sinos e brilhos afinados ficam proibidos nos efeitos** (são a linguagem dos sons de interface), e o relógio é mecânico. A dilatação congela e arranha o próprio som do filme no ritmo do stutter da câmera.
 - **T-16 · Envelope do chirp segue o spec, não só a lei de amplitude** (25/10/2026). A lei A ∝ f^(2/3) do AUDIO_DESIGN daria 0,6 no tick 232, mas o `audio_cues.json` pede 0,92 (o grito final achata). Vale o JSON: o envelope é a curva dos onsets pedidos, que coincide com a lei até ~200. A FASE continua a fórmula exata (som e órbita sincronizados). Com o envelope pela lei, o calibrador inflava os cliques 27×, o pico segurava o master e o B04–B06 ficava a −40 LUFS no mixdown.
 
+- **T-23 · O áudio vai para o fim** (29/10/2026, decisão do usuário). Fica congelado em 0.2.7 ("funcional") e volta como a última fase, depois das imagens, para não virar um loop eterno de perfeição. Liberdade total para trocar a arquitetura, o pipeline ou as fontes (inclusive o motor `huayin/`) quando voltar (D-15).
+- **T-24 · Cor e Doppler do impostor pela intenção do STORYBOARD** (29/10/2026, F3). O traçado é físico (geodésicas, g, Novikov–Thorne), mas três números são visuais, todos em `spec/bake.json`:
+  - a cor segue a rampa de `spec/palette.json` (2 000 K na borda → 9 000 K no pico);
+  - o brilho é ∝ T^2,6 em vez de T⁴ (que apaga a borda a 0,2 % do pico);
+  - o β do Doppler é ×2 (limite 0,75), senão o "esquerda azul-forte, direita laranja-fraca" do B11 não aparece.
+
 ## Em aberto (decidir antes ou durante a fase indicada)
 
 - **D-03 · Tamanho da cratera.** Esfera de raio 30 (~60 blocos de largura, ~28 de fundo). Maior que isso pesa no motor do mundo (P-06). *Quando: F6.*
@@ -39,4 +45,5 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
 - **D-10 · Créditos.** LIGO/Virgo (forma do chirp, GW150914), NASA SVS (mapa de estrelas), artigos do flare de 2004 (magnetar) e fontes OFL (IBM Plex, Poppins). *Quando: F8.*
 - **D-11 · Magnetar e o ferro do jogador.** A armadura de ferro do jogador e dos outros também é puxada? Proposta: só visualmente (partículas), nunca tirar item de ninguém. *Quando: F9.*
 - **D-12 · Magnetar e redstone.** Piscar lâmpadas de redstone no clarão seria lindo, mas mexe na máquina dos outros. Proposta: não mexer. *Quando: F9.*
+- **D-15 · Que áudio volta na última fase.** O 0.2.7 é síntese própria (`tools/synth/`). Quando o áudio voltar (T-23), dá para refazer por modelagem física (o `huayin/`), por outra arquitetura ou manter e só polir. *Quando: última fase.*
 - **D-13 · Duelo.** Um terceiro evento, "magnetar caindo no buraco negro", depois dos dois prontos. *Quando: depois da v2.0.*

@@ -1,0 +1,123 @@
+{
+  "about": "Motor de imagem (F3): o que assar e como. Lido por tools/bake/bh_engine.py. Unidades do traçado em r_s (raio de Schwarzschild); no jogo, r_s = black_hole.r_s_final de spec/layout.json (2,8 blocos).",
+  "impostor": {
+    "cell_px": 512,
+    "grid": 4,
+    "half_width_rs": 16.0,
+    "r_in_rs": 3.0,
+    "r_out_rs": 15.0,
+    "small_r_out_rs": 5.0,
+    "small_half_width_rs": 7.0,
+    "t_peak_k": 9000,
+    "t_edge_k": 2000,
+    "beta_scale": 2.0,
+    "exposure": 1.9,
+    "lum_exponent": 2.6,
+    "ring_glow": 0.35,
+    "why_cells": "Quadros grandes: as inclinações que a câmera do storyboard usa de 240 a 719, arredondadas a 7,5° (VISUAL_TECH §2.3), mais o 37,5 para o sgx:from. Negativo = câmera abaixo do disco (a mesma imagem espelhada na vertical). 'bare' = só sombra + anel de fótons, sem disco (240–279, antes de o disco acender, e a evaporação 620–699; não depende da inclinação). 'small' = o atlas de A e B (disquinho de poeira até small_r_out_rs), 16 inclinações de 256², porque o par é visto de −60° a +82,5° (20–239). Os quadros pequenos e o 'bare' cobrem ±small_half_width_rs. tests/impostor.test.mjs confere que toda pose cai num quadro assado.",
+    "cells": [
+      {
+        "incl": 90
+      },
+      {
+        "incl": 82.5
+      },
+      {
+        "incl": 75
+      },
+      {
+        "incl": 67.5
+      },
+      {
+        "incl": 60
+      },
+      {
+        "incl": 52.5
+      },
+      {
+        "incl": 45
+      },
+      {
+        "incl": -90
+      },
+      {
+        "incl": -82.5
+      },
+      {
+        "incl": -75
+      },
+      {
+        "incl": -67.5
+      },
+      {
+        "incl": -60
+      },
+      {
+        "incl": -52.5
+      },
+      {
+        "incl": -45
+      },
+      {
+        "kind": "bare"
+      },
+      {
+        "incl": 37.5
+      }
+    ],
+    "small": {
+      "cell_px": 256,
+      "grid": 4,
+      "cells": [
+        {
+          "incl": 90
+        },
+        {
+          "incl": 82.5
+        },
+        {
+          "incl": 75
+        },
+        {
+          "incl": 67.5
+        },
+        {
+          "incl": 60
+        },
+        {
+          "incl": 52.5
+        },
+        {
+          "incl": 45
+        },
+        {
+          "incl": 37.5
+        },
+        {
+          "incl": -90
+        },
+        {
+          "incl": -82.5
+        },
+        {
+          "incl": -75
+        },
+        {
+          "incl": -67.5
+        },
+        {
+          "incl": -60
+        },
+        {
+          "incl": -52.5
+        },
+        {
+          "incl": -45
+        },
+        {
+          "incl": -37.5
+        }
+      ]
+    }
+  }
+}

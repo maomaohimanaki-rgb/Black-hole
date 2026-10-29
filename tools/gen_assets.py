@@ -224,6 +224,19 @@ dump(RP / "particles/sgx_spike_atlas.json", particle(f"{NS}:sgx_spike_atlas", "p
      {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
       "uv": {"texture_width": 2048, "texture_height": 2048,
              "uv": ["math.mod(math.floor(v.particle_age * 2), 4) * 512", "math.floor(v.incl.x) * 512"], "uv_size": [512, 512]}}))
+# v0.3.0 (F3): o impostor do buraco negro. Atlas 4×4 de 512 assado por tools/bake/bh_engine.py (roda depois
+# deste script, que apaga o RP/); o quadro vem de v.incl.x (índice da lista de spec/bake.json, S-06).
+dump(RP / "particles/sgx_p_bh.json", particle(f"{NS}:sgx_p_bh", "particles_blend", "textures/sgx/impostor/bh_atlas",
+     {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
+      "uv": {"texture_width": 2048, "texture_height": 2048,
+             "uv": ["math.mod(math.floor(v.incl.x + 0.5), 4) * 512", "math.floor((math.floor(v.incl.x + 0.5)) / 4) * 512"],
+             "uv_size": [512, 512]}}))
+# A e B: atlas próprio de 16 inclinações, 4×4 de 256 (VISUAL_TECH §2.3)
+dump(RP / "particles/sgx_p_bh_small.json", particle(f"{NS}:sgx_p_bh_small", "particles_blend", "textures/sgx/impostor/bh_small",
+     {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
+      "uv": {"texture_width": 1024, "texture_height": 1024,
+             "uv": ["math.mod(math.floor(v.incl.x + 0.5), 4) * 256", "math.floor((math.floor(v.incl.x + 0.5)) / 4) * 256"],
+             "uv_size": [256, 256]}}))
 
 # ------------------------------------------------------------------ entidades dos spikes
 INERT = load(BP / "entities/sgx_disk.json")["minecraft:entity"]["components"]
