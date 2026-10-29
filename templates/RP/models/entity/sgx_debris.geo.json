@@ -6,8 +6,8 @@
         "identifier": "geometry.singularity.sgx_debris",
         "texture_width": 64,
         "texture_height": 32,
-        "visible_bounds_width": 64,
-        "visible_bounds_height": 64,
+        "visible_bounds_width": 128,
+        "visible_bounds_height": 128,
         "visible_bounds_offset": [
           0,
           0,

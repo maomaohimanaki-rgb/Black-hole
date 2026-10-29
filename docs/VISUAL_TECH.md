@@ -43,6 +43,10 @@ O storyboard define **quais inclinações aparecem de verdade**. Asse **só essa
 - Cada inclinação: 8 quadros de 512² num atlas 2048×1024 (≤ 2048, P-52).
 - Perfis: equilíbrio 0,75× e leve 0,5× pela mesma `res_profile.json`.
 - O mesmo motor gera os **impostores pequenos** de A e B (só sombra + anel + disquinho de poeira, 256²).
+- **v0.3.0:** o que foi assado:
+  - `bh_atlas.png`: 14 inclinações (±45…±90 de 7,5 em 7,5), mais +37,5 e um quadro "sem disco";
+  - `bh_small.png`: 16 inclinações de A/B.
+  - Lista e números visuais em `spec/bake.json` (T-24). No jogo, o quadro sai da inclinação da câmera a cada spawn (`modules/impostor.js`).
 
 ### 2.4 Escolher o quadro no Molang
 O script manda a inclinação **uma vez por plano**, no spawn da partícula persistente (`v.incl` = índice). O quadro de tempo vem de `v.particle_age`:

@@ -35,6 +35,7 @@ export function makeGame({ msPerTick = 50 } = {}) {
   log.entities = [];
   const dimension = {
     id: "minecraft:overworld",
+    heightRange: { min: -64, max: 320 },
     spawnParticle(id, pos, m) {
       log.particles.push({ tick, id, pos, vars: m?.vars });
     },
@@ -109,7 +110,35 @@ export function makeGame({ msPerTick = 50 } = {}) {
   };
   const subs = (name) => ({ subscribe: (fn) => ((handlers[name] ??= []).push(fn), fn) });
   const handlers = {};
+  // Ticking areas (P-40): a promessa resolve no próximo tick, como o jogo carregando os chunks.
+  const areas = new Map();
+  log.areas = [];
+  const tickingAreaManager = {
+    maxChunkCount: 100,
+    get chunkCount() {
+      return areas.size * 64;
+    },
+    hasCapacity: () => true,
+    hasTickingArea: (id) => areas.has(id),
+    getTickingArea: (id) => areas.get(id),
+    getAllTickingAreas: () => [...areas.values()],
+    createTickingArea(id, o) {
+      if (areas.has(id)) return Promise.reject(new Error("IdentifierAlreadyExists"));
+      areas.set(id, { identifier: id, ...o });
+      log.areas.push({ tick, op: "add", id, from: o.from, to: o.to });
+      return new Promise((res) => timeouts.push({ at: tick + 1, fn: res }));
+    },
+    removeTickingArea(id) {
+      areas.delete(id);
+      log.areas.push({ tick, op: "remove", id });
+    },
+    removeAllTickingAreas() {
+      areas.clear();
+      log.areas.push({ tick, op: "removeAll" });
+    },
+  };
   const world = {
+    tickingAreaManager,
     afterEvents: { itemUse: subs("itemUse"), playerSpawn: subs("playerSpawn") },
     gameRules: rules,
     getTimeOfDay: () => timeOfDay,
@@ -159,7 +188,7 @@ export function makeGame({ msPerTick = 50 } = {}) {
     get timeOfDay() {
       return timeOfDay;
     },
-    rules, tags, props,
+    rules, tags, props, areas,
     intervals,
   };
 }

@@ -81,6 +81,8 @@ Fora do disco: as ondas gravitacionais são **prata** `#D8E2F0`, os jatos **viol
 
 ## 3. Geometria de cena (resumo de `spec/layout.json`)
 
+> **v0.2.4 (T-18): escala B.** Os números abaixo são os do kit. Hoje toda distância da cena é ×3,5 (sombra ~7 blocos, disco de 84 de diâmetro, O = G + 49), a cratera tem raio 45 e a mira fica a 60–160 blocos. A fonte é `spec/layout.json`.
+
 - **G** é o bloco mirado (chão) e **O = G + 14 blocos para cima** é o centro do buraco negro.
 - A mira precisa estar a **40–128 blocos** do jogador. O corpo dele fica onde está e a cratera tem raio 30.
 - **O par:** A tem 36 M☉ (sombra de 1,21 bloco) e B tem 29 M☉ (0,97). Eles giram no plano horizontal em volta de O, no sentido anti-horário visto de cima. A distância vai de 8,0 (tick 60) a 2,18 (tick 239), quando as sombras se tocam.

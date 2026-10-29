@@ -77,15 +77,15 @@ export const DATA = {
      "t": 0,
      "pos": {
       "rel": "G",
-      "f": -10,
-      "r": 0,
+      "f": -35.0,
+      "r": 0.0,
       "u": 0.6
      },
      "look": {
       "rel": "G",
-      "f": 0,
-      "r": 0,
-      "u": 3
+      "f": 0.0,
+      "r": 0.0,
+      "u": 10.5
      },
      "ease": "linear",
      "fov": 50
@@ -94,15 +94,15 @@ export const DATA = {
      "t": 19,
      "pos": {
       "rel": "G",
-      "f": -8,
-      "r": 0,
+      "f": -28.0,
+      "r": 0.0,
       "u": 0.6
      },
      "look": {
       "rel": "G",
-      "f": 0,
-      "r": 0,
-      "u": 6
+      "f": 0.0,
+      "r": 0.0,
+      "u": 21.0
      },
      "ease": "inOutSine",
      "fov": 48
@@ -154,8 +154,8 @@ export const DATA = {
      "t": 20,
      "pos": {
       "rel": "G",
-      "f": -8,
-      "r": 0,
+      "f": -28.0,
+      "r": 0.0,
       "u": 0.6
      },
      "look": "O",
@@ -166,9 +166,9 @@ export const DATA = {
      "t": 39,
      "pos": {
       "rel": "G",
-      "f": -14,
-      "r": 3,
-      "u": 6
+      "f": -49.0,
+      "r": 10.5,
+      "u": 21.0
      },
      "look": "O",
      "ease": "outCubic",
@@ -249,9 +249,9 @@ export const DATA = {
      "t": 40,
      "pos": {
       "rel": "G",
-      "f": -14,
-      "r": 3,
-      "u": 6
+      "f": -49.0,
+      "r": 10.5,
+      "u": 21.0
      },
      "look": "O",
      "ease": "linear",
@@ -261,9 +261,9 @@ export const DATA = {
      "t": 42,
      "pos": {
       "rel": "G",
-      "f": -14,
-      "r": 3,
-      "u": 6
+      "f": -49.0,
+      "r": 10.5,
+      "u": 21.0
      },
      "look": "B",
      "ease": "outExpo",
@@ -273,7 +273,7 @@ export const DATA = {
      "t": 59,
      "pos": {
       "around": "O",
-      "r": 16,
+      "r": 56.0,
       "az": 20,
       "el": 15
      },
@@ -344,7 +344,7 @@ export const DATA = {
      "t": 60,
      "pos": {
       "around": "O",
-      "r": 16,
+      "r": 56.0,
       "az": 20,
       "el": 15
      },
@@ -356,7 +356,7 @@ export const DATA = {
      "t": 79,
      "pos": {
       "around": "O",
-      "r": 22,
+      "r": 77.0,
       "az": 40,
       "el": 50
      },
@@ -401,7 +401,7 @@ export const DATA = {
      "t": 80,
      "pos": {
       "around": "O",
-      "r": 22,
+      "r": 77.0,
       "az": 40,
       "el": 50
      },
@@ -413,7 +413,7 @@ export const DATA = {
      "t": 139,
      "pos": {
       "around": "O",
-      "r": 16,
+      "r": 56.0,
       "az": -60,
       "el": 25
      },
@@ -498,7 +498,7 @@ export const DATA = {
      "t": 140,
      "pos": {
       "around": "O",
-      "r": 16,
+      "r": 56.0,
       "az": -60,
       "el": 25
      },
@@ -510,7 +510,7 @@ export const DATA = {
      "t": 199,
      "pos": {
       "around": "O",
-      "r": 12,
+      "r": 42.0,
       "az": -170,
       "el": 6
      },
@@ -594,7 +594,7 @@ export const DATA = {
      "t": 200,
      "pos": {
       "around": "O",
-      "r": 12,
+      "r": 42.0,
       "az": -170,
       "el": 6
      },
@@ -606,7 +606,7 @@ export const DATA = {
      "t": 202,
      "pos": {
       "around": "O",
-      "r": 12.0,
+      "r": 42.0,
       "az": -170,
       "el": 6
      },
@@ -619,7 +619,7 @@ export const DATA = {
      "t": 209,
      "pos": {
       "around": "O",
-      "r": 11.1,
+      "r": 38.85,
       "az": -174,
       "el": 6
      },
@@ -632,7 +632,7 @@ export const DATA = {
      "t": 216,
      "pos": {
       "around": "O",
-      "r": 10.3,
+      "r": 36.05,
       "az": -178,
       "el": 6
      },
@@ -645,7 +645,7 @@ export const DATA = {
      "t": 222,
      "pos": {
       "around": "O",
-      "r": 9.4,
+      "r": 32.9,
       "az": -182,
       "el": 6
      },
@@ -658,7 +658,7 @@ export const DATA = {
      "t": 227,
      "pos": {
       "around": "O",
-      "r": 8.6,
+      "r": 30.1,
       "az": -186,
       "el": 6
      },
@@ -671,7 +671,7 @@ export const DATA = {
      "t": 232,
      "pos": {
       "around": "O",
-      "r": 7.7,
+      "r": 26.95,
       "az": -190,
       "el": 6
      },
@@ -684,7 +684,7 @@ export const DATA = {
      "t": 236,
      "pos": {
       "around": "O",
-      "r": 6.9,
+      "r": 24.15,
       "az": -194,
       "el": 6
      },
@@ -697,7 +697,7 @@ export const DATA = {
      "t": 239,
      "pos": {
       "around": "O",
-      "r": 6.0,
+      "r": 21.0,
       "az": -198,
       "el": 6
      },
@@ -862,7 +862,7 @@ export const DATA = {
      "t": 240,
      "pos": {
       "around": "O",
-      "r": 6,
+      "r": 21.0,
       "az": -198,
       "el": 6
      },
@@ -875,7 +875,7 @@ export const DATA = {
      "t": 242,
      "pos": {
       "around": "O",
-      "r": 40,
+      "r": 140.0,
       "az": -200,
       "el": 12
      },
@@ -888,7 +888,7 @@ export const DATA = {
      "t": 247,
      "pos": {
       "around": "O",
-      "r": 40,
+      "r": 140.0,
       "az": -200,
       "el": 12
      },
@@ -900,7 +900,7 @@ export const DATA = {
      "t": 250,
      "pos": {
       "around": "O",
-      "r": 40,
+      "r": 140.0,
       "az": -200,
       "el": 12
      },
@@ -912,7 +912,7 @@ export const DATA = {
      "t": 253,
      "pos": {
       "around": "O",
-      "r": 40,
+      "r": 140.0,
       "az": -200,
       "el": 12
      },
@@ -924,7 +924,7 @@ export const DATA = {
      "t": 256,
      "pos": {
       "around": "O",
-      "r": 40,
+      "r": 140.0,
       "az": -200,
       "el": 12
      },
@@ -936,7 +936,7 @@ export const DATA = {
      "t": 259,
      "pos": {
       "around": "O",
-      "r": 39,
+      "r": 136.5,
       "az": -200,
       "el": 12
      },
@@ -1028,7 +1028,7 @@ export const DATA = {
      "t": 260,
      "pos": {
       "around": "O",
-      "r": 39,
+      "r": 136.5,
       "az": -200,
       "el": 12
      },
@@ -1040,7 +1040,7 @@ export const DATA = {
      "t": 279,
      "pos": {
       "around": "O",
-      "r": 26,
+      "r": 91.0,
       "az": -205,
       "el": 8
      },
@@ -1077,7 +1077,7 @@ export const DATA = {
      "t": 280,
      "pos": {
       "around": "O",
-      "r": 26,
+      "r": 91.0,
       "az": -205,
       "el": 8
      },
@@ -1089,7 +1089,7 @@ export const DATA = {
      "t": 309,
      "pos": {
       "around": "O",
-      "r": 20,
+      "r": 70.0,
       "az": -145,
       "el": 12
      },
@@ -1176,7 +1176,7 @@ export const DATA = {
      "t": 310,
      "pos": {
       "around": "O",
-      "r": 20,
+      "r": 70.0,
       "az": -145,
       "el": 12
      },
@@ -1188,7 +1188,7 @@ export const DATA = {
      "t": 349,
      "pos": {
       "around": "O",
-      "r": 14,
+      "r": 49.0,
       "az": -135,
       "el": 9
      },
@@ -1242,7 +1242,7 @@ export const DATA = {
      "t": 350,
      "pos": {
       "around": "O",
-      "r": 14,
+      "r": 49.0,
       "az": -135,
       "el": 9
      },
@@ -1254,7 +1254,7 @@ export const DATA = {
      "t": 360,
      "pos": {
       "around": "O",
-      "r": 30,
+      "r": 105.0,
       "az": -120,
       "el": -10
      },
@@ -1270,7 +1270,7 @@ export const DATA = {
      "t": 380,
      "pos": {
       "around": "O",
-      "r": 30,
+      "r": 105.0,
       "az": -120,
       "el": -10
      },
@@ -1285,7 +1285,7 @@ export const DATA = {
      "t": 389,
      "pos": {
       "around": "O",
-      "r": 26,
+      "r": 91.0,
       "az": -110,
       "el": 4
      },
@@ -1372,7 +1372,7 @@ export const DATA = {
      "t": 390,
      "pos": {
       "around": "O",
-      "r": 26,
+      "r": 91.0,
       "az": -110,
       "el": 4
      },
@@ -1384,7 +1384,7 @@ export const DATA = {
      "t": 419,
      "pos": {
       "around": "O",
-      "r": 60,
+      "r": 150,
       "az": -100,
       "el": 20
      },
@@ -1426,7 +1426,7 @@ export const DATA = {
      "t": 420,
      "pos": {
       "around": "O",
-      "r": 34,
+      "r": 119.0,
       "az": -100,
       "el": -8
      },
@@ -1439,7 +1439,7 @@ export const DATA = {
      "t": 459,
      "pos": {
       "around": "O",
-      "r": 28,
+      "r": 98.0,
       "az": -95,
       "el": -6
      },
@@ -1648,7 +1648,7 @@ export const DATA = {
      "t": 539,
      "pos": {
       "along": "O",
-      "dist_to_shadow": 6
+      "dist_to_shadow": 21.0
      },
      "look": "O",
      "ease": "inCubic",
@@ -1725,7 +1725,7 @@ export const DATA = {
      "t": 540,
      "pos": {
       "along": "O",
-      "dist_to_shadow": 6
+      "dist_to_shadow": 21.0
      },
      "look": "O",
      "ease": "linear",
@@ -1735,7 +1735,7 @@ export const DATA = {
      "t": 579,
      "pos": {
       "along": "O",
-      "dist_to_shadow": 2.5
+      "dist_to_shadow": 8.75
      },
      "look": "O",
      "ease": "outSine",
@@ -1807,7 +1807,7 @@ export const DATA = {
      "t": 580,
      "pos": {
       "along": "O",
-      "dist_to_shadow": 2.5
+      "dist_to_shadow": 8.75
      },
      "look": "O",
      "ease": "linear",
@@ -1820,7 +1820,7 @@ export const DATA = {
      "t": 599,
      "pos": {
       "along": "O",
-      "dist_to_shadow": 0.5
+      "dist_to_shadow": 1.75
      },
      "look": "O",
      "ease": "inSine",
@@ -1855,7 +1855,7 @@ export const DATA = {
      "t": 600,
      "pos": {
       "around": "O",
-      "r": 70,
+      "r": 150,
       "az": -100,
       "el": 35
      },
@@ -1906,7 +1906,7 @@ export const DATA = {
      "t": 620,
      "pos": {
       "around": "O",
-      "r": 70,
+      "r": 150,
       "az": -100,
       "el": 35
      },
@@ -1918,7 +1918,7 @@ export const DATA = {
      "t": 659,
      "pos": {
       "around": "O",
-      "r": 55,
+      "r": 150,
       "az": -95,
       "el": 30
      },
@@ -1955,7 +1955,7 @@ export const DATA = {
      "t": 660,
      "pos": {
       "around": "O",
-      "r": 55,
+      "r": 150,
       "az": -95,
       "el": 30
      },
@@ -1967,7 +1967,7 @@ export const DATA = {
      "t": 699,
      "pos": {
       "around": "O",
-      "r": 30,
+      "r": 105.0,
       "az": -90,
       "el": 18
      },
@@ -2071,7 +2071,7 @@ export const DATA = {
      "t": 700,
      "pos": {
       "around": "O",
-      "r": 30,
+      "r": 105.0,
       "az": -90,
       "el": 18
      },
@@ -2083,7 +2083,7 @@ export const DATA = {
      "t": 719,
      "pos": {
       "around": "O",
-      "r": 40,
+      "r": 140.0,
       "az": -90,
       "el": 22
      },
@@ -2278,24 +2278,24 @@ export const DATA = {
  "disk": {
   "rings": [
    [
-    2.4,
-    4.0
+    8.4,
+    14.0
    ],
    [
-    4.0,
-    5.8
+    14.0,
+    20.3
    ],
    [
-    5.8,
-    7.8
+    20.3,
+    27.3
    ],
    [
-    7.8,
-    9.9
+    27.3,
+    34.65
    ],
    [
-    9.9,
-    12.0
+    34.65,
+    42.0
    ]
   ],
   "ignite": {
@@ -2304,7 +2304,18 @@ export const DATA = {
    "ring3": 292,
    "ring2": 298,
    "ring1": 304
-  }
+  },
+  "omega": 90
+ },
+ "scene": {
+  "k": 3.5,
+  "oHeight": 49,
+  "d0": 28.0,
+  "shadowA": 4.24,
+  "shadowB": 3.4,
+  "shadowF": 7.28,
+  "craterRadius": 45,
+  "craterDepth": 42
  },
  "jets": {
   "tOn": 360,
@@ -2316,9 +2327,164 @@ export const DATA = {
  },
  "gwShell": {
   "t0": 240,
-  "speed_blocks_per_tick": 6,
-  "max_radius": 200,
-  "camera_hit_tick_at_r40": 247
+  "speed_blocks_per_tick": 21,
+  "max_radius": 400,
+  "camera_hit_tick_at_r140": 247
+ },
+ "impostor": {
+  "grid": 4,
+  "cells": [
+   {
+    "incl": 90,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": 82.5,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": 75,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": 67.5,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": 60,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": 52.5,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": 45,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": -90,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": -82.5,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": -75,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": -67.5,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": -60,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": -52.5,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": -45,
+    "kind": "disk",
+    "hw": 6.1584
+   },
+   {
+    "incl": 90.0,
+    "kind": "bare",
+    "hw": 2.6943
+   },
+   {
+    "incl": 37.5,
+    "kind": "disk",
+    "hw": 6.1584
+   }
+  ],
+  "small": {
+   "grid": 4,
+   "hw": 2.6943,
+   "cells": [
+    {
+     "incl": 90,
+     "kind": "disk"
+    },
+    {
+     "incl": 82.5,
+     "kind": "disk"
+    },
+    {
+     "incl": 75,
+     "kind": "disk"
+    },
+    {
+     "incl": 67.5,
+     "kind": "disk"
+    },
+    {
+     "incl": 60,
+     "kind": "disk"
+    },
+    {
+     "incl": 52.5,
+     "kind": "disk"
+    },
+    {
+     "incl": 45,
+     "kind": "disk"
+    },
+    {
+     "incl": 37.5,
+     "kind": "disk"
+    },
+    {
+     "incl": -90,
+     "kind": "disk"
+    },
+    {
+     "incl": -82.5,
+     "kind": "disk"
+    },
+    {
+     "incl": -75,
+     "kind": "disk"
+    },
+    {
+     "incl": -67.5,
+     "kind": "disk"
+    },
+    {
+     "incl": -60,
+     "kind": "disk"
+    },
+    {
+     "incl": -52.5,
+     "kind": "disk"
+    },
+    {
+     "incl": -45,
+     "kind": "disk"
+    },
+    {
+     "incl": -37.5,
+     "kind": "disk"
+    }
+   ]
+  }
  },
  "sounds": [
   {
@@ -2448,6 +2614,38 @@ export const DATA = {
    "volume": 1.0,
    "cutscene": true,
    "outside": true
+  },
+  {
+   "id": "sgx_score_a",
+   "tick": 0,
+   "end": 600,
+   "volume": 0.7,
+   "cutscene": true,
+   "outside": false
+  },
+  {
+   "id": "sgx_score_b",
+   "tick": 620,
+   "end": 760,
+   "volume": 0.7,
+   "cutscene": true,
+   "outside": false
+  },
+  {
+   "id": "sgx_rhythm_a",
+   "tick": 0,
+   "end": 600,
+   "volume": 1.0,
+   "cutscene": true,
+   "outside": false
+  },
+  {
+   "id": "sgx_rhythm_b",
+   "tick": 620,
+   "end": 760,
+   "volume": 1.0,
+   "cutscene": true,
+   "outside": false
   }
  ],
  "flashColors": [

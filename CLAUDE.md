@@ -30,7 +30,7 @@ Não existe código de outro projeto aqui e **não se importa nem se copia nada 
 - Já aconteceu de ele achar que uma listra na borda era bug, e era a margem de tela do celular (configuração do jogo). Pergunte antes de "consertar" (P-54).
 
 ## Como montar e testar (v0.1.0+)
-- `python3 tools/build_all.py`: roda todos os geradores (check_spec → templates → storyboard_data → assets → áudio provisório → UI). **Tudo em `BP/` e `RP/` é gerado, exceto `BP/scripts/`** (só o `storyboard_data.js` é gerado lá dentro).
+- `python3 tools/build_all.py`: roda todos os geradores (check_spec → templates → storyboard_data → assets → áudio (`tools/synth/render.py`, falha se a ida e volta não bater) → timeline_data → UI). Relatório do áudio em `build/report.md`, mixdown em `build/singularity_mix.*`. **Tudo em `BP/` e `RP/` é gerado, exceto `BP/scripts/`** (só o `storyboard_data.js` é gerado lá dentro).
 - `node --test tests/*.test.mjs`: o harness (`tests/harness.mjs` + `tests/mc_stub_loader.mjs`) roda o `main.js` de verdade, os 10 spikes e o filme inteiro com um jogo falso que conta chamadas.
 - `python3 tools/package.py`: valida e gera `dist/DoomsDay_<versão>_teste-<n>.mcaddon` com UUIDs novos (`--release` usa os estáveis). A versão fica em `spec/project.json`.
 

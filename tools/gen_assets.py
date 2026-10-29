@@ -224,6 +224,19 @@ dump(RP / "particles/sgx_spike_atlas.json", particle(f"{NS}:sgx_spike_atlas", "p
      {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
       "uv": {"texture_width": 2048, "texture_height": 2048,
              "uv": ["math.mod(math.floor(v.particle_age * 2), 4) * 512", "math.floor(v.incl.x) * 512"], "uv_size": [512, 512]}}))
+# v0.3.0 (F3): o impostor do buraco negro. Atlas 4×4 de 512 assado por tools/bake/bh_engine.py (roda depois
+# deste script, que apaga o RP/); o quadro vem de v.incl.x (índice da lista de spec/bake.json, S-06).
+dump(RP / "particles/sgx_p_bh.json", particle(f"{NS}:sgx_p_bh", "particles_blend", "textures/sgx/impostor/bh_atlas",
+     {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
+      "uv": {"texture_width": 2048, "texture_height": 2048,
+             "uv": ["math.mod(math.floor(v.incl.x + 0.5), 4) * 512", "math.floor((math.floor(v.incl.x + 0.5)) / 4) * 512"],
+             "uv_size": [512, 512]}}))
+# A e B: atlas próprio de 16 inclinações, 4×4 de 256 (VISUAL_TECH §2.3)
+dump(RP / "particles/sgx_p_bh_small.json", particle(f"{NS}:sgx_p_bh_small", "particles_blend", "textures/sgx/impostor/bh_small",
+     {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
+      "uv": {"texture_width": 1024, "texture_height": 1024,
+             "uv": ["math.mod(math.floor(v.incl.x + 0.5), 4) * 256", "math.floor((math.floor(v.incl.x + 0.5)) / 4) * 256"],
+             "uv_size": [256, 256]}}))
 
 # ------------------------------------------------------------------ entidades dos spikes
 INERT = load(BP / "entities/sgx_disk.json")["minecraft:entity"]["components"]
@@ -301,10 +314,12 @@ EXTRA = {
     "en_US": {
         "sgx.menu.soon": "§8Coming in a later version.",
         "sgx.menu.options.body": "§7Options arrive with the full film. For now: /scriptevent sgx:spike 1…10, sgx:play blackhole, sgx:stop.",
-        "sgx.msg.no_target": "§cAim at the ground (40–128 blocks away).",
+        "sgx.msg.no_target": "§cAim at the ground (60–160 blocks away).",
         "sgx.msg.too_far": "§cToo far. Aim at the ground at most %1 blocks away.",
         "sgx.msg.stopped": "§8[Dooms Day] Stopped.",
-        "sgx.msg.auto_target": "§8[Dooms Day] No ground 40–128 blocks away in your aim: using the ground 60 blocks ahead.",
+        "sgx.msg.loading": "§8[Dooms Day] Loading the area…",
+        "sgx.msg.stage_warn": "§e[Dooms Day] Could not keep the area loaded (%1). If things vanish far away, raise the simulation distance.",
+        "sgx.msg.auto_target": "§8[Dooms Day] No ground 60–160 blocks away in your aim: using the ground 90 blocks ahead.",
         "sgx.msg.restored": "§8[Dooms Day] Restored the world settings after an interrupted cinematic.",
         "sgx.msg.film_done": "§8[Dooms Day] Animatic finished (%1 ticks, %2 skipped, script %3 ms avg / %4 ms peak).",
         "sgx.spike.unknown": "§cUnknown test. Use /scriptevent sgx:spike 1…10",
@@ -325,10 +340,12 @@ EXTRA = {
     "pt_BR": {
         "sgx.menu.soon": "§8Chega numa versão futura.",
         "sgx.menu.options.body": "§7As opções chegam com o filme completo. Por enquanto: /scriptevent sgx:spike 1…10, sgx:play blackhole, sgx:stop.",
-        "sgx.msg.no_target": "§cMire no chão (a 40–128 blocos).",
+        "sgx.msg.no_target": "§cMire no chão (a 60–160 blocos).",
         "sgx.msg.too_far": "§cLonge demais. Mire no chão a no máximo %1 blocos.",
         "sgx.msg.stopped": "§8[Dooms Day] Parado.",
-        "sgx.msg.auto_target": "§8[Dooms Day] Sem chão a 40–128 blocos na mira: usando o chão 60 blocos à frente.",
+        "sgx.msg.loading": "§8[Dooms Day] Carregando a área…",
+        "sgx.msg.stage_warn": "§e[Dooms Day] Não deu para manter a área carregada (%1). Se algo sumir longe, aumente a distância de simulação.",
+        "sgx.msg.auto_target": "§8[Dooms Day] Sem chão a 60–160 blocos na mira: usando o chão 90 blocos à frente.",
         "sgx.msg.restored": "§8[Dooms Day] Restaurei as configurações do mundo depois de uma cinemática interrompida.",
         "sgx.msg.film_done": "§8[Dooms Day] Animatic terminou (%1 ticks, %2 pulados, script %3 ms média / %4 ms pico).",
         "sgx.spike.unknown": "§cTeste desconhecido. Use /scriptevent sgx:spike 1…10",

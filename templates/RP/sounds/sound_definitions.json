@@ -324,6 +324,54 @@
           "stream": false
         }
       ]
+    },
+    "singularity:sgx2d_score_a": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_score_a",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx2d_score_b": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_score_b",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx2d_rhythm_a": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_rhythm_a",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
+    },
+    "singularity:sgx2d_rhythm_b": {
+      "category": "ui",
+      "sounds": [
+        {
+          "name": "sounds/singularity/sgx_rhythm_b",
+          "is3D": false,
+          "stream": false,
+          "load_on_low_memory": true,
+          "volume": 1.0
+        }
+      ]
     }
   }
 }

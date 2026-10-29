@@ -6,6 +6,9 @@ import { v3, add, mul, norm, cross, madd, sub, dirToRot } from "../engine/vec.js
 import { UiBus } from "../engine/ui_bus.js";
 import { lbCode } from "../blackhole/modules/screen.js";
 import { releaseCamera } from "../engine/safety.js";
+import { openStage, closeStage } from "../engine/stage.js";
+
+const SPIKE_AREA = "sgx_spike";
 
 const NS = "singularity";
 let running = null;
@@ -71,13 +74,15 @@ function particle(env, id, pos, vars) {
 const SPIKES = {
   1: {
     ticks: 240,
+    stage: (env) => madd(env.P, [env.F, 100], [env.U, 30]),
     setup(env) {
-      const O = madd(env.P, [env.F, 30], [env.U, 10]);
+      // v0.2.4: escala B, o disco tem 42 blocos de raio
+      const O = madd(env.P, [env.F, 100], [env.U, 30]);
       spawnFx(env, `${NS}:sgx_disk`, O, { lit: 5, heat: 1.0, scale: 1.0 });
-      const cam = orbit(env, O, 26, 5, 12);
+      const cam = orbit(env, O, 90, 18, 12);
       return (t) => {
         cam(t);
-        if (t % 10 === 0) particle(env, `${NS}:sgx_spike_shadow`, O, { lf: [0.6, 0.01, 0.01], s: [2.6] });
+        if (t % 10 === 0) particle(env, `${NS}:sgx_spike_shadow`, O, { lf: [0.6, 0.01, 0.01], s: [9.1] });
       };
     },
   },
@@ -92,8 +97,9 @@ const SPIKES = {
   },
   3: {
     ticks: 300,
+    stage: (env) => madd(env.P, [env.F, 70], [env.U, 20]),
     setup(env) {
-      spawnFx(env, `${NS}:sgx_disk`, madd(env.P, [env.F, 22], [env.U, 6]), { lit: 1, heat: 1.0, scale: 1.0 });
+      spawnFx(env, `${NS}:sgx_disk`, madd(env.P, [env.F, 70], [env.U, 20]), { lit: 1, heat: 1.0, scale: 1.0 });
       return () => {};
     },
   },
@@ -205,7 +211,7 @@ const SPIKES = {
 
 export const SPIKE_COUNT = Object.keys(SPIKES).length;
 
-export function runSpike(n, { player, mc, system }) {
+export async function runSpike(n, { player, mc, system, world }) {
   const s = SPIKES[n];
   if (!s) {
     player.sendMessage({ translate: "sgx.spike.unknown" });
@@ -217,6 +223,13 @@ export function runSpike(n, { player, mc, system }) {
   }
   const env = { player, mc, system, dim: player.dimension, cleanup: [], ...frame(player) };
   player.sendMessage({ translate: `sgx.spike.${n}` });
+  if (s.stage && world) {
+    // v0.2.5: cena longe (escala B) → área simulando durante o teste
+    running = { n, stop: () => {} };
+    await openStage({ world, system, dimension: env.dim, center: s.stage(env), id: SPIKE_AREA, radius: 56, below: 24, above: 40 });
+    env.cleanup.push(() => closeStage({ world, system, id: SPIKE_AREA, delayTicks: 0 }));
+    running = null;
+  }
   let tick;
   try {
     tick = s.setup(env);

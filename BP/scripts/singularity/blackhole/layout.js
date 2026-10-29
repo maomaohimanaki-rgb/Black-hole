@@ -1,4 +1,5 @@
-// Geometria de cena do buraco negro (spec/layout.json → frame). G = chão mirado, O = G + 14·U.
+// Geometria de cena do buraco negro (spec/layout.json → frame). G = chão mirado, O = G + oHeight·U.
+// v0.2.4: escala B (T-18): os tamanhos vêm de DATA.scene (spec/layout.json), nada fixo aqui.
 // F = frente (jogador → G, horizontal), R = F × U (direita), U = cima.
 // Também resolve os keyframes de câmera do storyboard_data.js para coordenadas do mundo.
 
@@ -6,10 +7,8 @@ import { v3, add, sub, mul, norm, cross, madd, len } from "../engine/vec.js";
 import { sampleCurve } from "../engine/easing.js";
 import { offsets } from "./binary_math.js";
 
-export const O_HEIGHT = 14;
-export const SHADOW_FINAL = 2.08;
-
 export function makeLayout(playerPos, targetG, data) {
+  const { oHeight: O_HEIGHT, shadowF: SHADOW_FINAL, k: K } = data.scene;
   const U = v3(0, 1, 0);
   let fwd = sub(targetG, playerPos);
   fwd.y = 0;
@@ -46,14 +45,14 @@ export function makeLayout(playerPos, targetG, data) {
     const a0 = Math.PI / 2; // começa no +R
     if (t <= 500) {
       const u = Math.min(1, Math.max(0, (t - 460) / 40));
-      const r = 12 - 5 * u * u;
+      const r = K * (12 - 5 * u * u);
       const ang = a0 + 1.6 * Math.PI * u * u;
       const y = 0.5 + (O_HEIGHT - 0.5) * (u * u * (3 - 2 * u));
       return toWorld(G, -Math.cos(ang) * r, Math.sin(ang) * r, y);
     }
     const u = Math.min(1, (t - 500) / 39);
     const ang = a0 + 1.6 * Math.PI + 0.5 * Math.PI * u;
-    const r = 7 - (7 - SHADOW_FINAL * 1.35) * u * u;
+    const r = 7 * K - (7 * K - SHADOW_FINAL * 1.35) * u * u;
     return toWorld(O, -Math.cos(ang) * r, Math.sin(ang) * r, 0);
   };
 
@@ -139,5 +138,5 @@ export function makeLayout(playerPos, targetG, data) {
     return keys;
   }
 
-  return { G, O, F, R, U, toWorld, scaleAt, binary, heroChunk, named, resolvePos, cameraKeys };
+  return { G, O, F, R, U, K, toWorld, scaleAt, binary, heroChunk, named, resolvePos, cameraKeys };
 }

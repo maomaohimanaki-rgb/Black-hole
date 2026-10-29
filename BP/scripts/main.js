@@ -6,19 +6,21 @@ import * as mc from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { startFilm, stopFilm, activeFilm } from "./singularity/engine/cutscene.js";
 import * as safety from "./singularity/engine/safety.js";
+import { openStage, closeStage, cleanupStages } from "./singularity/engine/stage.js";
 import { BLACKHOLE } from "./singularity/blackhole/film.js";
 import { precache } from "./singularity/blackhole/modules/audio.js";
 import { runSpike, stopSpike, spikeRunning } from "./singularity/spikes/index.js";
 
 const { world, system } = mc;
 const ITEM = "singularity:core";
-const MIN_DIST = 40;
-const MAX_DIST = 128;
+// v0.2.4: escala B (T-18): cratera de raio 45 → mira a 60–160 (spec/project.json → targeting)
+const MIN_DIST = 60;
+const MAX_DIST = 160;
 const opts = { trace: true };
 
 const tr = (key, ...w) => ({ translate: key, with: w.map(String) });
 
-// Mira: bloco olhado a 40–128 blocos. Para teste (scriptevent), cai para o chão 60 blocos à frente.
+// Mira: bloco olhado a 60–160 blocos. Sem mira válida, cai para o chão 90 blocos à frente.
 function findTarget(player, { lenient = false } = {}) {
   const hit = player.getBlockFromViewDirection({ maxDistance: MAX_DIST + 8, includeLiquidBlocks: true });
   const P = player.location;
@@ -32,13 +34,15 @@ function findTarget(player, { lenient = false } = {}) {
   const auto = true;
   const d = player.getViewDirection();
   const h = Math.hypot(d.x, d.z) || 1;
-  const x = P.x + (d.x / h) * 60, z = P.z + (d.z / h) * 60;
+  const x = P.x + (d.x / h) * 90, z = P.z + (d.z / h) * 90;
   const top = player.dimension.getTopmostBlock({ x: Math.floor(x), z: Math.floor(z) });
   return { auto, G: { x: Math.floor(x) + 0.5, y: (top ? top.location.y : Math.floor(P.y)) + 1, z: Math.floor(z) + 0.5 } };
 }
 
-function play(player, { from = 0, lenient = true } = {}) {
-  if (activeFilm() || spikeRunning() || player.hasTag(safety.BUSY_TAG)) {
+let loading = false;
+
+async function play(player, { from = 0, lenient = true } = {}) {
+  if (loading || activeFilm() || spikeRunning() || player.hasTag(safety.BUSY_TAG)) {
     player.sendMessage(tr("sgx.msg.busy"));
     return;
   }
@@ -50,6 +54,13 @@ function play(player, { from = 0, lenient = true } = {}) {
     player.sendMessage(tr(key, tg.error === "too_far" ? MAX_DIST : MIN_DIST));
     return;
   }
+  // v0.2.5: a cena fica além da distância de simulação (escala B): o filme só começa com a área carregada
+  // e simulando (P-40). Sem a área (limite de chunks, API ausente), segue e avisa.
+  loading = true;
+  player.onScreenDisplay.setActionBar({ translate: "sgx.msg.loading" });
+  const st = await openStage({ world, system, dimension: player.dimension, center: tg.G });
+  loading = false;
+  if (!st.ok) player.sendMessage(tr("sgx.msg.stage_warn", st.reason));
   const r = startFilm({
     system, world, mc, player,
     layout: BLACKHOLE.layout(player.location, tg.G),
@@ -59,16 +70,20 @@ function play(player, { from = 0, lenient = true } = {}) {
       from,
       trace: opts.trace,
       onEnd: (rep) => {
+        closeStage({ world, system }); // 60 s depois do fim (P-40)
         player.sendMessage(tr("sgx.msg.film_done", rep.ticks, rep.skipped, rep.msAvg.toFixed(1), rep.msPeak.toFixed(0)));
         for (const e of [...rep.cueErrors, ...rep.hookErrors].slice(0, 5)) player.sendMessage(`§c[SGX] ${e.tag ?? e.hook ?? e.job} @${e.tick ?? e.t}: ${e.error.split("\n")[0]}`);
       },
     },
   });
-  if (r.error) player.sendMessage(tr("sgx.msg.busy"));
+  if (r.error) {
+    closeStage({ world, system, delayTicks: 0 });
+    player.sendMessage(tr("sgx.msg.busy"));
+  }
 }
 
 async function openMenu(player) {
-  precache(player, BLACKHOLE.data.sounds);
+  precache(player);
   const form = new ActionFormData()
     .title(tr("sgx.menu.title"))
     .body(tr("sgx.menu.body"))
@@ -77,7 +92,7 @@ async function openMenu(player) {
     .button({ rawtext: [{ translate: "sgx.menu.options" }, { text: "\n" }, { translate: "sgx.menu.options.sub" }] });
   const res = await form.show(player);
   if (res.canceled) return;
-  if (res.selection === 0) play(player);
+  if (res.selection === 0) await play(player);
   else if (res.selection === 1) player.sendMessage(tr("sgx.menu.soon"));
   else if (res.selection === 2) {
     await new ActionFormData().title(tr("sgx.menu.options")).body(tr("sgx.menu.options.body")).button(tr("sgx.menu.cancel")).show(player);
@@ -97,11 +112,11 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
   const msg = String(ev.message ?? "").trim();
   switch (ev.id) {
     case "sgx:play":
-      if (msg === "" || msg === "blackhole") play(player, { lenient: true });
+      if (msg === "" || msg === "blackhole") play(player, { lenient: true }).catch((e) => console.warn(`[SGX] play: ${e}`));
       else if (msg === "magnetar") player.sendMessage(tr("sgx.menu.soon"));
       break;
     case "sgx:from":
-      play(player, { from: Number(msg) || 0, lenient: true });
+      play(player, { from: Number(msg) || 0, lenient: true }).catch((e) => console.warn(`[SGX] play: ${e}`));
       break;
     case "sgx:stop":
       if (stopFilm("stop") || stopSpike()) player.sendMessage(tr("sgx.msg.stopped"));
@@ -109,7 +124,7 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
       break;
     case "sgx:spike":
       if (activeFilm()) player.sendMessage(tr("sgx.spike.busy"));
-      else runSpike(Number(msg), { player, mc, system });
+      else runSpike(Number(msg), { player, mc, system, world }).catch((e) => console.warn(`[SGX] spike: ${e}`));
       break;
     case "sgx:trace":
       opts.trace = msg !== "off";
@@ -117,6 +132,9 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
       break;
   }
 });
+
+// P-40: área de um filme interrompido por crash. O gerenciador é deste addon, então limpar tudo é seguro.
+system.runTimeout(() => cleanupStages(world), 20);
 
 // P-44: se o jogo fechou no meio do filme, o estado original volta no primeiro spawn.
 world.afterEvents.playerSpawn.subscribe((ev) => {

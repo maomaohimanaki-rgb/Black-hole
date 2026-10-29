@@ -39,3 +39,8 @@ Legenda: ✅ funcionou · ❌ não funcionou (aplicar o plano B) · ⚠️ funci
 - Animatic do buraco negro: **ritmo de câmera aprovado** ("ficou bem bom"), nenhuma câmera apontando para lugar errado. Erros no chat em 535–539: o FOV de 120 do B16–B18 passa do máximo do jogo (110). **Corrigido na 0.1.1** (FOV preso em 30–110), com teste.
 - Desempenho no aparelho: 741 ticks, 0 pulados, script 5,3 ms média / 25 ms pico (meta: ≤ 8 típico).
 - **F0 concluída:** nenhum plano B foi necessário.
+
+### 24/10/2026 · build 0.1.1 teste-1
+- S-01 e S-02: a câmera volta sozinha para o jogador no fim (bug da 0.1.0 resolvido).
+- Animatic inteiro sem nenhum erro no chat: 741 ticks, 0 pulados, script 4,5 ms média / 14 ms pico.
+- S-02 de novo, mesmo resultado (esperado): `q.camera_rotation` parada e `q.rotation_to_camera` seguindo. O `camera_rotation` lê a câmera do **jogador** (o corpo, que fica parado durante a cutscene) e não a câmera livre do `setCamera`. Por isso ele não serve para billboard em cutscene.

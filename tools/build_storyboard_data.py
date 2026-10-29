@@ -10,6 +10,7 @@ SB = json.loads((ROOT / "spec/storyboard.json").read_text(encoding="utf-8"))
 LY = json.loads((ROOT / "spec/layout.json").read_text(encoding="utf-8"))
 AU = json.loads((ROOT / "spec/audio_cues.json").read_text(encoding="utf-8"))
 PAL = json.loads((ROOT / "spec/palette.json").read_text(encoding="utf-8"))
+BK = json.loads((ROOT / "spec/bake.json").read_text(encoding="utf-8"))["impostor"]
 OUT = ROOT / "BP/scripts/singularity/blackhole/storyboard_data.js"
 
 # Cores de flash do catálogo da UI (tools/gen_ui.py usa a mesma lista: índice = dezena do canal FL).
@@ -72,9 +73,21 @@ data = {
     "grade": [{"t": k["t"], "redshift": k["redshift"], **({"ease": k["ease"]} if "ease" in k else {})} for k in SB["grade_curve"]],
     "scaleCurve": LY["black_hole"]["scale_curve"],
     "halfOrbits": LY["binary"]["half_orbit_ticks"],
-    "disk": {"rings": LY["disk"]["rings"], "ignite": LY["disk"]["ignite_ticks"]},
+    "disk": {"rings": LY["disk"]["rings"], "ignite": LY["disk"]["ignite_ticks"], "omega": LY["disk"].get("omega_in_deg_s", 180)},
+    "scene": {"k": LY["scene_scale"]["k"], "oHeight": LY["O_height"], "d0": LY["binary"]["d0"],
+              "shadowA": LY["black_hole"]["shadow_A"], "shadowB": LY["black_hole"]["shadow_B"], "shadowF": LY["black_hole"]["shadow_final"],
+              "craterRadius": LY["crater"]["radius"], "craterDepth": LY["crater"]["depth_approx"]},
     "jets": {"tOn": LY["jets"]["t_on"], "tFade": LY["jets"]["t_fade"], "up": LY["jets"]["up_length"]},
     "gwShell": LY["gw_shell"],
+    # v0.3.0 (F3): os quadros do atlas do impostor (spec/bake.json). hw = meia-largura do quadro em sombras
+    # (raio da sombra = b_c = 1,5·√3 r_s), para o jogo dimensionar a partícula a partir do tamanho da sombra.
+    "impostor": {"grid": BK["grid"], "cells": [
+        {"incl": c.get("incl", 90.0), "kind": c.get("kind", "disk"),
+         "hw": round((BK["small_half_width_rs"] if c.get("kind") == "bare" else BK["half_width_rs"]) / (1.5 * 3 ** 0.5), 5)}
+        for c in BK["cells"]],
+        # A e B: atlas próprio (bh_small), 16 inclinações
+        "small": {"grid": BK["small"]["grid"], "hw": round(BK["small_half_width_rs"] / (1.5 * 3 ** 0.5), 5),
+                  "cells": [{"incl": c["incl"], "kind": "disk"} for c in BK["small"]["cells"]]}},
     "sounds": sounds,
     "flashColors": FLASH_COLORS,
 }

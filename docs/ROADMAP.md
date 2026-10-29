@@ -21,12 +21,14 @@ A ordem existe para reduzir risco: primeiro descobrir o que o Bedrock deixa faze
 - **Pronto quando:** o animatic roda do 0 ao 740 no tablet sem erro, com `sgx:profile` ≤ 8 ms típico (quase nada pesa ainda), e o usuário aprova o **ritmo da câmera**. É a hora de mudar o storyboard, quando mudar é barato.
 
 ## F2 — Motor de áudio · v0.2.0
+> **29/10/2026 (T-23):** congelada em 0.2.7 como "funcional". O polimento volta como a **última fase**, com liberdade de arquitetura (D-15).
 - `tools/synth/` completo (`docs/AUDIO_DESIGN.md`). Primeiro o **chirp** e o **merge** (o coração), depois o resto.
 - `build/singularity_mix.wav` para ouvir antes do jogo.
 - Ida e volta: onsets pedidos × detectados (±0,5 tick); silêncio em 600–619 < −90 dBFS.
 - **Pronto quando:** o usuário aprova o mixdown no celular e no fone, e o filme no jogo toca com o áudio novo, em sincronia, a 16 TPS.
 
 ## F3 — Motor de imagem · v0.3.0
+> **0.3.0:** feitos o traçado, os impostores por inclinação (16 quadros, incluindo o "sem disco"), os de A/B (16 inclinações) e a integração no jogo (`modules/impostor.js`). Ainda faltam: turbulência em loop (o disco do impostor ainda é estático), a variante `front_cut` para os planos próximos, as texturas do disco 3D e do jato, o anel de Einstein (D-05), os overlays e o HUD assado.
 - `tools/bake/bh_engine.py`: traçado de Schwarzschild, disco (temperatura, g⁴, turbulência em loop), impostores por inclinação (só as do plano), impostores pequenos de A/B.
 - Texturas do disco 3D, do jato, das ondulações, de bloco para detritos (se não usar o atlas do jogo), anel de Einstein (B11) e overlays (aberração, íris, último fóton, impacto negativo com a pose exata do 240, vermelho).
 - HUD assado com fonte de apoio (P-25) e relatório de glifos.

@@ -89,4 +89,8 @@ with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
                 z.writestr(arc, manifest(man, pack))
             else:
                 z.write(f, arc)
+mix = ROOT / "build/singularity_mix.mp3"
+if mix.exists():
+    import shutil
+    shutil.copyfile(mix, ROOT / "dist" / f"DoomsDay_{ver}_mixdown.mp3")
 print(f"✓ {out.relative_to(ROOT)} ({out.stat().st_size / 1e6:.1f} MB, {'UUIDs estáveis' if release else 'UUIDs novos'})")
