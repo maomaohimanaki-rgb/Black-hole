@@ -1,1 +1,0 @@
-{"format_version":"1.8.0","render_controllers":{"controller.render.singularity.sgx_probe_1_0":{"geometry":"Geometry.g0","materials":[{"*":"Material.default"}],"textures":["Texture.default"],"ignore_lighting":true}}}

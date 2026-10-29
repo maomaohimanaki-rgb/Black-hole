@@ -16,7 +16,8 @@ Cada teste é um `/scriptevent sgx:spike <n>`. Ele monta a cena **na frente do j
 | S-08 | Letterbox em 3,2:1 e fechamento total no 20:9, sem vazar nas bordas? | ✅ | ✅ | Letterbox até fechar e os 5 flashes ok no 20:9. |
 | S-09 | FOV respirando ±5° a cada 3 ticks fica liso? | ✅ | ✅ | Liso com 3 e com 6 ticks: fica o de 3 (B08). |
 | S-10 | `applyImpulse` a cada 4 ticks puxa as vacas liso, sem "teleporte"? | ✅ | ✅ | Puxão liso em qualquer direção (até do céu): fica a cada 4 ticks. |
-| S-12 | (v0.3.2) Por que a entidade grande some de longe? Placas 1–7: caixa 16/64/120/130/256, placa pesada (60 mil vértices), 6 render controllers, e o buraco negro | ⏳ | ⏳ | O número que some diz a causa. |
+| S-12 | (v0.3.2) Por que a entidade grande some de longe? Placas 1–7: caixa 16/64/120/130/256, placa pesada (60 mil vértices), 6 render controllers, e o buraco negro | ❌ | — | **Nenhuma** aparece a 90 blocos (câmera do jogador ou câmera livre no lugar dele); **todas** aparecem com a câmera a 30. É o limite de ~64 blocos da câmera (P-56) → rig de âncoras (T-28). As sondas saíram na 0.3.3. |
+| S-13 | (v0.3.3) O eixo mundo → modelo do deslocamento da âncora: qual letra (A–D) cai no glowstone e se ela está espelhada | ⏳ | ⏳ | A = padrão (cal 0); B = +4; C = +8; D = +12; espelhada = +1. |
 | S-11 | (v0.3.1) O buraco negro em malha vira para a câmera do jeito certo, a textura gira sozinha (uv_anim) e espelha por baixo? | ⏳ | ⏳ | Se a frente do disco ficar atrás da sombra: `sgx:cal 1`. Se a textura girar junto com a câmera: somar 2. |
 
 Legenda: ✅ funcionou · ❌ não funcionou (aplicar o plano B) · ⚠️ funcionou com ressalva · ⏳ falta testar.

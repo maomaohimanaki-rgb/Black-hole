@@ -1,4 +1,5 @@
-// F0: os 10 testes de renderização (VISUAL_TECH §10). /scriptevent sgx:spike <1–12>
+// F0: os 10 testes de renderização (VISUAL_TECH §10). /scriptevent sgx:spike <1–13> (o 12, das sondas de
+// visibilidade, cumpriu o papel e saiu na v0.3.3: P-56)
 // v0.3.1: S-11 = a entidade do buraco negro (malha + lente + uv_anim) com a câmera passando por cima e por baixo.
 // Cada teste monta a cena na frente do jogador, explica no chat o que olhar e se desfaz sozinho.
 // Resultado vai para docs/SPIKES.md.
@@ -8,7 +9,8 @@ import { UiBus } from "../engine/ui_bus.js";
 import { lbCode } from "../blackhole/modules/screen.js";
 import { releaseCamera } from "../engine/safety.js";
 import { openStage, closeStage } from "../engine/stage.js";
-import { ID as BH_ID, elevation, pickBin, binValue } from "../blackhole/modules/bh.js";
+import { ID as BH_ID, mcYaw } from "../blackhole/modules/bh.js";
+import { BlackHoleRig } from "../blackhole/rig.js";
 import { DATA } from "../blackhole/storyboard_data.js";
 
 const SPIKE_AREA = "sgx_spike";
@@ -211,62 +213,62 @@ const SPIKES = {
     },
   },
   // v0.3.1 (T-25): o buraco negro em geometria, todos os anéis acesos. A câmera dá uma volta acima do disco e
-  // outra abaixo: confere a orientação da malha (sgx:cal), o giro da textura e o espelho de baixo.
+  // outra abaixo: confere o giro da textura e o espelho de baixo. v0.3.3: pelo rig de âncoras (P-56), igual ao
+  // filme, então ele aparece com a câmera a 95 blocos.
   11: {
     ticks: 480,
     stage: (env) => madd(env.P, [env.F, 100], [env.U, 30]),
     setup(env) {
       const O = madd(env.P, [env.F, 100], [env.U, 30]);
-      const bins = DATA.lens.bins;
-      let cur = pickBin(bins, 10);
-      let sent = binValue(cur, 10);
-      const e = spawnFx(env, BH_ID, O, { t0: 16.0, cal: env.cal ?? 0, bin: sent });
-      const up = orbit(env, O, 95, 17, 12), down = orbit(env, O, 95, -17, 12);
-      return (t) => {
-        (t < 240 ? up : down)(t);
+      const camAt = (t) => {
         const a = (2 * Math.PI * t) / 240;
-        const camPos = madd(O, [env.F, -Math.cos(a) * 95], [env.R, Math.sin(a) * 95], [env.U, t < 240 ? 17 : -17]);
-        const el = elevation(camPos, O);
-        cur = pickBin(bins, el, cur);
-        const v = binValue(cur, el);
-        if (v !== sent && e.isValid) e.setProperty(`${NS}:bin`, (sent = v));
+        return madd(O, [env.F, -Math.cos(a) * 95], [env.R, Math.sin(a) * 95], [env.U, t < 240 ? 17 : -17]);
+      };
+      const rig = new BlackHoleRig({
+        world: env.world, dimension: env.dim, warn: (m) => env.player.sendMessage(`§c[S-11] ${m}`), camAt, t0: 0, t1: 480,
+        cal: env.cal ?? 0, filmOffset: 320, areaPrefix: "sgx_s11",
+        roles: [{ key: "main", type: BH_ID, from: 0, to: 480, origin: O, center: () => O, bins: DATA.lens.bins }],
+      });
+      env.cleanup.push(() => rig.stop());
+      return (t) => {
+        lookCam(env, camAt(t), O, t > 0 && t !== 240);
+        rig.tick(t);
       };
     },
   },
-  // v0.3.2: visibilidade. O buraco negro grande sumia de longe no filme e o pequeno não. Sete placas numeradas a
-  // 90 blocos, cada uma isolando uma diferença (bounds 16/64/120/130/256, placa pesada, 6 render controllers),
-  // e o buraco negro em cima. Fase 1: câmera do jogador; fase 2: câmera livre perto das placas; fase 3: câmera
-  // livre no lugar do jogador. O usuário anota quais números aparecem em cada fase.
-  12: {
-    ticks: 560,
-    stage: (env) => madd(env.P, [env.F, 100], [env.U, 25]),
+  // v0.3.3: calibração do rig. O deslocamento da âncora (mundo → modelo) depende de convenções do Bedrock que não
+  // deu para medir daqui. Um bloco de glowstone marca o ponto verdadeiro; as letras A–D são o mesmo deslocamento
+  // com os 4 sinais possíveis de x e z. A que cai no glowstone diz a calibração (A = o palpite padrão).
+  13: {
+    ticks: 600,
     setup(env) {
-      const row = madd(env.P, [env.F, 90], [env.U, 12]);
-      for (let n = 1; n <= 7; n++) spawnFx(env, `${NS}:sgx_probe_${n}`, madd(row, [env.R, (n - 4) * 9]));
-      const O = madd(env.P, [env.F, 120], [env.U, 50]);
-      const bins = DATA.lens.bins;
-      let cur = -1, sent = 0;
-      const e = spawnFx(env, BH_ID, O, { t0: 16.0, cal: env.cal ?? 0, bin: binValue(pickBin(bins, 20), 20) });
-      const near = madd(row, [env.F, -30], [env.U, 6]);
-      let phase = 0;
-      return (t) => {
-        const ph = t < 200 ? 1 : t < 400 ? 2 : 3;
-        if (ph !== phase) {
-          phase = ph;
-          env.player.sendMessage({ translate: `sgx.spike.12.p${ph}` });
-          if (ph === 1) env.player.camera.clear();
+      const W = v3(Math.floor(env.P.x + env.F.x * 12) + 0.5, Math.floor(env.P.y) + 2.5, Math.floor(env.P.z + env.F.z * 12) + 0.5);
+      let restore = null;
+      try {
+        const blk = env.dim.getBlock({ x: Math.floor(W.x), y: Math.floor(W.y), z: Math.floor(W.z) });
+        if (blk) {
+          const perm = blk.permutation;
+          blk.setType("minecraft:glowstone");
+          restore = () => blk.setPermutation(perm);
         }
-        let cam = env.eye;
-        if (ph === 2) {
-          cam = near;
-          lookCam(env, near, row, t > 200);
-        } else if (ph === 3) {
-          lookCam(env, env.eye, row, t > 400);
-        }
-        const el = elevation(cam, O);
-        cur = pickBin(bins, el, cur);
-        const v = binValue(cur, el);
-        if (v !== sent && e.isValid) e.setProperty(`${NS}:bin`, (sent = v));
+      } catch (e) {
+        env.player.sendMessage(`§c[S-13] glowstone: ${e}`);
+      }
+      if (restore) env.cleanup.push(restore);
+      const A = madd(env.P, [env.R, -6], [env.F, 4], [env.U, 2]);
+      const yawTo = () => {
+        const eye = env.player.location;
+        return mcYaw({ x: eye.x - W.x, z: eye.z - W.z });
+      };
+      let y = yawTo();
+      const e = spawnFx(env, `${NS}:sgx_marker`, A, { ox: W.x - A.x, oy: W.y - A.y, oz: W.z - A.z, y0: y, y1: y });
+      return () => {
+        if (!e.isValid) return;
+        let y1 = yawTo();
+        y1 = y + ((((y1 - y) % 360) + 540) % 360) - 180;
+        e.setProperty(`${NS}:y0`, y);
+        e.setProperty(`${NS}:y1`, y1);
+        y = y1;
       };
     },
   },
@@ -284,7 +286,7 @@ export async function runSpike(n, { player, mc, system, world, cal = 0 }) {
     player.sendMessage({ translate: "sgx.spike.busy" });
     return false;
   }
-  const env = { player, mc, system, dim: player.dimension, cleanup: [], cal, ...frame(player) };
+  const env = { player, mc, system, world, dim: player.dimension, cleanup: [], cal, ...frame(player) };
   player.sendMessage({ translate: `sgx.spike.${n}` });
   if (s.stage && world) {
     // v0.2.5: cena longe (escala B) → área simulando durante o teste

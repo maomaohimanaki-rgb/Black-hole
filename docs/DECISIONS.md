@@ -38,6 +38,14 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
 - **T-26 · O buraco negro final é de Kerr** (29/10/2026, pedido do usuário: "os Boyer–Lindquist"). O spin é a = 0,67, o do remanescente do GW150914. A e B ficam de Schwarzschild. O disco fica truncado em 3 r_s, como dizem o storyboard e o HUD ("ISCO 3 r_s"); com esse spin, a ISCO prógrada de verdade seria 1,77 r_s. O spin está em `spec/bake.json → physics.spin`, e a = 0 volta ao Schwarzschild.
 - **T-27 · A sombra antes e depois do disco** (29/10/2026, vídeo da 0.3.1). A ordem de desenho entre render controllers não é a da lista, então a sombra vai nas duas pontas. Também entra `visible_bounds` ≤ 64, até o S-12 medir o que de fato faz a entidade sumir de longe.
 
+- **T-28 · Rig de âncoras para o buraco negro** (29/10/2026, S-12 → P-56).
+  - Toda entidade do buraco negro nasce a ≤ 32 blocos da câmera e desloca a malha por osso até O (ou até a órbita de A/B).
+  - As âncoras e as ticking areas de 1 chunk saem do trajeto (determinístico) da câmera, no começo. São 22 no filme, com deslocamento até 150 blocos e `visible_bounds` 512.
+  - Na troca, a velha apaga e a nova acende no mesmo tick do filme (janela ts/te no Molang).
+  - O yaw de O para a câmera vem do script (tick anterior e atual) e interpola por `q.frame_alpha`, como a câmera.
+  - Fica de pé o palpite do eixo mundo → modelo (x igual, z espelhado; o nariz do aldeão vanilla está em z negativo). O S-13 confere, e `sgx:cal` (bits 2 e 3) acerta sem build novo.
+- **T-29 · Um Doppler por bin e 24 bins** (29/10/2026, retorno: "o lado azul troca de cor bruscamente"). Antes eram 4 grupos de Doppler e 16 bins.
+
 ## Em aberto (decidir antes ou durante a fase indicada)
 
 - **D-03 · Tamanho da cratera.** Esfera de raio 30 (~60 blocos de largura, ~28 de fundo). Maior que isso pesa no motor do mundo (P-06). *Quando: F6.*

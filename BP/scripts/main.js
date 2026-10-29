@@ -22,10 +22,11 @@ const opts = { trace: true };
 const tr = (key, ...w) => ({ translate: key, with: w.map(String) });
 
 // v0.3.1 (T-25): calibração da malha do buraco negro (bit 0: vira 180°; bit 1: sentido da textura ao girar a
-// câmera). Fica no mundo, para o usuário acertar uma vez com o S-11 e esquecer.
+// câmera; v0.3.3: bits 2 e 3 invertem os eixos x e z do deslocamento da âncora). Fica no mundo: o usuário acerta
+// uma vez com o S-13 e esquece.
 const getCal = () => {
   const v = Number(world.getDynamicProperty?.("sgx_cal") ?? 0);
-  return Number.isFinite(v) ? Math.max(0, Math.min(3, Math.floor(v))) : 0;
+  return Number.isFinite(v) ? Math.max(0, Math.min(15, Math.floor(v))) : 0;
 };
 
 // Mira: bloco olhado a 60–160 blocos. Sem mira válida, cai para o chão 90 blocos à frente.
@@ -114,7 +115,7 @@ world.afterEvents.itemUse.subscribe((ev) => {
   system.run(() => openMenu(player).catch((e) => console.warn(`[SGX] menu: ${e}`)));
 });
 
-// /scriptevent sgx:play blackhole · sgx:from <t> · sgx:stop · sgx:spike <n> · sgx:trace on|off · sgx:cal <0–3>
+// /scriptevent sgx:play blackhole · sgx:from <t> · sgx:stop · sgx:spike <n> · sgx:trace on|off · sgx:cal <0–15>
 system.afterEvents.scriptEventReceive.subscribe((ev) => {
   const player = ev.sourceEntity;
   if (!player || player.typeId !== "minecraft:player") return;
@@ -137,7 +138,7 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
       break;
     case "sgx:cal": {
       const n = Math.floor(Number(msg));
-      if (msg !== "" && Number.isFinite(n) && n >= 0 && n <= 3) world.setDynamicProperty("sgx_cal", n);
+      if (msg !== "" && Number.isFinite(n) && n >= 0 && n <= 15) world.setDynamicProperty("sgx_cal", n);
       player.sendMessage(tr("sgx.msg.cal", getCal()));
       break;
     }

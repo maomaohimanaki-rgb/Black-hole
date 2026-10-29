@@ -2,6 +2,19 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.3.3 (em teste) · out/2026 — o rig de âncoras (P-56) e o Doppler sem salto
+
+**Por quê:** o S-12 respondeu (simulação 4, renderização 12). Nenhuma das 7 placas aparece a 90 blocos, nem a mais leve com a menor caixa; com a câmera a 30 blocos, todas aparecem. **O Bedrock só desenha entidade até ~64 blocos da câmera** (P-56), e o filme põe a câmera a até 150 blocos do buraco negro. O usuário também viu o lado azul "trocando de cor bruscamente" quando a câmera sobe.
+
+- **Rig de âncoras (`blackhole/rig.js`, T-28).** Do trajeto da câmera, que é determinístico, saem 22 âncoras para o filme.
+  - Cada âncora fica a ≤ 32 blocos da câmera e tem uma ticking area de 1 chunk pedida com 3 s de antecedência.
+  - A entidade nasce lá e a malha vai para O por osso (a raiz deslocada de O − âncora, até 150 blocos, com `visible_bounds` 512). A profundidade com o terreno e as partículas continua certa.
+  - Na troca de âncora, a velha apaga e a nova acende no mesmo tick (janela ts/te no Molang).
+  - O yaw de O para a câmera (e de A e B, cada um do seu lugar) vem do script nos ticks anterior e atual, e o Molang interpola com `q.frame_alpha`, como a câmera faz.
+- **S-13** confere o eixo mundo → modelo: um bloco de glowstone marca o ponto certo, e as letras A–D são os 4 sinais possíveis. `sgx:cal` agora vai de 0 a 15. O S-11 usa o rig, então aparece com a câmera a 95 blocos.
+- **Doppler sem salto (T-29):** uma região de Doppler por bin no lugar dos 4 grupos, e 24 bins de elevação no lugar de 16 (a forma também pula menos).
+- As sondas do S-12 saíram do pacote.
+
 ## 0.3.2 (em teste) · out/2026 — buraco negro de Kerr, sombra que não fura, API 2.11 e o S-12
 
 **Por quê:** no teste da 0.3.1 (vídeo do usuário, 1.26.60.4), A e B apareciam lindos no filme, mas o buraco negro final sumia a partir do B08, mesmo com simulação 8. Ele só aparecia spawnado perto. E quando aparecia, o disco da frente furava a sombra: dava para ver o chão através dela.

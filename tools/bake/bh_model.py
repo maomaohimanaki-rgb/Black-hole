@@ -123,6 +123,13 @@ def mirror_v(region):
     return np.concatenate([region, region[::-1]], axis=0)
 
 
+def doppler_groups():
+    """Elevações das regiões de Doppler (v0.3.3): uma a cada 2 bins do buraco grande (12 regiões de ~80 px)."""
+    g = LENS["doppler_groups_e"]
+    b = LENS["bins_e_deg"]
+    return [(b[i] + b[min(i + 1, len(b) - 1)]) / 2 for i in range(0, len(b), 2)] if g == "bins" else g
+
+
 def tex_band(r_mid):
     """Índice e faixa (r0, r1) do anel do buraco grande que contém r: cada anel tem a sua textura (v0.3.2)."""
     E = LENS["band_edges_rs"]
@@ -181,7 +188,7 @@ def doppler_region(tr, e_deg, k, w, h, kerr=None):
     r_in, r_out = PHYS["r_in_rs"], PHYS["r_out_rs"]
     # as colunas seguem o mesmo parâmetro da malha (psi_grid): densas atrás do buraco, onde a corcova estica um
     # pedacinho de ψ por um arco enorme (v0.3.1: com ψ uniforme o Doppler da corcova saía em blocos)
-    psi = psi_of_x(-1 + 2 * (np.arange(w) + 0.5) / w)
+    psi = psi_of_x(-1 + 2 * (np.arange(w) + 0.5) / w, DOP_EXP)
     hc = 128  # o Doppler é liso: calcula em 128 linhas e interpola
     sc = (np.arange(hc) + 0.5) / hc
     P, S = np.meshgrid(psi, sc)
@@ -204,7 +211,7 @@ def static_texture(tr, kerr_for=lambda e: None):
     0–7 = Doppler (grupo de elevação × k), 8 = anel de fótons + halo (V = b), 9 = preto (sombra)."""
     W, H = LENS["static_tex"]
     h = H // 2
-    groups = LENS["doppler_groups_e"]
+    groups = doppler_groups()
     n = len(groups) * 2 + 2
     rw = W // n
     img = np.zeros((H, W, 3))
@@ -254,8 +261,16 @@ def psi_grid(M):
     return psi_of_x(np.linspace(-1, 1, M + 1))
 
 
-def psi_of_x(x):
-    return math.pi / 2 + math.pi * np.sign(x) * np.abs(x) ** 1.7
+def psi_of_x(x, p=1.7):
+    return math.pi / 2 + math.pi * np.sign(x) * np.abs(x) ** p
+
+
+def x_of_psi(psi, p):
+    d = (psi - math.pi / 2) / math.pi
+    return float(np.sign(d) * min(abs(d), 1.0) ** (1 / p))
+
+
+DOP_EXP = 1.3
 
 
 def rows_for(edges, per):
@@ -377,7 +392,7 @@ def lens_bin(tr, e, cfg, small=False, kerr=None):
                 flow[k].append(([P[a, b] for a, b in quad], [(u_flow[a, b], v) for (a, b), v in zip(quad, vv)]))
     # Doppler: malha mais grossa (o Doppler é liso), UV parada no referencial da câmera
     Md = LENS["overlay_psi_segments"] if not small else max(16, cfg["psi_segments"] // 2)
-    gi = int(np.argmin([abs(e - x) for x in LENS["doppler_groups_e"]]))
+    gi = int(np.argmin([abs(e - x) for x in doppler_groups()]))
     dop = [[] for _ in range(nb)]
     step = max(1, M // Md)
     for which, P, ok in ((0, Pd, okd), (1, Ps, oks)):
@@ -397,7 +412,9 @@ def lens_bin(tr, e, cfg, small=False, kerr=None):
                     pts = np.array([XYs[a, b] for a, b in quad])
                     if np.ptp(pts, axis=0).max() > 3.0 * step:
                         continue
-                uv = [((x0 + b / M * w) / Wt, v_flow[a, b]) for a, b in quad]  # coluna m ↔ x = −1 + 2m/M
+                # coluna da textura ↔ x do parâmetro do Doppler (mais suave que o da malha: com 24 regiões
+                # estreitas, perto do ponto da frente cada texel cobria graus demais e saía em fatias)
+                uv = [((x0 + 0.5 * (1 + x_of_psi(Pg[a, b], DOP_EXP)) * w) / Wt, v_flow[a, b]) for a, b in quad]
                 dop[k].append(([P[a, b] for a, b in quad], uv))
     # sombra (no plano do céu) e anel + halo. Schwarzschild: círculo de raio b_c; Kerr: a curva crítica (o "D")
     Wt = LENS["static_tex"][0]
@@ -693,7 +710,15 @@ def entity_files(kind, nbins, nb, omegas_k, rs_blocks, edges_k):
     props = {
         f"{NS}:t0": {"type": "float", "range": [0.0, 60.0], "default": 0.0, "client_sync": True},
         f"{NS}:bin": {"type": "int", "range": [-31, 31], "default": 0, "client_sync": True},
-        f"{NS}:cal": {"type": "int", "range": [0, 3], "default": 0, "client_sync": True},
+        f"{NS}:cal": {"type": "int", "range": [0, 15], "default": 0, "client_sync": True},
+        # v0.3.3 (T-28): rig de âncoras. A entidade nasce perto da câmera (P-56) e a raiz da malha vai para O
+        f"{NS}:ts": {"type": "int", "range": [0, 4000], "default": 0, "client_sync": True},
+        f"{NS}:te": {"type": "int", "range": [0, 4000], "default": 4000, "client_sync": True},
+        f"{NS}:ox": {"type": "float", "range": [-512.0, 512.0], "default": 0.0, "client_sync": True},
+        f"{NS}:oy": {"type": "float", "range": [-512.0, 512.0], "default": 0.0, "client_sync": True},
+        f"{NS}:oz": {"type": "float", "range": [-512.0, 512.0], "default": 0.0, "client_sync": True},
+        f"{NS}:y0": {"type": "float", "range": [-100000.0, 100000.0], "default": 0.0, "client_sync": True},
+        f"{NS}:y1": {"type": "float", "range": [-100000.0, 100000.0], "default": 0.0, "client_sync": True},
     }
     if small:
         props[f"{NS}:side"] = {"type": "int", "range": [1, 2], "default": 1, "client_sync": True}
@@ -711,8 +736,15 @@ def entity_files(kind, nbins, nb, omegas_k, rs_blocks, edges_k):
         f"v.bi = q.property('singularity:bin') == 0 ? {default_bin} : math.abs(q.property('singularity:bin')) - 1;",
         "v.below = q.property('singularity:bin') < 0;",
         "v.cal = q.property('singularity:cal');",
-        "v.yaw = q.rotation_to_camera(1) - q.body_y_rotation + (math.mod(v.cal, 2) >= 1 ? 180 : 0);",
+        # o yaw de O para a câmera vem do script (tick anterior → atual) e interpola como a câmera (ease de 1 tick)
+        "v.yaw = math.lerp(q.property('singularity:y0'), q.property('singularity:y1'), q.frame_alpha) - q.body_y_rotation"
+        " + (math.mod(v.cal, 2) >= 1 ? 180 : 0);",
         "v.ys = math.mod(math.floor(v.cal / 2), 2) >= 1 ? -1 : 1;",
+        # mundo → modelo com o corpo em 0: x igual, z espelhado (o −Z do modelo é a frente, que olha para +Z;
+        # o nariz do aldeão vanilla fica em z negativo). Bits 2 e 3 da calibração invertem cada eixo (S-13).
+        "v.sx = math.mod(math.floor(v.cal / 4), 2) >= 1 ? -1 : 1;",
+        "v.sz = math.mod(math.floor(v.cal / 8), 2) >= 1 ? 1 : -1;",
+        "v.win = v.tk >= q.property('singularity:ts') && v.tk < q.property('singularity:te');",
     ]
     if small:
         pre += [
@@ -722,19 +754,22 @@ def entity_files(kind, nbins, nb, omegas_k, rs_blocks, edges_k):
             "v.grow = v.tk < v.born ? 0 : (v.g >= 1 ? 1 : 0.08 + 0.92 * (1 - math.pow(2, -10 * v.g)));",
             f"v.rs = v.side == 1 ? {LAYOUT['black_hole']['shadow_A'] / BC:.5f} : {LAYOUT['black_hole']['shadow_B'] / BC:.5f};",
             "v.sc = v.tk >= 240 ? 0 : v.rs * v.grow;",
-            "v.on = v.tk >= v.born && v.tk < 240;",
+            "v.on = v.win && v.tk >= v.born && v.tk < 240;",
         ] + orbit_molang()
     else:
         pre += [
             f"v.sc = {rs_blocks} * {scale_molang()};",
-            "v.on = v.tk >= 240 && v.tk < 700;",
+            "v.on = v.win && v.tk >= 240 && v.tk < 700;",
         ]
     pre.append("v.disk_off = " + ("!v.on;" if small else "v.tk >= 620;"))
     anim_name = f"animation.{NS}.sgx_{kind}.face"
-    bones = {"face": {"rotation": [0, "v.yaw", 0], "scale": ["v.sc", "v.sc * (v.below ? -1 : 1)", "v.sc"]}}
+    bones = {"face": {"rotation": [0, "v.yaw", 0], "scale": ["v.sc", "v.sc * (v.below ? -1 : 1)", "v.sc"]},
+             "root": {"position": ["16 * v.sx * q.property('singularity:ox')", "16 * q.property('singularity:oy')",
+                                   "16 * v.sz * q.property('singularity:oz')"]}}
     if small:
         # mundo → modelo com o corpo em 0: x igual, z espelhado (o −Z do modelo, a "cara", olha para +Z)
-        bones["root"] = {"position": ["16 * v.wx", 0, "-16 * v.wz"]}
+        bones["root"] = {"position": ["16 * v.sx * (q.property('singularity:ox') + v.wx)", "16 * q.property('singularity:oy')",
+                                      "16 * v.sz * (q.property('singularity:oz') + v.wz)"]}
     anim = {"format_version": fv["animations"], "animations": {anim_name: {"loop": True, "bones": bones}}}
     geos = {f"flow{k}": f"geometry.{NS}.sgx_{kind}_flow{k}" for k in range(nb)}
     geos["core"] = f"geometry.{NS}.sgx_{kind}_core"
@@ -780,68 +815,60 @@ def entity_files(kind, nbins, nb, omegas_k, rs_blocks, edges_k):
     return bp, client, rc, anim
 
 
-# ------------------------------------------------------------------ S-12: sondas de visibilidade
+# ------------------------------------------------------------------ S-13: calibração da âncora
 
 
-PROBES = [  # (número, visible_bounds, pesada?, render controllers)
-    (1, 16, False, 1), (2, 64, False, 1), (3, 120, False, 1), (4, 130, False, 1), (5, 256, False, 1),
-    (6, 64, True, 1), (7, 64, False, 6)]
+MARK_COMBOS = [("A", 1, -1), ("B", -1, -1), ("C", 1, 1), ("D", -1, 1)]  # letra, sx, sz (A = o palpite padrão)
 
 
-def probe_files():
-    """v0.3.2: o buraco negro grande (visible_bounds 130, ~185 mil vértices, 6 render controllers) sumia de longe no
-    filme e o pequeno (60, ~21 mil, 3) não. Cada sonda isola uma dessas diferenças: placas numeradas lado a lado
-    (S-12), e o usuário diz quais números aparecem com a câmera no jogador e com a câmera perto."""
+def marker_files():
+    """v0.3.3: o S-12 mostrou o limite de ~64 blocos da câmera (P-56); o rig põe a malha longe da origem da entidade
+    e precisa saber como mundo → modelo funciona nos eixos x e z. A sonda sgx_marker tem 4 letras, cada uma
+    deslocada com uma combinação de sinais; o script põe um bloco de glowstone no ponto verdadeiro e o usuário diz
+    qual letra caiu nele (e se ela está legível ou espelhada, que confere o sentido do yaw)."""
     fv = PROJECT["bedrock"]["format_versions"]
     inert = json.loads((ROOT / "BP/entities/sgx_disk.json").read_text(encoding="utf-8"))["minecraft:entity"]["components"]
     try:
         font = ImageFont.truetype(str(ROOT / "assets/fonts/IBMPlexMono-SemiBold-full.ttf"), 52)
     except OSError:
         font = None
-    cols = [(230, 70, 60), (240, 160, 40), (230, 220, 60), (80, 200, 90), (60, 170, 230), (150, 90, 230), (230, 90, 180)]
-    for n, bounds, heavy, nrc in PROBES:
-        ident = f"{NS}:sgx_probe_{n}"
-        img = Image.new("RGBA", (64, 64), cols[n - 1] + (255,))
-        d = ImageDraw.Draw(img)
-        d.rectangle([0, 0, 63, 63], outline=(255, 255, 255, 255), width=3)
-        d.text((32, 30), str(n), fill=(0, 0, 0, 255), font=font, anchor="mm")
-        put(f"RP/textures/sgx/probe/p{n}.png", np.asarray(img, float)[..., :3] / 255)
-        faces = {f: {"uv": [0, 0], "uv_size": [64, 64]} for f in ("north", "south", "east", "west", "up", "down")}
-        geos, rcs = {}, {}
-        for r in range(nrc):
-            # nrc pedaços (faixas horizontais), um por render controller
-            h = 96 / nrc
-            bones = [{"name": "root", "pivot": [0, 0, 0]},
-                     {"name": "face", "parent": "root", "pivot": [0, 0, 0],
-                      "cubes": [{"origin": [-48, -48 + r * h, -1], "size": [96, h, 2], "uv": faces}]}]
-            if heavy:
-                # ~60 mil vértices de quads minúsculos atrás da placa (o peso do buraco negro, sem mudar o visual)
-                pos, uvs, polys = [], [[0.5, 0.5]], []
-                for i in range(15000):
-                    x, y = -40 + (i % 120) * 0.66, -40 + (i // 120) * 0.66
-                    b = len(pos)
-                    pos += [[x, y, 2], [x + 0.3, y, 2], [x + 0.3, y + 0.3, 2], [x, y + 0.3, 2]]
-                    polys.append([[b, 0, 0], [b + 1, 0, 0], [b + 2, 0, 0], [b + 3, 0, 0]])
-                bones.append({"name": "mass", "parent": "face", "pivot": [0, 0, 0],
-                              "poly_mesh": {"normalized_uvs": True, "positions": pos, "normals": [[0, 0, -1]], "uvs": uvs,
-                                            "polys": polys}})
-            gid = f"geometry.{NS}.sgx_probe_{n}_{r}"
-            put(f"RP/models/entity/sgx_probe_{n}_{r}.geo.json", {"format_version": fv["geometry"], "minecraft:geometry": [{
-                "description": {"identifier": gid, "texture_width": 64, "texture_height": 64, "visible_bounds_width": bounds,
-                                "visible_bounds_height": bounds, "visible_bounds_offset": [0, 0, 0]}, "bones": bones}]})
-            geos[f"g{r}"] = gid
-            rcs[f"controller.render.{NS}.sgx_probe_{n}_{r}"] = {"geometry": f"Geometry.g{r}", "materials": [{"*": "Material.default"}],
-                                                               "textures": ["Texture.default"], "ignore_lighting": True}
-        put(f"RP/render_controllers/sgx_probe_{n}.render_controllers.json", {"format_version": fv["render_controllers"], "render_controllers": rcs})
-        anim = f"animation.{NS}.sgx_probe_{n}.face"
-        put(f"RP/animations/sgx_probe_{n}.animation.json", {"format_version": fv["animations"], "animations": {
-            anim: {"loop": True, "bones": {"face": {"rotation": [0, "q.rotation_to_camera(1) - q.body_y_rotation", 0]}}}}})
-        put(f"RP/entity/sgx_probe_{n}.entity.json", {"format_version": fv["client_entity"], "minecraft:client_entity": {"description": {
-            "identifier": ident, "materials": {"default": "entity_alphatest"}, "textures": {"default": f"textures/sgx/probe/p{n}"},
-            "geometry": geos, "animations": {"face": anim}, "scripts": {"animate": ["face"]}, "render_controllers": list(rcs)}}})
-        put(f"BP/entities/sgx_probe_{n}.json", {"format_version": fv["entity_bp"], "minecraft:entity": {
-            "description": {"identifier": ident, "is_spawnable": False, "is_summonable": True, "is_experimental": False},
-            "components": inert}})
+    img = Image.new("RGBA", (256, 64), (0, 0, 0, 255))
+    d = ImageDraw.Draw(img)
+    cols = [(240, 80, 60), (80, 200, 90), (70, 150, 240), (240, 200, 50)]
+    for i, (L, _, _) in enumerate(MARK_COMBOS):
+        d.rectangle([i * 64 + 2, 2, i * 64 + 61, 61], fill=cols[i] + (255,), outline=(255, 255, 255, 255), width=3)
+        d.text((i * 64 + 32, 30), L, fill=(0, 0, 0, 255), font=font, anchor="mm")
+        d.rectangle([i * 64 + 6, 50, i * 64 + 20, 56], fill=(0, 0, 0, 255))  # tracinho embaixo à esquerda: espelhada?
+    put("RP/textures/sgx/probe/letters.png", np.asarray(img, float)[..., :3] / 255)
+    bones = [{"name": "root", "pivot": [0, 0, 0]}]
+    anim_bones = {}
+    for i, (L, sx, sz) in enumerate(MARK_COMBOS):
+        uv = {f: {"uv": [i * 64, 0], "uv_size": [64, 64]} for f in ("north", "south", "east", "west", "up", "down")}
+        bones.append({"name": f"m{L}", "parent": "root", "pivot": [0, 0, 0]})
+        bones.append({"name": f"f{L}", "parent": f"m{L}", "pivot": [0, 0, 0],
+                      "cubes": [{"origin": [-8, -8, -0.5], "size": [16, 16, 1], "uv": uv}]})
+        anim_bones[f"m{L}"] = {"position": [f"16 * {sx} * q.property('singularity:ox')", "16 * q.property('singularity:oy')",
+                                            f"16 * {sz} * q.property('singularity:oz')"]}
+        anim_bones[f"f{L}"] = {"rotation": [0, "math.lerp(q.property('singularity:y0'), q.property('singularity:y1'), q.frame_alpha)"
+                                               " - q.body_y_rotation", 0]}
+    gid = f"geometry.{NS}.sgx_marker"
+    put("RP/models/entity/sgx_marker.geo.json", {"format_version": fv["geometry"], "minecraft:geometry": [{
+        "description": {"identifier": gid, "texture_width": 256, "texture_height": 64, "visible_bounds_width": 64,
+                        "visible_bounds_height": 64, "visible_bounds_offset": [0, 0, 0]}, "bones": bones}]})
+    anim = f"animation.{NS}.sgx_marker.place"
+    put("RP/animations/sgx_marker.animation.json", {"format_version": fv["animations"], "animations": {
+        anim: {"loop": True, "bones": anim_bones}}})
+    put("RP/entity/sgx_marker.entity.json", {"format_version": fv["client_entity"], "minecraft:client_entity": {"description": {
+        "identifier": f"{NS}:sgx_marker", "materials": {"default": "entity_alphatest"},
+        "textures": {"default": "textures/sgx/probe/letters"}, "geometry": {"default": gid},
+        "animations": {"place": anim}, "scripts": {"animate": ["place"]},
+        "render_controllers": [f"controller.render.{NS}.sgx_simple"]}}})
+    props = {f"{NS}:{k}": {"type": "float", "range": [-512.0, 512.0], "default": 0.0, "client_sync": True} for k in ("ox", "oy", "oz")}
+    props.update({f"{NS}:{k}": {"type": "float", "range": [-100000.0, 100000.0], "default": 0.0, "client_sync": True} for k in ("y0", "y1")})
+    put("BP/entities/sgx_marker.json", {"format_version": fv["entity_bp"], "minecraft:entity": {
+        "description": {"identifier": f"{NS}:sgx_marker", "is_spawnable": False, "is_summonable": True,
+                        "is_experimental": False, "properties": props},
+        "components": inert}})
 
 
 def stamp():
@@ -888,7 +915,7 @@ def build():
     for i, ft in enumerate(flow):
         put(f"RP/textures/sgx/bh/flow{i}.png", ft)
     put("RP/textures/sgx/bh/static.png", static)
-    probe_files()
+    marker_files()
     sheets = []
     for kind, cfg in (("bh", LENS), ("bhs", {**LENS["small"], "secondary_push_rs": LENS["secondary_push_rs"]})):
         small = kind == "bhs"
@@ -917,13 +944,13 @@ def build():
         put(f"RP/animations/{ent}.animation.json", anim)
         if not small:
             for j, e in enumerate(cfg["bins_e_deg"]):
-                if e in (3, 7.5, 14, 25, 36, 46):
+                if e in (3, 7.5, 13.5, 24, 35, 46):
                     sheets.append((f"e = {e}°", preview(geoms, flow, static, e, j, size=(640, 360), t=7.0)))
             # a ignição (de fora para dentro) e o disco girando, num bin só
-            j = cfg["bins_e_deg"].index(9.5)
+            j = cfg["bins_e_deg"].index(9)
             for tk, lab in ((240, "240 sem disco"), (283, "283 anel 5"), (295, "295 anéis 3–5"), (320, "320 + 1 s")):
                 on = [tk / 20 >= ignite_s(k, nb) for k in range(nb)]
-                sheets.append((lab, preview(geoms, flow, static, 9.5, j, size=(640, 360), t=tk / 20, band_on=on)))
+                sheets.append((lab, preview(geoms, flow, static, 9, j, size=(640, 360), t=tk / 20, band_on=on)))
         else:
             for j, e in enumerate(cfg["bins_e_deg"][:2]):
                 sheets.append((f"A/B e = {e}°", preview(geoms, flow, static, e, j, D_blocks=40, rs_blocks=1.63,

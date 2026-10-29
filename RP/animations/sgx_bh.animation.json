@@ -1,1 +1,1 @@
-{"format_version":"1.8.0","animations":{"animation.singularity.sgx_bh.face":{"loop":true,"bones":{"face":{"rotation":[0,"v.yaw",0],"scale":["v.sc","v.sc * (v.below ? -1 : 1)","v.sc"]}}}}}
+{"format_version":"1.8.0","animations":{"animation.singularity.sgx_bh.face":{"loop":true,"bones":{"face":{"rotation":[0,"v.yaw",0],"scale":["v.sc","v.sc * (v.below ? -1 : 1)","v.sc"]},"root":{"position":["16 * v.sx * q.property('singularity:ox')","16 * q.property('singularity:oy')","16 * v.sz * q.property('singularity:oz')"]}}}}}

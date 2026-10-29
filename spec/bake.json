@@ -18,21 +18,29 @@
   "lens": {
     "why": "Mapa da lente por vértice (bh_lens.py): a malha do disco em (r, ψ) vai para onde a sua imagem aparece. Um conjunto de malhas por faixa de elevação da câmera (bins); o script escolhe o bin pela câmera e o cliente vira a malha para a câmera (q.rotation_to_camera) a cada quadro. O giro do disco é a textura andando (uv_anim, como o creeper carregado do vanilla), por anel (Kepler).",
     "bins_e_deg": [
-      1.5,
+      1,
+      2,
       3,
+      4,
       5,
+      6,
       7.5,
-      9.5,
-      11.5,
-      14,
+      9,
+      10.5,
+      12,
+      13.5,
+      15,
       16.5,
-      19,
+      18,
+      20,
       22,
-      25,
-      28.5,
+      24,
+      26.5,
+      29,
       32,
-      36,
-      40.5,
+      35,
+      38.5,
+      42,
       46
     ],
     "band_edges_rs": [
@@ -54,12 +62,7 @@
     "overlay_psi_segments": 32,
     "d0_rs": 30.0,
     "secondary_push_rs": 0.03,
-    "doppler_groups_e": [
-      3,
-      12,
-      24,
-      40
-    ],
+    "doppler_groups_e": "bins",
     "flow_tex": [
       2048,
       1024
@@ -99,9 +102,11 @@
         43,
         55
       ],
-      "bounds_blocks": 60
+      "bounds_blocks": 512
     },
-    "bounds_blocks": 64,
-    "kerr_angles": 240
+    "bounds_blocks": 512,
+    "kerr_angles": 240,
+    "bounds_why": "v0.3.3 (T-28): a entidade nasce perto da câmera e a malha fica até ~150 blocos longe da origem (O − âncora): a caixa de corte tem que cobrir isso (P-31). O S-12 mostrou que a caixa não muda o limite de ~64 blocos da câmera (P-56).",
+    "doppler_why": "v0.3.3: 12 regiões de Doppler (uma a cada 2 bins) no lugar de 4 grupos: o lado azul trocava de cor de uma vez quando a câmera mudava de grupo (retorno sobre a 0.3.2). Com 24 regiões estreitas (36 px) a frente do disco saía em fatias."
   }
 }
