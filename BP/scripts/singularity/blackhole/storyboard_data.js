@@ -2331,160 +2331,34 @@ export const DATA = {
   "max_radius": 400,
   "camera_hit_tick_at_r140": 247
  },
- "impostor": {
-  "grid": 4,
-  "cells": [
-   {
-    "incl": 90,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": 82.5,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": 75,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": 67.5,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": 60,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": 52.5,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": 45,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": -90,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": -82.5,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": -75,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": -67.5,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": -60,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": -52.5,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": -45,
-    "kind": "disk",
-    "hw": 6.1584
-   },
-   {
-    "incl": 90.0,
-    "kind": "bare",
-    "hw": 2.6943
-   },
-   {
-    "incl": 37.5,
-    "kind": "disk",
-    "hw": 6.1584
-   }
+ "lens": {
+  "bins": [
+   1.5,
+   3,
+   5,
+   7.5,
+   9.5,
+   11.5,
+   14,
+   16.5,
+   19,
+   22,
+   25,
+   28.5,
+   32,
+   36,
+   40.5,
+   46
   ],
-  "small": {
-   "grid": 4,
-   "hw": 2.6943,
-   "cells": [
-    {
-     "incl": 90,
-     "kind": "disk"
-    },
-    {
-     "incl": 82.5,
-     "kind": "disk"
-    },
-    {
-     "incl": 75,
-     "kind": "disk"
-    },
-    {
-     "incl": 67.5,
-     "kind": "disk"
-    },
-    {
-     "incl": 60,
-     "kind": "disk"
-    },
-    {
-     "incl": 52.5,
-     "kind": "disk"
-    },
-    {
-     "incl": 45,
-     "kind": "disk"
-    },
-    {
-     "incl": 37.5,
-     "kind": "disk"
-    },
-    {
-     "incl": -90,
-     "kind": "disk"
-    },
-    {
-     "incl": -82.5,
-     "kind": "disk"
-    },
-    {
-     "incl": -75,
-     "kind": "disk"
-    },
-    {
-     "incl": -67.5,
-     "kind": "disk"
-    },
-    {
-     "incl": -60,
-     "kind": "disk"
-    },
-    {
-     "incl": -52.5,
-     "kind": "disk"
-    },
-    {
-     "incl": -45,
-     "kind": "disk"
-    },
-    {
-     "incl": -37.5,
-     "kind": "disk"
-    }
-   ]
-  }
+  "smallBins": [
+   3,
+   9,
+   16,
+   24,
+   33,
+   43,
+   55
+  ]
  },
  "sounds": [
   {

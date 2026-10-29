@@ -224,19 +224,8 @@ dump(RP / "particles/sgx_spike_atlas.json", particle(f"{NS}:sgx_spike_atlas", "p
      {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
       "uv": {"texture_width": 2048, "texture_height": 2048,
              "uv": ["math.mod(math.floor(v.particle_age * 2), 4) * 512", "math.floor(v.incl.x) * 512"], "uv_size": [512, 512]}}))
-# v0.3.0 (F3): o impostor do buraco negro. Atlas 4×4 de 512 assado por tools/bake/bh_engine.py (roda depois
-# deste script, que apaga o RP/); o quadro vem de v.incl.x (índice da lista de spec/bake.json, S-06).
-dump(RP / "particles/sgx_p_bh.json", particle(f"{NS}:sgx_p_bh", "particles_blend", "textures/sgx/impostor/bh_atlas",
-     {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
-      "uv": {"texture_width": 2048, "texture_height": 2048,
-             "uv": ["math.mod(math.floor(v.incl.x + 0.5), 4) * 512", "math.floor((math.floor(v.incl.x + 0.5)) / 4) * 512"],
-             "uv_size": [512, 512]}}))
-# A e B: atlas próprio de 16 inclinações, 4×4 de 256 (VISUAL_TECH §2.3)
-dump(RP / "particles/sgx_p_bh_small.json", particle(f"{NS}:sgx_p_bh_small", "particles_blend", "textures/sgx/impostor/bh_small",
-     {"size": ["v.s.x", "v.s.x"], "facing_camera_mode": "lookat_xyz",
-      "uv": {"texture_width": 1024, "texture_height": 1024,
-             "uv": ["math.mod(math.floor(v.incl.x + 0.5), 4) * 256", "math.floor((math.floor(v.incl.x + 0.5)) / 4) * 256"],
-             "uv_size": [256, 256]}}))
+# v0.3.1 (T-25): o buraco negro não é mais partícula: a entidade (geometria, texturas, render controllers e Molang)
+# sai de tools/bake/bh_model.py, que roda depois deste script (este apaga o RP/).
 
 # ------------------------------------------------------------------ entidades dos spikes
 INERT = load(BP / "entities/sgx_disk.json")["minecraft:entity"]["components"]
@@ -313,7 +302,7 @@ dump(RP / "entity/sgx_spike_mesh.entity.json", client_entity(ident, "textures/sg
 EXTRA = {
     "en_US": {
         "sgx.menu.soon": "§8Coming in a later version.",
-        "sgx.menu.options.body": "§7Options arrive with the full film. For now: /scriptevent sgx:spike 1…10, sgx:play blackhole, sgx:stop.",
+        "sgx.menu.options.body": "§7Options arrive with the full film. For now: /scriptevent sgx:spike 1…11, sgx:play blackhole, sgx:stop.",
         "sgx.msg.no_target": "§cAim at the ground (60–160 blocks away).",
         "sgx.msg.too_far": "§cToo far. Aim at the ground at most %1 blocks away.",
         "sgx.msg.stopped": "§8[Dooms Day] Stopped.",
@@ -322,7 +311,7 @@ EXTRA = {
         "sgx.msg.auto_target": "§8[Dooms Day] No ground 60–160 blocks away in your aim: using the ground 90 blocks ahead.",
         "sgx.msg.restored": "§8[Dooms Day] Restored the world settings after an interrupted cinematic.",
         "sgx.msg.film_done": "§8[Dooms Day] Animatic finished (%1 ticks, %2 skipped, script %3 ms avg / %4 ms peak).",
-        "sgx.spike.unknown": "§cUnknown test. Use /scriptevent sgx:spike 1…10",
+        "sgx.spike.unknown": "§cUnknown test. Use /scriptevent sgx:spike 1…11",
         "sgx.spike.end": "§8[S-%1] Test finished. Camera back to normal.",
         "sgx.spike.1": "§e[S-01] Depth: §f3D disk (numbered rings) + black particle in the center. Camera orbits for 12 s. §7Look: is the black disk IN FRONT of the back part of the rings and BEHIND the front part?",
         "sgx.spike.2": "§e[S-02] Billboards: §ftop = q.camera_rotation, bottom = q.rotation_to_camera. Cutscene camera orbits. §7Look: does each panel turn WITH the camera (even if facing the wrong side)?",
@@ -335,11 +324,13 @@ EXTRA = {
         "sgx.spike.9": "§e[S-09] FOV breathing: §ffixed camera, FOV ±5° every 3 ticks (6 s), then every 6 ticks (6 s). §7Look: smooth or jerky?",
         "sgx.spike.10": "§e[S-10] Pull: §f10 cows are pulled to the gold marker every 4 ticks for 8 s. §7Look: smooth, or do they \"teleport\"?",
         "sgx.spike.10.after": "§8[S-10] Cows removed.",
+        "sgx.spike.11": "§e[S-11] Black hole mesh: §fthe camera circles ABOVE the disk, then BELOW. §7Look: (1) the near side of the disk passes IN FRONT of the black shadow and the bent back side rises over it; (2) the side coming toward you (left) is bluer and brighter; (3) the disk texture flows by itself and does NOT spin along with the camera; (4) below, the picture is mirrored. If (1) is backwards: /scriptevent sgx:cal 1. If (3) spins with the camera: add 2 (cal 2 or 3).",
+        "sgx.msg.cal": "§8[Dooms Day] Mesh calibration: %1 (0–3, /scriptevent sgx:cal <n>).",
         "sgx.spike.busy": "§8A test or cinematic is already running. /scriptevent sgx:stop",
     },
     "pt_BR": {
         "sgx.menu.soon": "§8Chega numa versão futura.",
-        "sgx.menu.options.body": "§7As opções chegam com o filme completo. Por enquanto: /scriptevent sgx:spike 1…10, sgx:play blackhole, sgx:stop.",
+        "sgx.menu.options.body": "§7As opções chegam com o filme completo. Por enquanto: /scriptevent sgx:spike 1…11, sgx:play blackhole, sgx:stop.",
         "sgx.msg.no_target": "§cMire no chão (a 60–160 blocos).",
         "sgx.msg.too_far": "§cLonge demais. Mire no chão a no máximo %1 blocos.",
         "sgx.msg.stopped": "§8[Dooms Day] Parado.",
@@ -348,7 +339,7 @@ EXTRA = {
         "sgx.msg.auto_target": "§8[Dooms Day] Sem chão a 60–160 blocos na mira: usando o chão 90 blocos à frente.",
         "sgx.msg.restored": "§8[Dooms Day] Restaurei as configurações do mundo depois de uma cinemática interrompida.",
         "sgx.msg.film_done": "§8[Dooms Day] Animatic terminou (%1 ticks, %2 pulados, script %3 ms média / %4 ms pico).",
-        "sgx.spike.unknown": "§cTeste desconhecido. Use /scriptevent sgx:spike 1…10",
+        "sgx.spike.unknown": "§cTeste desconhecido. Use /scriptevent sgx:spike 1…11",
         "sgx.spike.end": "§8[S-%1] Teste terminou. Câmera de volta ao normal.",
         "sgx.spike.1": "§e[S-01] Profundidade: §fdisco 3D (anéis numerados) + partícula preta no centro. A câmera orbita por 12 s. §7Olhe: o disco preto fica NA FRENTE da parte de trás dos anéis e ATRÁS da parte da frente?",
         "sgx.spike.2": "§e[S-02] Billboards: §fem cima = q.camera_rotation, embaixo = q.rotation_to_camera. A câmera da cutscene orbita. §7Olhe: cada placa gira JUNTO com a câmera (mesmo que virada do lado errado)?",
@@ -361,6 +352,8 @@ EXTRA = {
         "sgx.spike.9": "§e[S-09] FOV respirando: §fcâmera parada, FOV ±5° a cada 3 ticks (6 s), depois a cada 6 ticks (6 s). §7Olhe: liso ou aos trancos?",
         "sgx.spike.10": "§e[S-10] Puxão: §f10 vacas são puxadas para o marcador dourado a cada 4 ticks por 8 s. §7Olhe: liso, ou elas \"teleportam\"?",
         "sgx.spike.10.after": "§8[S-10] Vacas removidas.",
+        "sgx.spike.11": "§e[S-11] Buraco negro em malha: §fa câmera dá uma volta ACIMA do disco e depois ABAIXO. §7Olhe: (1) a parte da frente do disco passa NA FRENTE da sombra preta e o lado de trás dobrado sobe por cima dela; (2) o lado que vem na sua direção (esquerda) fica mais azul e mais forte; (3) a textura do disco gira sozinha e NÃO gira junto com a câmera; (4) por baixo, a imagem espelha. Se (1) estiver ao contrário: /scriptevent sgx:cal 1. Se (3) girar junto com a câmera: some 2 (cal 2 ou 3).",
+        "sgx.msg.cal": "§8[Dooms Day] Calibração da malha: %1 (0–3, /scriptevent sgx:cal <n>).",
         "sgx.spike.busy": "§8Já tem um teste ou cinemática rodando. /scriptevent sgx:stop",
     },
 }

@@ -1,4 +1,5 @@
-// F0: os 10 testes de renderização (VISUAL_TECH §10). /scriptevent sgx:spike <1–10>
+// F0: os 10 testes de renderização (VISUAL_TECH §10). /scriptevent sgx:spike <1–11>
+// v0.3.1: S-11 = a entidade do buraco negro (malha + lente + uv_anim) com a câmera passando por cima e por baixo.
 // Cada teste monta a cena na frente do jogador, explica no chat o que olhar e se desfaz sozinho.
 // Resultado vai para docs/SPIKES.md.
 
@@ -7,6 +8,8 @@ import { UiBus } from "../engine/ui_bus.js";
 import { lbCode } from "../blackhole/modules/screen.js";
 import { releaseCamera } from "../engine/safety.js";
 import { openStage, closeStage } from "../engine/stage.js";
+import { ID as BH_ID, elevation, pickBin, binValue } from "../blackhole/modules/bh.js";
+import { DATA } from "../blackhole/storyboard_data.js";
 
 const SPIKE_AREA = "sgx_spike";
 
@@ -207,11 +210,34 @@ const SPIKES = {
       };
     },
   },
+  // v0.3.1 (T-25): o buraco negro em geometria, todos os anéis acesos. A câmera dá uma volta acima do disco e
+  // outra abaixo: confere a orientação da malha (sgx:cal), o giro da textura e o espelho de baixo.
+  11: {
+    ticks: 480,
+    stage: (env) => madd(env.P, [env.F, 100], [env.U, 30]),
+    setup(env) {
+      const O = madd(env.P, [env.F, 100], [env.U, 30]);
+      const bins = DATA.lens.bins;
+      let cur = pickBin(bins, 10);
+      let sent = binValue(cur, 10);
+      const e = spawnFx(env, BH_ID, O, { t0: 16.0, cal: env.cal ?? 0, bin: sent });
+      const up = orbit(env, O, 95, 17, 12), down = orbit(env, O, 95, -17, 12);
+      return (t) => {
+        (t < 240 ? up : down)(t);
+        const a = (2 * Math.PI * t) / 240;
+        const camPos = madd(O, [env.F, -Math.cos(a) * 95], [env.R, Math.sin(a) * 95], [env.U, t < 240 ? 17 : -17]);
+        const el = elevation(camPos, O);
+        cur = pickBin(bins, el, cur);
+        const v = binValue(cur, el);
+        if (v !== sent && e.isValid) e.setProperty(`${NS}:bin`, (sent = v));
+      };
+    },
+  },
 };
 
 export const SPIKE_COUNT = Object.keys(SPIKES).length;
 
-export async function runSpike(n, { player, mc, system, world }) {
+export async function runSpike(n, { player, mc, system, world, cal = 0 }) {
   const s = SPIKES[n];
   if (!s) {
     player.sendMessage({ translate: "sgx.spike.unknown" });
@@ -221,7 +247,7 @@ export async function runSpike(n, { player, mc, system, world }) {
     player.sendMessage({ translate: "sgx.spike.busy" });
     return false;
   }
-  const env = { player, mc, system, dim: player.dimension, cleanup: [], ...frame(player) };
+  const env = { player, mc, system, dim: player.dimension, cleanup: [], cal, ...frame(player) };
   player.sendMessage({ translate: `sgx.spike.${n}` });
   if (s.stage && world) {
     // v0.2.5: cena longe (escala B) → área simulando durante o teste

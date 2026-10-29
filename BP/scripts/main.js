@@ -10,6 +10,7 @@ import { openStage, closeStage, cleanupStages } from "./singularity/engine/stage
 import { BLACKHOLE } from "./singularity/blackhole/film.js";
 import { precache } from "./singularity/blackhole/modules/audio.js";
 import { runSpike, stopSpike, spikeRunning } from "./singularity/spikes/index.js";
+import { cleanupBlackHoles } from "./singularity/blackhole/modules/bh.js";
 
 const { world, system } = mc;
 const ITEM = "singularity:core";
@@ -19,6 +20,13 @@ const MAX_DIST = 160;
 const opts = { trace: true };
 
 const tr = (key, ...w) => ({ translate: key, with: w.map(String) });
+
+// v0.3.1 (T-25): calibração da malha do buraco negro (bit 0: vira 180°; bit 1: sentido da textura ao girar a
+// câmera). Fica no mundo, para o usuário acertar uma vez com o S-11 e esquecer.
+const getCal = () => {
+  const v = Number(world.getDynamicProperty?.("sgx_cal") ?? 0);
+  return Number.isFinite(v) ? Math.max(0, Math.min(3, Math.floor(v))) : 0;
+};
 
 // Mira: bloco olhado a 60–160 blocos. Sem mira válida, cai para o chão 90 blocos à frente.
 function findTarget(player, { lenient = false } = {}) {
@@ -69,6 +77,7 @@ async function play(player, { from = 0, lenient = true } = {}) {
     options: {
       from,
       trace: opts.trace,
+      cal: getCal(),
       onEnd: (rep) => {
         closeStage({ world, system }); // 60 s depois do fim (P-40)
         player.sendMessage(tr("sgx.msg.film_done", rep.ticks, rep.skipped, rep.msAvg.toFixed(1), rep.msPeak.toFixed(0)));
@@ -105,7 +114,7 @@ world.afterEvents.itemUse.subscribe((ev) => {
   system.run(() => openMenu(player).catch((e) => console.warn(`[SGX] menu: ${e}`)));
 });
 
-// /scriptevent sgx:play blackhole · sgx:from <t> · sgx:stop · sgx:spike <n> · sgx:trace on|off
+// /scriptevent sgx:play blackhole · sgx:from <t> · sgx:stop · sgx:spike <n> · sgx:trace on|off · sgx:cal <0–3>
 system.afterEvents.scriptEventReceive.subscribe((ev) => {
   const player = ev.sourceEntity;
   if (!player || player.typeId !== "minecraft:player") return;
@@ -124,8 +133,14 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
       break;
     case "sgx:spike":
       if (activeFilm()) player.sendMessage(tr("sgx.spike.busy"));
-      else runSpike(Number(msg), { player, mc, system, world }).catch((e) => console.warn(`[SGX] spike: ${e}`));
+      else runSpike(Number(msg), { player, mc, system, world, cal: getCal() }).catch((e) => console.warn(`[SGX] spike: ${e}`));
       break;
+    case "sgx:cal": {
+      const n = Math.floor(Number(msg));
+      if (msg !== "" && Number.isFinite(n) && n >= 0 && n <= 3) world.setDynamicProperty("sgx_cal", n);
+      player.sendMessage(tr("sgx.msg.cal", getCal()));
+      break;
+    }
     case "sgx:trace":
       opts.trace = msg !== "off";
       player.sendMessage(`§8[SGX] trace ${opts.trace ? "on" : "off"}`);
@@ -134,7 +149,15 @@ system.afterEvents.scriptEventReceive.subscribe((ev) => {
 });
 
 // P-40: área de um filme interrompido por crash. O gerenciador é deste addon, então limpar tudo é seguro.
-system.runTimeout(() => cleanupStages(world), 20);
+system.runTimeout(() => {
+  cleanupStages(world);
+  // v0.3.1: entidades do buraco negro de um filme interrompido (crash, /reload)
+  try {
+    cleanupBlackHoles(world.getDimension("overworld"));
+  } catch (e) {
+    console.warn(`[SGX] limpeza: ${e}`);
+  }
+}, 20);
 
 // P-44: se o jogo fechou no meio do filme, o estado original volta no primeiro spawn.
 world.afterEvents.playerSpawn.subscribe((ev) => {

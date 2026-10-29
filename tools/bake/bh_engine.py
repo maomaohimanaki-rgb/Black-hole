@@ -12,13 +12,10 @@
   Brilho ∝ T^lum_exponent (o T⁴ real apaga a borda externa; o expoente visual fica no spec).
 - Turbulência fBm estática em (log r, ψ) e um bloom fino no anel de fótons.
 - Tonemap 1 − e^(−1,15x) pela luminância (preserva o tom), gama 1,12 (VISUAL_TECH §2.2).
-Saída: RP/textures/sgx/impostor/bh_atlas.png (2048², 4×4 quadros de 512) e bh_small.png (A e B, 1024², 4×4 de 256)
-conforme spec/bake.json, e as folhas de contato em build/bake/contact_*.png. Idempotente (sementes fixas); cache em build/bake/ (--force refaz).
-v0.3.0."""
-import hashlib
+v0.3.0: assava o atlas do impostor (partícula). v0.3.1 (T-25): virou biblioteca (tabela de geodésicas, cor, ruído) do
+bh_lens.py / bh_model.py, e o main() só desenha a referência por pixel em build/bake/reference.png."""
 import json
 import math
-import shutil
 import sys
 from pathlib import Path
 
@@ -27,7 +24,6 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = json.loads((ROOT / "spec/bake.json").read_text(encoding="utf-8"))
-OUT = ROOT / "RP/textures/sgx/impostor"
 BUILD = ROOT / "build/bake"
 
 
@@ -230,62 +226,20 @@ class Tracer:
         return (np.clip(img, 0, 1) * 255 + 0.5).astype(np.uint8)
 
 
-def _stamp():
-    h = hashlib.sha256()
-    for f in ("spec/bake.json", "spec/palette.json", "tools/bake/bh_engine.py", "assets/fonts/IBMPlexMono-SemiBold-full.ttf"):
-        fp = ROOT / f
-        h.update(fp.read_bytes() if fp.exists() else b"-")
-    return h.hexdigest()
-
-
-def bake_atlas(tr, cfg, cells, cell, grid, small, name):
-    """Um atlas grid×grid de quadros cell² (a ordem de cells é o índice que o jogo manda em v.incl)."""
-    atlas = Image.new("RGBA", (cell * grid, cell * grid), (0, 0, 0, 0))
-    labels = []
-    for idx, c in enumerate(cells):
-        kind = c.get("kind", "")
-        r_out = cfg["small_r_out_rs"] if small else cfg["r_out_rs"]
-        incl = c.get("incl", 90.0)
-        img = tr.render(abs(incl), cell, cfg["r_in_rs"], r_out, cfg["exposure"] * (0.7 if small else 1.0),
-                        flip=incl < 0, small=small, bare=kind == "bare")
-        atlas.paste(Image.fromarray(img, "RGBA"), ((idx % grid) * cell, (idx // grid) * cell))
-        labels.append("sem disco" if kind == "bare" else f"{'A/B ' if small else ''}{incl:+.1f}°")
-        print(f"  {name} {idx:2d}: {labels[-1]}")
-    atlas.save(BUILD / f"{name}.png", optimize=True)
-    # folha de contato: o atlas sobre fundo de céu noturno, com rótulos
-    sheet = Image.new("RGBA", atlas.size, (5, 7, 15, 255))
-    sheet.alpha_composite(atlas)
-    d = ImageDraw.Draw(sheet)
-    try:
-        f = ImageFont.truetype(str(ROOT / "assets/fonts/IBMPlexMono-SemiBold-full.ttf"), max(14, cell // 20))
-    except OSError:
-        f = None
-    for idx, lab in enumerate(labels):
-        d.text(((idx % grid) * cell + 10, (idx // grid) * cell + 8), lab, fill=(180, 200, 255, 255), font=f)
-    sheet.convert("RGB").save(BUILD / f"contact_{name}.png")
-    return atlas.size
-
-
 def main():
-    # v0.3.0: o gen_assets.py apaga o RP/ inteiro, então os atlas ficam em cache em build/bake/ e só são refeitos
-    # quando o spec, a paleta ou este motor mudam (o traçado leva ~1 min). --force refaz sempre.
-    cfg = SPEC["impostor"]
+    """Referência: o traçado por pixel em algumas elevações (build/bake/reference.png), para comparar com a prévia
+    da geometria (bh_model.py). Desde a v0.3.1 nada daqui vai para o pacote (T-25: o buraco negro é malha)."""
+    cfg = SPEC["physics"]
     BUILD.mkdir(parents=True, exist_ok=True)
-    OUT.mkdir(parents=True, exist_ok=True)
-    names = ("bh_atlas", "bh_small")
-    stamp, stamp_f = _stamp(), BUILD / "atlas.stamp"
-    fresh = "--force" not in sys.argv and stamp_f.exists() and stamp_f.read_text() == stamp \
-        and all((BUILD / f"{n}.png").exists() for n in names)
-    if not fresh:
-        tr = Tracer(cfg)
-        bake_atlas(tr, cfg, cfg["cells"], cfg["cell_px"], cfg["grid"], False, "bh_atlas")
-        sm = cfg["small"]
-        bake_atlas(tr, cfg, sm["cells"], sm["cell_px"], sm["grid"], True, "bh_small")
-        stamp_f.write_text(stamp)
-    for n in names:
-        shutil.copyfile(BUILD / f"{n}.png", OUT / f"{n}.png")
-    print(f"✓ {OUT.relative_to(ROOT)}/bh_atlas.png + bh_small.png ({'cache de build/bake/' if fresh else 'assados'})"
-          f" · folhas em build/bake/contact_*.png")
+    tr = Tracer(cfg)
+    els = [3, 9.5, 19, 32]
+    size = 384
+    sheet = Image.new("RGBA", (size * len(els), size), (5, 7, 15, 255))
+    for i, e in enumerate(els):
+        img = tr.render(90 - e, size, cfg["r_in_rs"], cfg["r_out_rs"], cfg["exposure"])
+        sheet.alpha_composite(Image.fromarray(img, "RGBA"), (i * size, 0))
+    sheet.convert("RGB").save(BUILD / "reference.png")
+    print("✓ build/bake/reference.png")
     return 0
 
 

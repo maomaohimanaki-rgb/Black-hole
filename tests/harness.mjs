@@ -40,6 +40,7 @@ export function makeGame({ msPerTick = 50 } = {}) {
       log.particles.push({ tick, id, pos, vars: m?.vars });
     },
     getTopmostBlock: ({ x, z }) => ({ location: { x, y: 63, z } }),
+    getEntities: ({ type } = {}) => log.entities.filter((e) => e.isValid && (!type || e.typeId === type)),
     spawnEntity(typeId, location) {
       const e = {
         typeId, location: { ...location }, isValid: true, props: {}, impulses: 0,
@@ -144,7 +145,14 @@ export function makeGame({ msPerTick = 50 } = {}) {
     getTimeOfDay: () => timeOfDay,
     setTimeOfDay: (t) => (timeOfDay = t),
     getPlayers: () => [player],
+    getDimension: () => dimension,
+    getDynamicProperty: (k) => worldProps[k],
+    setDynamicProperty: (k, v) => {
+      if (v === undefined) delete worldProps[k];
+      else worldProps[k] = v;
+    },
   };
+  const worldProps = {};
   const timeouts = [];
   const system = {
     afterEvents: { scriptEventReceive: subs("scriptEventReceive") },

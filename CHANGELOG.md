@@ -2,6 +2,27 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.3.1 (em teste) · out/2026: o buraco negro vira objeto (malha + Molang)
+
+**Por quê:** o usuário testou a 0.3.0 (tudo rodou, sem erro, ms ok) e vetou o sprite: "tem que ser um objeto em Molang, uma entidade, JSON". Ele também pediu algo no nível das imagens que mandou (*Interstellar*, NASA, ESO) e mandou dois vídeos da NASA, que mostram a malha do disco (xadrez) se deformando com a câmera.
+
+- **Entidade `singularity:sgx_bh`** (e `sgx_bh_small` para A e B), gerada por `tools/bake/bh_model.py`:
+  - a lente vira **mapa por vértice** (`bh_lens.py`, conferido com o traçado por pixel: erro 0 na tabela);
+  - a imagem direta é o disco real deslocado pela lente, então longe do buraco ele é 3D de verdade, com paralaxe;
+  - a corcova por cima da sombra e o arco por baixo saem do próprio traçado;
+  - 16 bins de elevação para o buraco final e 7 para A/B, num osso que o cliente vira para a câmera a cada quadro.
+- **Animado no cliente, liso em qualquer FPS:**
+  - o disco gira pela textura (`uv_anim`, um anel por render controller, ω de Kepler), com o tempo em `q.frame_alpha` como o creeper carregado do vanilla;
+  - a escala, o ringdown, os anéis acendendo de fora para dentro (280–304), o fim no 620/700 e a órbita de A e B são Molang gerado do spec;
+  - o teste traduz esse Molang para JS e confere com o `layout.js` e o `binary_math.js`, então o chirp continua em sincronia.
+- **O script quase não trabalha:** cria as 3 entidades no começo (com tudo escrito no spawn, P-28) e manda o bin só quando a câmera muda de faixa. No fim e no `sgx:stop`, remove tudo, e na carga do mundo limpa o que sobrou de um crash.
+- **Visual mais perto das referências:**
+  - estrias concêntricas finas (como a NASA) e aglomerados esticados no giro, com vãos finos entre os 5 anéis;
+  - Doppler numa camada aditiva parada no referencial da câmera (esquerda azul e forte, direita laranja e fraca);
+  - anel de fótons fino e halo quente.
+- **S-11 + `sgx:cal`:** duas convenções do Bedrock (o lado da frente da malha e o sentido da textura ao girar a câmera) não deram para medir daqui. O S-11 mostra as duas, e `/scriptevent sgx:cal <0–3>` acerta sem build novo.
+- Testes: `tests/bh.test.mjs` (o Molang × JS, as entidades, os bins e o pacote). 67/67.
+
 ## 0.3.0 (em teste) · out/2026 — F3: o motor de imagem e o impostor no jogo
 
 **Por quê:** o áudio ficou "funcional" em 0.2.7 e o usuário decidiu deixá-lo para o fim (sem loop eterno de perfeição; T-23). O filme ainda mostrava o buraco negro como bolinha preta + halo. Agora ele é a imagem de verdade: a sombra, o anel de fótons e o lado de trás do disco **dobrado por cima e por baixo** pela lente, como no *Interstellar*, com o Doppler que o *Interstellar* tirou.

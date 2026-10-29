@@ -33,6 +33,8 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
   - o brilho é ∝ T^2,6 em vez de T⁴ (que apaga a borda a 0,2 % do pico);
   - o β do Doppler é ×2 (limite 0,75), senão o "esquerda azul-forte, direita laranja-fraca" do B11 não aparece.
 
+- **T-25 · O buraco negro é geometria, não sprite** (29/10/2026, retorno do usuário sobre a 0.3.0: "não pode, de hipótese nenhuma, usar sprite"). Ele é uma entidade com malha que a lente dobra: as malhas saem do traçado de Schwarzschild por vértice, uma por bin de elevação, viradas para a câmera no cliente. O giro é `uv_anim` por anel, liso por quadro. A escala, o ringdown, a ignição e a órbita de A/B ficam no Molang, gerado do spec e conferido com o JS no teste. O impostor de partícula da 0.3.0 saiu. Duas convenções do Bedrock não deram para medir daqui (o lado da frente da malha e o sentido da compensação da textura), então elas ficam numa calibração do mundo (`sgx:cal`) que o S-11 acerta.
+
 ## Em aberto (decidir antes ou durante a fase indicada)
 
 - **D-03 · Tamanho da cratera.** Esfera de raio 30 (~60 blocos de largura, ~28 de fundo). Maior que isso pesa no motor do mundo (P-06). *Quando: F6.*

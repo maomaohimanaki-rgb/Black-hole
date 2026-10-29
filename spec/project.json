@@ -2,7 +2,7 @@
   "title": "DOOMS DAY",
   "title_pt": "DOOMS DAY",
   "title_note": "D-01 (out/2026): o addon se chama Dooms Day. \"Doom\" = destino inevitável, a mesma palavra que se associa a buracos negros. Os ids internos (singularity:, sgx:, SGXB, sgx_) ficam como estão: o jogador não vê, e o item continua sendo o Núcleo da Singularidade.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "namespace": "singularity",
   "short": "sgx",
   "prefixes": {

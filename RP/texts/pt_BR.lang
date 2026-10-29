@@ -16,7 +16,7 @@ sgx.msg.busy=§8Já tem uma cinemática tocando.
 sgx.msg.loaded=§8[Dooms Day] §7Carregado. /give @s singularity:core
 ## F0/F1
 sgx.menu.soon=§8Chega numa versão futura.
-sgx.menu.options.body=§7As opções chegam com o filme completo. Por enquanto: /scriptevent sgx:spike 1…10, sgx:play blackhole, sgx:stop.
+sgx.menu.options.body=§7As opções chegam com o filme completo. Por enquanto: /scriptevent sgx:spike 1…11, sgx:play blackhole, sgx:stop.
 sgx.msg.no_target=§cMire no chão (a 60–160 blocos).
 sgx.msg.too_far=§cLonge demais. Mire no chão a no máximo %1 blocos.
 sgx.msg.stopped=§8[Dooms Day] Parado.
@@ -25,7 +25,7 @@ sgx.msg.stage_warn=§e[Dooms Day] Não deu para manter a área carregada (%1). S
 sgx.msg.auto_target=§8[Dooms Day] Sem chão a 60–160 blocos na mira: usando o chão 90 blocos à frente.
 sgx.msg.restored=§8[Dooms Day] Restaurei as configurações do mundo depois de uma cinemática interrompida.
 sgx.msg.film_done=§8[Dooms Day] Animatic terminou (%1 ticks, %2 pulados, script %3 ms média / %4 ms pico).
-sgx.spike.unknown=§cTeste desconhecido. Use /scriptevent sgx:spike 1…10
+sgx.spike.unknown=§cTeste desconhecido. Use /scriptevent sgx:spike 1…11
 sgx.spike.end=§8[S-%1] Teste terminou. Câmera de volta ao normal.
 sgx.spike.1=§e[S-01] Profundidade: §fdisco 3D (anéis numerados) + partícula preta no centro. A câmera orbita por 12 s. §7Olhe: o disco preto fica NA FRENTE da parte de trás dos anéis e ATRÁS da parte da frente?
 sgx.spike.2=§e[S-02] Billboards: §fem cima = q.camera_rotation, embaixo = q.rotation_to_camera. A câmera da cutscene orbita. §7Olhe: cada placa gira JUNTO com a câmera (mesmo que virada do lado errado)?
@@ -38,6 +38,8 @@ sgx.spike.8=§e[S-08] Letterbox: §fas barras varrem 16:9 → 2,39 → 3,2 → f
 sgx.spike.9=§e[S-09] FOV respirando: §fcâmera parada, FOV ±5° a cada 3 ticks (6 s), depois a cada 6 ticks (6 s). §7Olhe: liso ou aos trancos?
 sgx.spike.10=§e[S-10] Puxão: §f10 vacas são puxadas para o marcador dourado a cada 4 ticks por 8 s. §7Olhe: liso, ou elas "teleportam"?
 sgx.spike.10.after=§8[S-10] Vacas removidas.
+sgx.spike.11=§e[S-11] Buraco negro em malha: §fa câmera dá uma volta ACIMA do disco e depois ABAIXO. §7Olhe: (1) a parte da frente do disco passa NA FRENTE da sombra preta e o lado de trás dobrado sobe por cima dela; (2) o lado que vem na sua direção (esquerda) fica mais azul e mais forte; (3) a textura do disco gira sozinha e NÃO gira junto com a câmera; (4) por baixo, a imagem espelha. Se (1) estiver ao contrário: /scriptevent sgx:cal 1. Se (3) girar junto com a câmera: some 2 (cal 2 ou 3).
+sgx.msg.cal=§8[Dooms Day] Calibração da malha: %1 (0–3, /scriptevent sgx:cal <n>).
 sgx.spike.busy=§8Já tem um teste ou cinemática rodando. /scriptevent sgx:stop
 ## GERADO do spec/storyboard.json (HUD)
 sgx.hud.b01.0=ANOMALIA DETECTADA

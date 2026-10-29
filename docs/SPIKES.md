@@ -16,6 +16,7 @@ Cada teste é um `/scriptevent sgx:spike <n>`. Ele monta a cena **na frente do j
 | S-08 | Letterbox em 3,2:1 e fechamento total no 20:9, sem vazar nas bordas? | ✅ | ✅ | Letterbox até fechar e os 5 flashes ok no 20:9. |
 | S-09 | FOV respirando ±5° a cada 3 ticks fica liso? | ✅ | ✅ | Liso com 3 e com 6 ticks: fica o de 3 (B08). |
 | S-10 | `applyImpulse` a cada 4 ticks puxa as vacas liso, sem "teleporte"? | ✅ | ✅ | Puxão liso em qualquer direção (até do céu): fica a cada 4 ticks. |
+| S-11 | (v0.3.1) O buraco negro em malha vira para a câmera do jeito certo, a textura gira sozinha (uv_anim) e espelha por baixo? | ⏳ | ⏳ | Se a frente do disco ficar atrás da sombra: `sgx:cal 1`. Se a textura girar junto com a câmera: somar 2. |
 
 Legenda: ✅ funcionou · ❌ não funcionou (aplicar o plano B) · ⚠️ funcionou com ressalva · ⏳ falta testar.
 
@@ -31,6 +32,7 @@ Legenda: ✅ funcionou · ❌ não funcionou (aplicar o plano B) · ⚠️ funci
 - **S-08** · As barras pretas varrem 16:9 → 2,39 → 3,2 → fecham (tela preta) → abrem. Depois vêm 5 flashes: branco, branco-gelo, quente, violeta e preto. **Certo:** barras retas e limpas e nada do título aparecendo como texto. **Atenção (P-54):** listra na borda do celular pode ser a margem de tela do jogo. Antes de chamar de bug, confira em Configurações → Vídeo.
 - **S-09** · Câmera parada, FOV oscilando 65 ↔ 75 a cada 3 ticks por 6 s, depois a cada 6 ticks por 6 s. Diga qual dos dois fica melhor.
 - **S-10** · 10 vacas em roda são puxadas para o marcador dourado por 8 s e depois somem. **Certo:** movimento contínuo, sem pulos.
+- **S-11** · (v0.3.1) O buraco negro final (entidade `sgx_bh`, todos os anéis acesos) a 100 blocos. A câmera dá uma volta 17 blocos acima do disco e outra 17 abaixo. **Certo:** (1) a parte da frente do disco passa na frente da sombra e o lado de trás dobrado sobe por cima dela; (2) a esquerda (o lado que vem para a câmera) fica mais azul e mais forte; (3) a textura anda sozinha e não gira junto com a câmera; (4) por baixo a imagem espelha. O 1 e o 3 dependem de convenções do Bedrock que não deu para medir daqui: `/scriptevent sgx:cal <0–3>` acerta sem build novo (bit 0 vira a malha 180°, bit 1 inverte a compensação da textura).
 
 ## Resultados
 

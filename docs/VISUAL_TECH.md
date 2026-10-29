@@ -11,12 +11,21 @@ Do fundo para a frente da câmera:
 | # | Camada | Forma | Material | Quem anima | Plano B (técnica já vista funcionando) |
 |---|---|---|---|---|---|
 | L0 | **Anel de Einstein** (estrelas da NASA dobradas em volta) | partícula `lookat_xyz` grande, persistente | `particles_add` | nada (textura por plano) | — (é enfeite; dá para cortar) |
-| L1 | **Impostor**: sombra + anel de fótons + lado de trás do disco dobrado por cima e por baixo | partícula `lookat_xyz`, flipbook | `particles_blend` (a sombra é preta opaca) | Molang: quadro = inclinação × tempo | é o próprio plano B |
+| L1 | **Buraco negro em malha** (v0.3.1, T-25): disco, corcova, arco de baixo, sombra, anel de fótons e halo | entidade `sgx_bh`: malhas por bin de elevação, osso virado para a câmera (`q.rotation_to_camera`) | `charged_creeper` (aditivo, `uv_anim`) + `entity_alphatest` (sombra) | Molang: giro por `uv_anim` (Kepler por anel, `q.frame_alpha`), escala, ignição | o impostor de partícula da 0.3.0 (vetado pelo usuário) |
 | L2 | **Disco 3D** (só nos planos próximos: B10, B11, B15, B16) | entidade `sgx_disk`, 5 anéis de cubos finos | `entity_emissive` (núcleo) + `entity_beam_additive` (brilho) | Molang: rotação kepleriana | decalque de partícula `direction_z` com flipbook girando |
 | L3 | **Jatos** | partículas `lookat_y` (núcleo + bainha) + nós instanciados | `particles_add` | Molang | — |
 | L4 | **Matéria caindo** (detritos, pedaço-herói) | entidade `sgx_debris` | `entity_alphatest` (textura de bloco) | Molang: espiral + esticamento | partícula com textura de bloco |
 | L5 | **Ondulações / onda gravitacional** | decalque `direction_z` (0, 1, 0,02) + casca instanciada | `particles_add` | Molang | — |
 | L6 | **Tela** (vermelho, íris, aberração, impacto negativo, último fóton, linhas de velocidade) | JSON UI pelo barramento de título | — | o cliente (por canal) | — |
+
+### v0.3.1: por que malha (T-25)
+
+O usuário vetou sprite: o buraco negro tem que ser **objeto** (entidade, JSON, Molang). Os vídeos da NASA que ele mandou mostram o disco xadrez como uma **malha dobrada pela lente**, e é isso que `tools/bake/bh_model.py` faz:
+- **O mapa da lente por vértice** (`bh_lens.py`): cada vértice do disco (r, ψ) vai para onde a sua imagem aparece. A imagem direta fica no ponto real do disco deslocado pela lente: perto do buraco ela vira a corcova por cima da sombra; longe, é o disco 3D de verdade, com paralaxe. A secundária (o arco por baixo) fica no plano do céu, sem as partes que a direta já cobre.
+- **Um conjunto de malhas por bin de elevação** (16 do buraco final, 7 de A/B), num osso que o cliente vira para a câmera a cada quadro. O script troca o bin (`singularity:bin`) só quando a câmera passa de um para o outro; negativo = câmera abaixo, o cliente espelha (escala −1 em Y).
+- **O giro do disco é a textura andando** (`uv_anim`), um render controller por anel com o ω de Kepler. O tempo usa `(floor(q.life_time·20) + q.frame_alpha)/20`, a mesma conta do creeper carregado do vanilla: liso em qualquer FPS.
+- **O Doppler** fica parado no referencial da câmera, então ele é uma segunda camada aditiva (textura por grupo de elevação e por imagem). As texturas são espelhadas em V, então a malha funciona igual se o jogo contar V de cima ou de baixo.
+- A **prévia** (`build/bake/lens_sheet.png`) é um rasterizador numpy que soma as camadas como o jogo soma.
 
 ### Por que impostor
 
