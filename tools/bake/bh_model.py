@@ -36,6 +36,7 @@ from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bh_engine as E  # noqa: E402
 import bh_lens as LZ  # noqa: E402
+import bh_kerr as KZ  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = json.loads((ROOT / "spec/bake.json").read_text(encoding="utf-8"))
@@ -122,26 +123,44 @@ def mirror_v(region):
     return np.concatenate([region, region[::-1]], axis=0)
 
 
-def flow_texture():
-    """Textura do disco que anda (U = ψ, V = r): estrias concêntricas finas × aglomerados alongados no giro,
-    na luz de repouso (g gravitacional só). É a camada de base, no nível flow_level (o Doppler soma por cima)."""
+def tex_band(r_mid):
+    """Índice e faixa (r0, r1) do anel do buraco grande que contém r: cada anel tem a sua textura (v0.3.2)."""
+    E = LENS["band_edges_rs"]
+    for k in range(len(E) - 1):
+        if r_mid <= E[k + 1] + 1e-9:
+            return k, E[k], E[k + 1]
+    return len(E) - 2, E[-2], E[-1]
+
+
+def flow_texture(r0, r1):
+    """Textura do disco que anda (U = ψ, V = r) de UM anel, r0…r1: estrias concêntricas finas × aglomerados
+    alongados no giro, na luz de repouso (g gravitacional só). Camada de base, no nível flow_level (o Doppler soma
+    por cima). v0.3.2: uma textura de 2048×1024 por anel (antes era uma só para o disco todo: 512 linhas para
+    12 r_s pixelavam de perto). Tudo em r absoluto, então os anéis encostam sem emenda no instante zero."""
     W, H = LENS["flow_tex"]
     h = H // 2
     look = LENS["look"]
-    u = (np.arange(W) + 0.5) / W
-    s = (np.arange(h) + 0.5) / h
-    U, S = np.meshgrid(u, s)
     r_in, r_out = PHYS["r_in_rs"], PHYS["r_out_rs"]
-    r = r_in + S * (r_out - r_in)
+    u = (np.arange(W) + 0.5) / W
+    rs = r0 + (np.arange(h) + 0.5) / h * (r1 - r0)
+    U, R = np.meshgrid(u, rs)
+    S = (R - r_in) / (r_out - r_in)  # posição no disco todo (o ruído continua de um anel para o outro)
     rng = np.random.default_rng(look["seed"])
     # estrias: anéis gaussianos finos em raios aleatórios (como a NASA mostra), contraste ~±45 %
-    stri = np.zeros(h)
-    rs = r[:, 0]
+    rings = []
     for _ in range(look["striations"]):
         c = rng.uniform(r_in, r_out)
         w = rng.uniform(0.02, 0.16) * (c / 6) ** 0.5
-        stri += rng.uniform(0.3, 1.0) * np.exp(-((rs - c) / w) ** 2)
-    stri = 0.55 + 0.9 * stri / stri.max()
+        rings.append((c, w, rng.uniform(0.3, 1.0)))
+    full = np.linspace(r_in, r_out, 20000)
+
+    def stri_at(x):
+        out = np.zeros_like(x)
+        for c, w, amp in rings:
+            out += amp * np.exp(-((x - c) / w) ** 2)
+        return out
+
+    stri = 0.55 + 0.9 * stri_at(rs) / stri_at(full).max()
     # vãos escuros finos nas bordas dos anéis do storyboard (cada anel gira no seu ω: o vão esconde o corte)
     for edge in LENS["band_edges_rs"][1:-1]:
         stri *= 1 - 0.75 * np.exp(-((rs - edge) / 0.07) ** 2)
@@ -149,13 +168,13 @@ def flow_texture():
     turb = pfbm(U, S, 6, 48, 5, look["seed"] + 1)
     fil = pfbm(U, S, 3, 160, 3, look["seed"] + 2)  # filamentos bem finos
     t = np.clip(0.72 + 0.55 * turb + 0.25 * fil, 0.15, 1.6)
-    light = disk_light(r, g_rest(r))  # (h, W, 3), tela
+    light = disk_light(R, g_rest(R))  # (h, W, 3), tela
     img = light * (stri[:, None] * t)[..., None] * look["flow_level"]
     img = np.clip(img, 0, 1)
     return mirror_v(img)
 
 
-def doppler_region(tr, e_deg, k, w, h):
+def doppler_region(tr, e_deg, k, w, h, kerr=None):
     """Camada parada no referencial da câmera: o quanto o Doppler soma em cima da base (só soma: o lado que se
     afasta fica na base, mais escuro e mais vermelho)."""
     look = LENS["look"]
@@ -167,7 +186,10 @@ def doppler_region(tr, e_deg, k, w, h):
     sc = (np.arange(hc) + 0.5) / hc
     P, S = np.meshgrid(psi, sc)
     r = r_in + S * (r_out - r_in)
-    im = LZ.image(tr, r.ravel(), P.ravel(), e_deg, k, PHYS["beta_scale"])
+    if kerr is not None:  # o Doppler é liso: o chute do leque basta (sem Newton)
+        im = kerr.image(r.ravel(), P.ravel(), k, refine=False)
+    else:
+        im = LZ.image(tr, r.ravel(), P.ravel(), e_deg, k, PHYS["beta_scale"])
     g = np.where(im["ok"], im["g"], 1.0).reshape(r.shape)
     s = (np.arange(h) + 0.5) / h
     gi = np.stack([np.interp(s, sc, g[:, c]) for c in range(w)], axis=1)
@@ -177,7 +199,7 @@ def doppler_region(tr, e_deg, k, w, h):
     return np.clip(full - base, 0, 1) * look["doppler_level"]
 
 
-def static_texture(tr):
+def static_texture(tr, kerr_for=lambda e: None):
     """Regiões lado a lado (cada uma com a altura toda, espelhada em V):
     0–7 = Doppler (grupo de elevação × k), 8 = anel de fótons + halo (V = b), 9 = preto (sombra)."""
     W, H = LENS["static_tex"]
@@ -191,7 +213,7 @@ def static_texture(tr):
         for k in (0, 1):
             idx = gi * 2 + k
             x0 = idx * rw
-            reg = doppler_region(tr, e, k, rw - 4, h)
+            reg = doppler_region(tr, e, k, rw - 4, h, kerr_for(e))
             img[:, x0 + 2:x0 + rw - 2] = mirror_v(reg)
             regions[("dop", gi, k)] = (x0 + 2, rw - 4)
     # anel + halo: V = (b − b_c)/(halo_out − b_c)
@@ -245,6 +267,21 @@ def rows_for(edges, per):
     return np.array(rows), band_of_row  # band_of_row[i] = anel da faixa de quads entre rows[i] e rows[i+1]
 
 
+def mesh_mask(XY, ok, hw, N):
+    """Máscara (N×N, ±hw r_s) de onde os quads de uma malha (grade XY (nr, M+1, 2)) cobrem a tela."""
+    img = Image.new("L", (N, N), 0)
+    d = ImageDraw.Draw(img)
+    s = (N - 1) / (2 * hw)
+    nr, nm = XY.shape[:2]
+    for i in range(nr - 1):
+        for m in range(nm - 1):
+            q = [(i, m), (i, m + 1), (i + 1, m + 1), (i + 1, m)]
+            if not all(ok[a, b] for a, b in q):
+                continue
+            d.polygon([((XY[a, b, 0] + hw) * s, (hw - XY[a, b, 1]) * s) for a, b in q], fill=255)
+    return np.asarray(img) > 0
+
+
 def direct_mask(tr, e, hw, N, r_in, r_out):
     """Onde a imagem direta (k = 0) cobre a tela: a secundária não é desenhada ali (o disco é opaco)."""
     xs = np.linspace(-hw, hw, N)
@@ -261,9 +298,14 @@ def direct_mask(tr, e, hw, N, r_in, r_out):
     return (phi0 < bcap) & (phi0 < besc) & (r >= r_in) & (r <= r_out)
 
 
-def lens_bin(tr, e, cfg, small=False):
+def lens_bin(tr, e, cfg, small=False, kerr=None):
     """Todas as malhas de um bin: {'flow': [peça por anel], 'dop': [peça por anel], 'shadow', 'ring'}.
-    Cada peça = (posições de modelo (n, 3), uvs normalizadas (n, 2), quads (m, 4) de índices)."""
+    Cada peça = (posições de modelo (n, 3), uvs normalizadas (n, 2), quads (m, 4) de índices).
+    v0.3.2: com kerr (bh_kerr.KerrLens), a lente, a sombra e o Doppler são os de Kerr (T-26)."""
+    if kerr is not None:
+        imgfn = lambda r, p, k: kerr.image(r, p, k)  # noqa: E731
+    else:
+        imgfn = lambda r, p, k: LZ.image(tr, r, p, e, k, PHYS["beta_scale"])  # noqa: E731
     edges = cfg["band_edges_rs"]
     r_in, r_out = edges[0], edges[-1]
     rows, band_of_row = rows_for(edges, cfg["rows_per_band"])
@@ -277,8 +319,17 @@ def lens_bin(tr, e, cfg, small=False):
     v_flow = 0.5 * (Rg - PHYS["r_in_rs"]) / (PHYS["r_out_rs"] - PHYS["r_in_rs"])  # metade de cima (espelho)
 
     def direct_pos():
-        im = LZ.image(tr, Rg.ravel(), Pg.ravel(), e, 0, PHYS["beta_scale"])
+        im = imgfn(Rg.ravel(), Pg.ravel(), 0)
         X, Y, z = im["X"].reshape(Rg.shape), im["Y"].reshape(Rg.shape), im["z"].reshape(Rg.shape)
+        ok = im["ok"].reshape(Rg.shape).copy()
+        # v0.3.2: vértice que o Newton de Kerr não achou → interpolado ao longo do anel pelos vizinhos
+        for i in range(Rg.shape[0]):
+            if 2 <= ok[i].sum() < ok.shape[1]:
+                j = np.arange(ok.shape[1])
+                X[i] = np.interp(j, j[ok[i]], X[i][ok[i]])
+                Y[i] = np.interp(j, j[ok[i]], Y[i][ok[i]])
+                ok[i] = True
+        im = {**im, "ok": ok}
         P = LZ.disk_point(Rg, Pg)
         X0, Y0 = Rg * np.cos(Pg), Rg * np.sin(Pg) * math.sin(math.radians(e))
         f = np.clip((d0 + z) / d0, 0.3, 2.0)
@@ -287,16 +338,17 @@ def lens_bin(tr, e, cfg, small=False):
         return Pp, im["ok"].reshape(Rg.shape), np.stack([X, Y], -1)
 
     def secondary_pos():
-        im = LZ.image(tr, Rg.ravel(), Pg.ravel(), e, 1, PHYS["beta_scale"])
+        im = imgfn(Rg.ravel(), Pg.ravel(), 1)
         X, Y = im["X"].reshape(Rg.shape), im["Y"].reshape(Rg.shape)
         Pp = X[..., None] * Rv + Y[..., None] * Up - cfg.get("secondary_push_rs", LENS["secondary_push_rs"]) * o
         return Pp, im["ok"].reshape(Rg.shape), np.stack([X, Y], -1)
 
-    Pd, okd, _ = direct_pos()
+    Pd, okd, XYd = direct_pos()
     Ps, oks, XYs = secondary_pos()
     hw = r_out + 2
     Nm = 600
-    mask = direct_mask(tr, e, hw, Nm, r_in, r_out)
+    # v0.3.2: a cobertura da imagem direta sai da própria malha (vale para Schwarzschild e Kerr)
+    mask = mesh_mask(XYd, okd, hw, Nm)
 
     def covered(xy):
         i = np.clip(((hw - xy[..., 1]) / (2 * hw) * (Nm - 1)).round().astype(int), 0, Nm - 1)
@@ -320,7 +372,9 @@ def lens_bin(tr, e, cfg, small=False):
                     pts = np.array([XYs[a, b] for a, b in quad])
                     if np.ptp(pts, axis=0).max() > 3.0:
                         continue
-                flow[k].append(([P[a, b] for a, b in quad], [(u_flow[a, b], v_flow[a, b]) for a, b in quad]))
+                _, t0, t1 = tex_band(0.5 * (rows[i] + rows[i + 1]))
+                vv = [0.5 * (Rg[a, b] - t0) / (t1 - t0) for a, b in quad]  # V da textura do anel (metade de cima)
+                flow[k].append(([P[a, b] for a, b in quad], [(u_flow[a, b], v) for (a, b), v in zip(quad, vv)]))
     # Doppler: malha mais grossa (o Doppler é liso), UV parada no referencial da câmera
     Md = LENS["overlay_psi_segments"] if not small else max(16, cfg["psi_segments"] // 2)
     gi = int(np.argmin([abs(e - x) for x in LENS["doppler_groups_e"]]))
@@ -345,28 +399,40 @@ def lens_bin(tr, e, cfg, small=False):
                         continue
                 uv = [((x0 + b / M * w) / Wt, v_flow[a, b]) for a, b in quad]  # coluna m ↔ x = −1 + 2m/M
                 dop[k].append(([P[a, b] for a, b in quad], uv))
-    # sombra (disco no plano do céu) e anel + halo
+    # sombra (no plano do céu) e anel + halo. Schwarzschild: círculo de raio b_c; Kerr: a curva crítica (o "D")
     Wt = LENS["static_tex"][0]
     xb, wb = REGIONS["black"]
     ub = (xb + wb / 2) / Wt
-    na = 48
-    ang = np.linspace(0, 2 * math.pi, na + 1)
-    circ = lambda rad: [rad * math.cos(a) * Rv + rad * math.sin(a) * Up for a in ang]  # noqa: E731
+    na = 96
+    if kerr is not None:
+        SX, SY = kerr.shadow(na)
+    else:
+        t = np.linspace(0, 2 * math.pi, na, endpoint=False)
+        SX, SY = BC * np.cos(t), BC * np.sin(t)
+    cx = float(SX.mean())
+    rad = np.hypot(SX - cx, SY)
+    dirs = np.stack([(SX - cx) / rad, SY / rad], -1)
+
+    def curve(delta):
+        pts = [(cx + (rad[i] + delta) * dirs[i, 0]) * Rv + ((rad[i] + delta) * dirs[i, 1]) * Up for i in range(na)]
+        return pts + [pts[0]]
+
     shadow = []
-    edge = circ(BC)
+    edge = curve(0.0)
+    c0p = cx * Rv
     for a in range(na):
-        tri = [np.zeros(3), edge[a + 1], edge[a]]
+        tri = [c0p, edge[a + 1], edge[a]]
         shadow.append((tri + [tri[-1]], [(ub, 0.25)] * 4))
         shadow.append(([tri[0], tri[2], tri[1], tri[1]], [(ub, 0.25)] * 4))  # as duas faces (alphatest tem culling)
     xr, wr = REGIONS["ring"]
     ring = []
-    ring_b = [BC, BC + 0.07, BC + 0.3, BC + 1.2, LENS["halo_out_rs"]]
+    ring_d = [0.0, 0.07, 0.3, 1.2, LENS["halo_out_rs"] - BC]
     if small:
-        ring_b = ring_b[:4]
-    for j in range(len(ring_b) - 1):
-        c0, c1 = circ(ring_b[j]), circ(ring_b[j + 1])
-        v0 = 0.5 * (ring_b[j] - BC) / (LENS["halo_out_rs"] - BC)
-        v1 = 0.5 * (ring_b[j + 1] - BC) / (LENS["halo_out_rs"] - BC)
+        ring_d = ring_d[:4]
+    for j in range(len(ring_d) - 1):
+        c0, c1 = curve(ring_d[j]), curve(ring_d[j + 1])
+        v0 = 0.5 * ring_d[j] / (LENS["halo_out_rs"] - BC)
+        v1 = 0.5 * ring_d[j + 1] / (LENS["halo_out_rs"] - BC)
         for a in range(na):
             pos = [c0[a], c0[a + 1], c1[a + 1], c1[a]]
             uu = [(xr + (a / na) * wr) / Wt, (xr + ((a + 1) / na) * wr) / Wt]
@@ -401,7 +467,7 @@ def mesh_json(quads):
     return {"normalized_uvs": True, "positions": pos, "normals": [[0, 0, -1]], "uvs": uvs, "polys": polys}
 
 
-def geometry(ident, bins, part, bands=None, bounds=130):
+def geometry(ident, bins, part, bands=None, bounds=64):
     """Um arquivo de geometria: osso 'face' (vira para a câmera) com um osso por bin (e por anel)."""
     bones = [{"name": "root", "pivot": [0, 0, 0]}, {"name": "face", "parent": "root", "pivot": [0, 0, 0]}]
     for j, b in enumerate(bins):
@@ -420,11 +486,21 @@ def geometry(ident, bins, part, bands=None, bounds=130):
         "bones": bones}]}
 
 
-def core_geometry(ident, bins, nb, bounds=130):
-    """Sombra (s), anel+halo (p) e Doppler (o, por anel) num arquivo só (um render controller, textura parada)."""
+def shadow_geometry(ident, bins, bounds):
+    """Só a sombra (s), opaca. v0.3.2: arquivo e render controller próprios, desenhados ANTES e DEPOIS do disco
+    (no vídeo da 0.3.1 o disco da frente furava a sombra: a ordem de desenho do jogo não é a da lista)."""
     bones = [{"name": "root", "pivot": [0, 0, 0]}, {"name": "face", "parent": "root", "pivot": [0, 0, 0]}]
     for j, b in enumerate(bins):
         bones.append({"name": f"s{j}", "parent": "face", "pivot": [0, 0, 0], "poly_mesh": mesh_json(b["shadow"])})
+    return {"format_version": "1.12.0", "minecraft:geometry": [{
+        "description": {"identifier": ident, "texture_width": 16, "texture_height": 16,
+                        "visible_bounds_width": bounds, "visible_bounds_height": bounds, "visible_bounds_offset": [0, 0, 0]},
+        "bones": bones}]}
+
+
+def core_geometry(ident, bins, nb, bounds):
+    """Anel+halo (p) e Doppler (o, por anel) num arquivo só (um render controller aditivo, textura parada)."""
+    bones = [{"name": "root", "pivot": [0, 0, 0]}, {"name": "face", "parent": "root", "pivot": [0, 0, 0]}]
     for j, b in enumerate(bins):
         bones.append({"name": f"p{j}", "parent": "face", "pivot": [0, 0, 0], "poly_mesh": mesh_json(b["ring"])})
         for k in range(nb):
@@ -520,7 +596,8 @@ def preview(geoms, flow_tex, static_tex, e, j, D_blocks=84.0, rs_blocks=2.8, siz
                 _tri_raster(img, zbuf, P2[a], Z[a], uv[[ui[x] for x in tri]], tex, mode, offset)
 
     core = {bn["name"]: bn for bn in geoms["core"]["minecraft:geometry"][0]["bones"] if "poly_mesh" in bn}
-    draw(core[f"s{j}"]["poly_mesh"], static_tex, "depth")
+    sh = {bn["name"]: bn for bn in geoms["shadow"]["minecraft:geometry"][0]["bones"] if "poly_mesh" in bn}
+    draw(sh[f"s{j}"]["poly_mesh"], static_tex, "depth")
     edges = edges or LENS["band_edges_rs"]
     nb = len(edges) - 1
     omega = omegas(edges)
@@ -529,7 +606,8 @@ def preview(geoms, flow_tex, static_tex, e, j, D_blocks=84.0, rs_blocks=2.8, siz
             continue
         bones = {bn["name"]: bn for bn in geoms[f"flow{k}"]["minecraft:geometry"][0]["bones"] if "poly_mesh" in bn}
         if f"f{j}_{k}" in bones:
-            draw(bones[f"f{j}_{k}"]["poly_mesh"], flow_tex, "add", offset=-omega[k] * t / 360.0)
+            ft = flow_tex[tex_band(0.5 * (edges[k] + edges[k + 1]))[0]] if isinstance(flow_tex, list) else flow_tex
+            draw(bones[f"f{j}_{k}"]["poly_mesh"], ft, "add", offset=-omega[k] * t / 360.0)
         if f"o{j}_{k}" in core:
             draw(core[f"o{j}_{k}"]["poly_mesh"], static_tex, "add")
     draw(core[f"p{j}"]["poly_mesh"], static_tex, "add")
@@ -607,7 +685,7 @@ def ignite_s(k, nb, small=False):
     return ig[f"ring{k + 1}"] / 20
 
 
-def entity_files(kind, nbins, nb, omegas_k, rs_blocks):
+def entity_files(kind, nbins, nb, omegas_k, rs_blocks, edges_k):
     """BP + client entity + render controllers + animação de uma das duas entidades ('bh' ou 'bhs')."""
     small = kind == "bhs"
     ident = f"{NS}:sgx_bh_small" if small else f"{NS}:sgx_bh"
@@ -660,30 +738,40 @@ def entity_files(kind, nbins, nb, omegas_k, rs_blocks):
     anim = {"format_version": fv["animations"], "animations": {anim_name: {"loop": True, "bones": bones}}}
     geos = {f"flow{k}": f"geometry.{NS}.sgx_{kind}_flow{k}" for k in range(nb)}
     geos["core"] = f"geometry.{NS}.sgx_{kind}_core"
+    geos["shadow"] = f"geometry.{NS}.sgx_{kind}_shadow"
     rcs = {}
+    # a sombra vai no começo E no fim da lista (e com nomes a_/z_): seja qual for a ordem em que o jogo desenha
+    # (lista, lista ao contrário, nome), uma das duas cópias sai antes do disco e a sombra não fura
+    shadow_rc = {"geometry": "Geometry.shadow", "materials": [{"*": "Material.shadow"}], "textures": ["Texture.static"],
+                 "ignore_lighting": True, "part_visibility": [{f"s{j}": f"v.on && v.bi == {j}"} for j in range(nbins)]}
+    first_rc, last_rc = f"controller.render.{NS}.sgx_{kind}_a_shadow", f"controller.render.{NS}.sgx_{kind}_z_shadow"
+    rcs[first_rc] = shadow_rc
     core_rc = f"controller.render.{NS}.sgx_{kind}_core"
     vis = []
     for j in range(nbins):
-        vis.append({f"s{j}": f"v.on && v.bi == {j}"})
         vis.append({f"p{j}": f"v.on && v.bi == {j}"})
         for k in range(nb):
             vis.append({f"o{j}_{k}": f"v.on && !v.disk_off && v.bi == {j} && v.t >= {ignite_s(k, nb, small)}"})
-    rcs[core_rc] = {"geometry": "Geometry.core", "materials": [{"*": "Material.add"}, {"s*": "Material.shadow"}],
+    rcs[core_rc] = {"geometry": "Geometry.core", "materials": [{"*": "Material.add"}],
                     "textures": ["Texture.static"], "ignore_lighting": True, "part_visibility": vis}
-    order = [core_rc]
+    order = [first_rc, core_rc]
     for k in range(nb):
         name = f"controller.render.{NS}.sgx_{kind}_flow{k}"
         # U anda para trás no tempo (o material em ψ chega de ψ − ωt) e compensa o giro da malha (v.yaw)
-        rcs[name] = {"geometry": f"Geometry.flow{k}", "materials": [{"*": "Material.flow"}], "textures": ["Texture.flow"],
+        ti = tex_band(0.5 * (edges_k[k] + edges_k[k + 1]))[0]
+        rcs[name] = {"geometry": f"Geometry.flow{k}", "materials": [{"*": "Material.flow"}], "textures": [f"Texture.flow{ti}"],
                      "ignore_lighting": True,
                      "uv_anim": {"offset": [f"v.ys * v.yaw / 360 - {omegas_k[k] / 360:.6f} * v.t", 0.0], "scale": [1.0, 1.0]},
                      "part_visibility": [{f"f{j}_{k}": f"v.on && !v.disk_off && v.bi == {j} && v.t >= {ignite_s(k, nb, small)}"}
                                          for j in range(nbins)]}
         order.append(name)
+    rcs[last_rc] = json.loads(json.dumps(shadow_rc))
+    order.append(last_rc)
     client = {"format_version": fv["client_entity"], "minecraft:client_entity": {"description": {
         "identifier": ident,
         "materials": {"add": "charged_creeper", "flow": "charged_creeper", "shadow": "entity_alphatest"},
-        "textures": {"flow": "textures/sgx/bh/flow", "static": "textures/sgx/bh/static"},
+        "textures": {**{f"flow{i}": f"textures/sgx/bh/flow{i}" for i in range(len(LENS["band_edges_rs"]) - 1)},
+                     "static": "textures/sgx/bh/static"},
         "geometry": geos,
         "animations": {"face": anim_name},
         "scripts": {"pre_animation": pre, "animate": ["face"]},
@@ -692,10 +780,74 @@ def entity_files(kind, nbins, nb, omegas_k, rs_blocks):
     return bp, client, rc, anim
 
 
+# ------------------------------------------------------------------ S-12: sondas de visibilidade
+
+
+PROBES = [  # (número, visible_bounds, pesada?, render controllers)
+    (1, 16, False, 1), (2, 64, False, 1), (3, 120, False, 1), (4, 130, False, 1), (5, 256, False, 1),
+    (6, 64, True, 1), (7, 64, False, 6)]
+
+
+def probe_files():
+    """v0.3.2: o buraco negro grande (visible_bounds 130, ~185 mil vértices, 6 render controllers) sumia de longe no
+    filme e o pequeno (60, ~21 mil, 3) não. Cada sonda isola uma dessas diferenças: placas numeradas lado a lado
+    (S-12), e o usuário diz quais números aparecem com a câmera no jogador e com a câmera perto."""
+    fv = PROJECT["bedrock"]["format_versions"]
+    inert = json.loads((ROOT / "BP/entities/sgx_disk.json").read_text(encoding="utf-8"))["minecraft:entity"]["components"]
+    try:
+        font = ImageFont.truetype(str(ROOT / "assets/fonts/IBMPlexMono-SemiBold-full.ttf"), 52)
+    except OSError:
+        font = None
+    cols = [(230, 70, 60), (240, 160, 40), (230, 220, 60), (80, 200, 90), (60, 170, 230), (150, 90, 230), (230, 90, 180)]
+    for n, bounds, heavy, nrc in PROBES:
+        ident = f"{NS}:sgx_probe_{n}"
+        img = Image.new("RGBA", (64, 64), cols[n - 1] + (255,))
+        d = ImageDraw.Draw(img)
+        d.rectangle([0, 0, 63, 63], outline=(255, 255, 255, 255), width=3)
+        d.text((32, 30), str(n), fill=(0, 0, 0, 255), font=font, anchor="mm")
+        put(f"RP/textures/sgx/probe/p{n}.png", np.asarray(img, float)[..., :3] / 255)
+        faces = {f: {"uv": [0, 0], "uv_size": [64, 64]} for f in ("north", "south", "east", "west", "up", "down")}
+        geos, rcs = {}, {}
+        for r in range(nrc):
+            # nrc pedaços (faixas horizontais), um por render controller
+            h = 96 / nrc
+            bones = [{"name": "root", "pivot": [0, 0, 0]},
+                     {"name": "face", "parent": "root", "pivot": [0, 0, 0],
+                      "cubes": [{"origin": [-48, -48 + r * h, -1], "size": [96, h, 2], "uv": faces}]}]
+            if heavy:
+                # ~60 mil vértices de quads minúsculos atrás da placa (o peso do buraco negro, sem mudar o visual)
+                pos, uvs, polys = [], [[0.5, 0.5]], []
+                for i in range(15000):
+                    x, y = -40 + (i % 120) * 0.66, -40 + (i // 120) * 0.66
+                    b = len(pos)
+                    pos += [[x, y, 2], [x + 0.3, y, 2], [x + 0.3, y + 0.3, 2], [x, y + 0.3, 2]]
+                    polys.append([[b, 0, 0], [b + 1, 0, 0], [b + 2, 0, 0], [b + 3, 0, 0]])
+                bones.append({"name": "mass", "parent": "face", "pivot": [0, 0, 0],
+                              "poly_mesh": {"normalized_uvs": True, "positions": pos, "normals": [[0, 0, -1]], "uvs": uvs,
+                                            "polys": polys}})
+            gid = f"geometry.{NS}.sgx_probe_{n}_{r}"
+            put(f"RP/models/entity/sgx_probe_{n}_{r}.geo.json", {"format_version": fv["geometry"], "minecraft:geometry": [{
+                "description": {"identifier": gid, "texture_width": 64, "texture_height": 64, "visible_bounds_width": bounds,
+                                "visible_bounds_height": bounds, "visible_bounds_offset": [0, 0, 0]}, "bones": bones}]})
+            geos[f"g{r}"] = gid
+            rcs[f"controller.render.{NS}.sgx_probe_{n}_{r}"] = {"geometry": f"Geometry.g{r}", "materials": [{"*": "Material.default"}],
+                                                               "textures": ["Texture.default"], "ignore_lighting": True}
+        put(f"RP/render_controllers/sgx_probe_{n}.render_controllers.json", {"format_version": fv["render_controllers"], "render_controllers": rcs})
+        anim = f"animation.{NS}.sgx_probe_{n}.face"
+        put(f"RP/animations/sgx_probe_{n}.animation.json", {"format_version": fv["animations"], "animations": {
+            anim: {"loop": True, "bones": {"face": {"rotation": [0, "q.rotation_to_camera(1) - q.body_y_rotation", 0]}}}}})
+        put(f"RP/entity/sgx_probe_{n}.entity.json", {"format_version": fv["client_entity"], "minecraft:client_entity": {"description": {
+            "identifier": ident, "materials": {"default": "entity_alphatest"}, "textures": {"default": f"textures/sgx/probe/p{n}"},
+            "geometry": geos, "animations": {"face": anim}, "scripts": {"animate": ["face"]}, "render_controllers": list(rcs)}}})
+        put(f"BP/entities/sgx_probe_{n}.json", {"format_version": fv["entity_bp"], "minecraft:entity": {
+            "description": {"identifier": ident, "is_spawnable": False, "is_summonable": True, "is_experimental": False},
+            "components": inert}})
+
+
 def stamp():
     h = hashlib.sha256()
     for f in ("spec/bake.json", "spec/layout.json", "spec/palette.json", "spec/project.json", "tools/bake/bh_engine.py",
-              "tools/bake/bh_lens.py", "tools/bake/bh_model.py"):
+              "tools/bake/bh_lens.py", "tools/bake/bh_kerr.py", "tools/bake/bh_model.py"):
         h.update((ROOT / f).read_bytes())
     return h.hexdigest()
 
@@ -716,25 +868,48 @@ def put(rel, data):
 def build():
     t0 = __import__("time").time()
     tr = E.Tracer(PHYS)
-    flow = flow_texture()
-    static, regions = static_texture(tr)
+    edg = LENS["band_edges_rs"]
+    flow = [flow_texture(edg[k], edg[k + 1]) for k in range(len(edg) - 1)]
+    spin = PHYS.get("spin", 0.0)
+    lenses = {}
+
+    def kerr_for(e):
+        # v0.3.2 (T-26): o buraco negro final é de Kerr (o remanescente do GW150914 gira, χ ≈ 0,67)
+        if spin <= 0:
+            return None
+        # uma lente por vez (o traço fica em cache em build/bake/kerr; guardar as 20 na memória não vale)
+        lenses.clear()
+        lenses[e] = KZ.KerrLens(spin, e, PHYS["r_in_rs"], PHYS["r_out_rs"], PHYS["beta_scale"], n_ang=LENS.get("kerr_angles", 240))
+        return lenses[e]
+
+    static, regions = static_texture(tr, kerr_for)
     REGIONS.clear()
     REGIONS.update(regions)
-    put("RP/textures/sgx/bh/flow.png", flow)
+    for i, ft in enumerate(flow):
+        put(f"RP/textures/sgx/bh/flow{i}.png", ft)
     put("RP/textures/sgx/bh/static.png", static)
+    probe_files()
     sheets = []
     for kind, cfg in (("bh", LENS), ("bhs", {**LENS["small"], "secondary_push_rs": LENS["secondary_push_rs"]})):
         small = kind == "bhs"
-        bins = [lens_bin(tr, e, cfg, small) for e in cfg["bins_e_deg"]]
+        bins = []
+        for e in cfg["bins_e_deg"]:
+            kl = None if small else kerr_for(e)
+            bins.append(lens_bin(tr, e, cfg, small, kerr=kl))
+            if kl is not None:
+                print(f"  Kerr e = {e}°: {100 * getattr(kl, 'last_refined', 1):.0f} % dos vértices refinados", flush=True)
         nb = len(cfg["band_edges_rs"]) - 1
-        geoms = {f"flow{k}": geometry(f"geometry.{NS}.sgx_{kind}_flow{k}", bins, "flow", bands=[k],
-                                       bounds=60 if small else 130) for k in range(nb)}
-        geoms["core"] = core_geometry(f"geometry.{NS}.sgx_{kind}_core", bins, nb, bounds=60 if small else 130)
+        # v0.3.2: visible_bounds 64 (o pequeno, com 60, aparecia no filme; o grande, com 130, sumia de longe)
+        bounds = cfg["bounds_blocks"] if small else LENS["bounds_blocks"]
+        geoms = {f"flow{k}": geometry(f"geometry.{NS}.sgx_{kind}_flow{k}", bins, "flow", bands=[k], bounds=bounds)
+                 for k in range(nb)}
+        geoms["core"] = core_geometry(f"geometry.{NS}.sgx_{kind}_core", bins, nb, bounds)
+        geoms["shadow"] = shadow_geometry(f"geometry.{NS}.sgx_{kind}_shadow", bins, bounds)
         for name, g in geoms.items():
             put(f"RP/models/entity/sgx_{kind}_{name}.geo.json", g)
         om = omegas(cfg["band_edges_rs"])
         rs = LAYOUT["black_hole"]["r_s_final"]
-        bp, client, rc, anim = entity_files(kind, len(bins), nb, om, rs)
+        bp, client, rc, anim = entity_files(kind, len(bins), nb, om, rs, cfg["band_edges_rs"])
         ent = "sgx_bh_small" if small else "sgx_bh"
         put(f"BP/entities/{ent}.json", bp)
         put(f"RP/entity/{ent}.entity.json", client)

@@ -16,7 +16,7 @@ sgx.msg.busy=§8Another cinematic is already playing.
 sgx.msg.loaded=§8[Dooms Day] §7Loaded. /give @s singularity:core
 ## F0/F1
 sgx.menu.soon=§8Coming in a later version.
-sgx.menu.options.body=§7Options arrive with the full film. For now: /scriptevent sgx:spike 1…11, sgx:play blackhole, sgx:stop.
+sgx.menu.options.body=§7Options arrive with the full film. For now: /scriptevent sgx:spike 1…12, sgx:play blackhole, sgx:stop.
 sgx.msg.no_target=§cAim at the ground (60–160 blocks away).
 sgx.msg.too_far=§cToo far. Aim at the ground at most %1 blocks away.
 sgx.msg.stopped=§8[Dooms Day] Stopped.
@@ -25,7 +25,7 @@ sgx.msg.stage_warn=§e[Dooms Day] Could not keep the area loaded (%1). If things
 sgx.msg.auto_target=§8[Dooms Day] No ground 60–160 blocks away in your aim: using the ground 90 blocks ahead.
 sgx.msg.restored=§8[Dooms Day] Restored the world settings after an interrupted cinematic.
 sgx.msg.film_done=§8[Dooms Day] Animatic finished (%1 ticks, %2 skipped, script %3 ms avg / %4 ms peak).
-sgx.spike.unknown=§cUnknown test. Use /scriptevent sgx:spike 1…11
+sgx.spike.unknown=§cUnknown test. Use /scriptevent sgx:spike 1…12
 sgx.spike.end=§8[S-%1] Test finished. Camera back to normal.
 sgx.spike.1=§e[S-01] Depth: §f3D disk (numbered rings) + black particle in the center. Camera orbits for 12 s. §7Look: is the black disk IN FRONT of the back part of the rings and BEHIND the front part?
 sgx.spike.2=§e[S-02] Billboards: §ftop = q.camera_rotation, bottom = q.rotation_to_camera. Cutscene camera orbits. §7Look: does each panel turn WITH the camera (even if facing the wrong side)?
@@ -40,6 +40,10 @@ sgx.spike.10=§e[S-10] Pull: §f10 cows are pulled to the gold marker every 4 ti
 sgx.spike.10.after=§8[S-10] Cows removed.
 sgx.spike.11=§e[S-11] Black hole mesh: §fthe camera circles ABOVE the disk, then BELOW. §7Look: (1) the near side of the disk passes IN FRONT of the black shadow and the bent back side rises over it; (2) the side coming toward you (left) is bluer and brighter; (3) the disk texture flows by itself and does NOT spin along with the camera; (4) below, the picture is mirrored. If (1) is backwards: /scriptevent sgx:cal 1. If (3) spins with the camera: add 2 (cal 2 or 3).
 sgx.msg.cal=§8[Dooms Day] Mesh calibration: %1 (0–3, /scriptevent sgx:cal <n>).
+sgx.spike.12=§e[S-12] Visibility: §f7 numbered panels 90 blocks ahead (each one changes one thing: size of the culling box or weight) and the black hole above them. §7Write down WHICH NUMBERS you see in each phase (and whether the black hole shows).
+sgx.spike.12.p1=§e[S-12] Phase 1/3: §fyour own camera. Which numbers do you see? Does the black hole show?
+sgx.spike.12.p2=§e[S-12] Phase 2/3: §ffree camera close to the panels (your body stays back). Which numbers? Black hole?
+sgx.spike.12.p3=§e[S-12] Phase 3/3: §ffree camera where you stand. Which numbers? Black hole?
 sgx.spike.busy=§8A test or cinematic is already running. /scriptevent sgx:stop
 ## GERADO do spec/storyboard.json (HUD)
 sgx.hud.b01.0=ANOMALY DETECTED

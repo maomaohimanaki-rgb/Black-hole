@@ -121,7 +121,7 @@ test("manifests: BP depende do RP, script aponta para main.js, versões da API",
   assert.ok(bp.dependencies.some((d) => d.uuid === rp.header.uuid));
   const script = bp.modules.find((m) => m.type === "script");
   assert.ok(existsSync(join(ROOT, "BP", script.entry)));
-  assert.ok(bp.dependencies.some((d) => d.module_name === "@minecraft/server" && d.version === "2.10.0"));
+  assert.ok(bp.dependencies.some((d) => d.module_name === "@minecraft/server" && d.version === "2.11.0"));
 });
 
 test("imports relativos dos scripts existem", () => {

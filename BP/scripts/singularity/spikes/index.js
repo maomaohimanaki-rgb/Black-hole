@@ -1,4 +1,4 @@
-// F0: os 10 testes de renderização (VISUAL_TECH §10). /scriptevent sgx:spike <1–11>
+// F0: os 10 testes de renderização (VISUAL_TECH §10). /scriptevent sgx:spike <1–12>
 // v0.3.1: S-11 = a entidade do buraco negro (malha + lente + uv_anim) com a câmera passando por cima e por baixo.
 // Cada teste monta a cena na frente do jogador, explica no chat o que olhar e se desfaz sozinho.
 // Resultado vai para docs/SPIKES.md.
@@ -227,6 +227,43 @@ const SPIKES = {
         const a = (2 * Math.PI * t) / 240;
         const camPos = madd(O, [env.F, -Math.cos(a) * 95], [env.R, Math.sin(a) * 95], [env.U, t < 240 ? 17 : -17]);
         const el = elevation(camPos, O);
+        cur = pickBin(bins, el, cur);
+        const v = binValue(cur, el);
+        if (v !== sent && e.isValid) e.setProperty(`${NS}:bin`, (sent = v));
+      };
+    },
+  },
+  // v0.3.2: visibilidade. O buraco negro grande sumia de longe no filme e o pequeno não. Sete placas numeradas a
+  // 90 blocos, cada uma isolando uma diferença (bounds 16/64/120/130/256, placa pesada, 6 render controllers),
+  // e o buraco negro em cima. Fase 1: câmera do jogador; fase 2: câmera livre perto das placas; fase 3: câmera
+  // livre no lugar do jogador. O usuário anota quais números aparecem em cada fase.
+  12: {
+    ticks: 560,
+    stage: (env) => madd(env.P, [env.F, 100], [env.U, 25]),
+    setup(env) {
+      const row = madd(env.P, [env.F, 90], [env.U, 12]);
+      for (let n = 1; n <= 7; n++) spawnFx(env, `${NS}:sgx_probe_${n}`, madd(row, [env.R, (n - 4) * 9]));
+      const O = madd(env.P, [env.F, 120], [env.U, 50]);
+      const bins = DATA.lens.bins;
+      let cur = -1, sent = 0;
+      const e = spawnFx(env, BH_ID, O, { t0: 16.0, cal: env.cal ?? 0, bin: binValue(pickBin(bins, 20), 20) });
+      const near = madd(row, [env.F, -30], [env.U, 6]);
+      let phase = 0;
+      return (t) => {
+        const ph = t < 200 ? 1 : t < 400 ? 2 : 3;
+        if (ph !== phase) {
+          phase = ph;
+          env.player.sendMessage({ translate: `sgx.spike.12.p${ph}` });
+          if (ph === 1) env.player.camera.clear();
+        }
+        let cam = env.eye;
+        if (ph === 2) {
+          cam = near;
+          lookCam(env, near, row, t > 200);
+        } else if (ph === 3) {
+          lookCam(env, env.eye, row, t > 400);
+        }
+        const el = elevation(cam, O);
         cur = pickBin(bins, el, cur);
         const v = binValue(cur, el);
         if (v !== sent && e.isValid) e.setProperty(`${NS}:bin`, (sent = v));

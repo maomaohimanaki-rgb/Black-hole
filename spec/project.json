@@ -2,7 +2,7 @@
   "title": "DOOMS DAY",
   "title_pt": "DOOMS DAY",
   "title_note": "D-01 (out/2026): o addon se chama Dooms Day. \"Doom\" = destino inevitável, a mesma palavra que se associa a buracos negros. Os ids internos (singularity:, sgx:, SGXB, sgx_) ficam como estão: o jogador não vê, e o item continua sendo o Núcleo da Singularidade.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "namespace": "singularity",
   "short": "sgx",
   "prefixes": {
@@ -43,8 +43,8 @@
       0
     ],
     "script_modules": {
-      "@minecraft/server": "2.10.0",
-      "@minecraft/server-ui": "2.2.0"
+      "@minecraft/server": "2.11.0",
+      "@minecraft/server-ui": "2.3.0"
     },
     "format_versions": {
       "entity_bp": "1.21.0",
@@ -56,7 +56,7 @@
       "item": "1.21.50",
       "sound_definitions": "1.20.20"
     },
-    "note": "@minecraft/server 2.10.0 e server-ui 2.2.0 são as versões estáveis do jogo 1.26.50+ (o usuário está no 1.26.52, out/2026)."
+    "note": "v0.3.2: @minecraft/server 2.11.0 e server-ui 2.3.0 são as estáveis do 1.26.60 (o usuário atualizou para o 1.26.60.4, 29/10/2026; conferido no npm). O 2.11 traz SoundInstance.setPitch/setVolume/fade (útil no áudio da última fase) e os WorldClock."
   },
   "uuids": {
     "bp_header": "4981f1e9-00ed-4b1f-8490-c274b010ef6e",

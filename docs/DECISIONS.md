@@ -13,7 +13,7 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
 - **T-07 · i18n EN/PT desde o primeiro dia**, com 3 perfis de qualidade (alto, equilíbrio, leve) no lançamento.
 - **D-01 → T-08 · Nome: Dooms Day** (24/10/2026). "Doom" é o destino inevitável, a palavra que se associa a buracos negros, e cobre os dois eventos. Mudou: `spec/project.json` (`title`, `title_note`), nomes dos pacotes e do menu (`tools/gen_templates.py`). **Ficaram:** os ids internos (`singularity:`, `sgx:`, `SGXB`, `sgx_`), o item "Singularity Core / Núcleo da Singularidade" e o título do filme do buraco negro ("SINGULARITY", B22). Trocar o título do filme é só mexer no `events.blackhole.title` e no B22.
 - **D-02 → T-09 · Duração: 36 s** (720 ticks), sem corte por enquanto (24/10/2026). Revisitar só se o animatic parecer longo.
-- **T-10 · Versões do jogo** (24/10/2026): o usuário está no 1.26.52. `@minecraft/server` 2.10.0 e `@minecraft/server-ui` 2.2.0 são as estáveis dessa versão (conferido no npm).
+- **T-10 · Versões do jogo** (24/10/2026): o usuário está no 1.26.52. `@minecraft/server` 2.10.0 e `@minecraft/server-ui` 2.2.0 são as estáveis dessa versão (conferido no npm). **29/10/2026:** ele atualizou para o 1.26.60.4. Subimos para 2.11.0 e 2.3.0 (o beta do jogo está no 1.26.70; seguimos no estável).
 - **T-11 · Fonte Poppins completa** (24/10/2026): a do kit é um subconjunto (16 KB). Baixar a completa (OFL, Google Fonts) na F3, antes do título assado.
 - **T-12 · `.mcaddon` no chat e em `dist/` no repositório** (24/10/2026).
 - **T-13 · Resultado da F0** (24/10/2026, `docs/SPIKES.md`): as 10 técnicas passaram, nenhum plano B. Billboard de entidade usa `q.rotation_to_camera` (o `q.camera_rotation` não segue a câmera da cutscene). Impostor = 1 id de partícula com as inclinações em linhas do atlas (`v.incl`). Estéreo 2D vale (pan do Doppler fica). `poly_mesh` disponível.
@@ -34,6 +34,9 @@ Cada decisão tem um ID. Quando o usuário decidir uma em aberto, mova para "Tom
   - o β do Doppler é ×2 (limite 0,75), senão o "esquerda azul-forte, direita laranja-fraca" do B11 não aparece.
 
 - **T-25 · O buraco negro é geometria, não sprite** (29/10/2026, retorno do usuário sobre a 0.3.0: "não pode, de hipótese nenhuma, usar sprite"). Ele é uma entidade com malha que a lente dobra: as malhas saem do traçado de Schwarzschild por vértice, uma por bin de elevação, viradas para a câmera no cliente. O giro é `uv_anim` por anel, liso por quadro. A escala, o ringdown, a ignição e a órbita de A/B ficam no Molang, gerado do spec e conferido com o JS no teste. O impostor de partícula da 0.3.0 saiu. Duas convenções do Bedrock não deram para medir daqui (o lado da frente da malha e o sentido da compensação da textura), então elas ficam numa calibração do mundo (`sgx:cal`) que o S-11 acerta.
+
+- **T-26 · O buraco negro final é de Kerr** (29/10/2026, pedido do usuário: "os Boyer–Lindquist"). O spin é a = 0,67, o do remanescente do GW150914. A e B ficam de Schwarzschild. O disco fica truncado em 3 r_s, como dizem o storyboard e o HUD ("ISCO 3 r_s"); com esse spin, a ISCO prógrada de verdade seria 1,77 r_s. O spin está em `spec/bake.json → physics.spin`, e a = 0 volta ao Schwarzschild.
+- **T-27 · A sombra antes e depois do disco** (29/10/2026, vídeo da 0.3.1). A ordem de desenho entre render controllers não é a da lista, então a sombra vai nas duas pontas. Também entra `visible_bounds` ≤ 64, até o S-12 medir o que de fato faz a entidade sumir de longe.
 
 ## Em aberto (decidir antes ou durante a fase indicada)
 

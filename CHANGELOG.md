@@ -2,6 +2,21 @@
 
 Formato: versão · data · o que mudou e **por quê**. Builds de teste saem em `dist/DoomsDay_<versão>_teste-<n>.mcaddon`, cada um com UUIDs novos.
 
+## 0.3.2 (em teste) · out/2026 — buraco negro de Kerr, sombra que não fura, API 2.11 e o S-12
+
+**Por quê:** no teste da 0.3.1 (vídeo do usuário, 1.26.60.4), A e B apareciam lindos no filme, mas o buraco negro final sumia a partir do B08, mesmo com simulação 8. Ele só aparecia spawnado perto. E quando aparecia, o disco da frente furava a sombra: dava para ver o chão através dela.
+
+- **O sumiço.** A e B usam a mesma técnica no mesmo ponto O e aparecem, então não é simulação nem ticking area. A diferença mais forte é o `visible_bounds`: 130 no grande, 60 no pequeno (o disco do S-01 tinha 88 e os detritos do S-04, 128, e os dois funcionaram). Ele caiu para 64. Como isso não foi medido, entrou o **S-12**: 7 placas numeradas a 90 blocos, cada uma isolando uma diferença (caixa de 16, 64, 120, 130 e 256, uma placa pesada de 60 mil vértices, 6 render controllers), mais o buraco negro. O usuário diz quais números aparecem com a câmera dele, com a câmera livre perto e com a câmera livre no lugar dele.
+- **A sombra furada.** O disco (aditivo) escreve profundidade e foi desenhado antes da sombra. A ordem em que o jogo desenha os render controllers não é a da lista. Agora a sombra tem arquivo e controller próprios, no começo **e** no fim da lista, com nomes `a_`/`z_`. Seja qual for a ordem, uma cópia sai antes do disco.
+- **Kerr (T-26).** O pedido foi "os Boyer–Lindquist todos". O buraco negro final agora gira com a = 0,67, o spin do remanescente do GW150914 (e a Gargântua também é de Kerr). `tools/bake/bh_kerr.py`:
+  - traça os raios para trás em Boyer–Lindquist, no tempo de Mino, com projeção no vínculo;
+  - acha os vértices da malha por Newton com o raio exato;
+  - usa o Doppler exato do disco kepleriano;
+  - a sombra é a curva crítica, assimétrica (o "D").
+  - Com a = 0 ele bate com o Schwarzschild antigo (mediana 0,0002 r_s). O disco continua de 3 a 15 r_s.
+- **Textura por anel:** 5 texturas de 2048×1024, uma por anel, no lugar de uma só, com 5× mais detalhe no raio. Responde à pergunta do pixelado.
+- **API:** `@minecraft/server` 2.11.0 e `server-ui` 2.3.0, as estáveis do 1.26.60 (conferido no npm). O 2.11 traz `SoundInstance.setPitch/setVolume/fade`, que fica para o áudio da última fase.
+
 ## 0.3.1 (em teste) · out/2026: o buraco negro vira objeto (malha + Molang)
 
 **Por quê:** o usuário testou a 0.3.0 (tudo rodou, sem erro, ms ok) e vetou o sprite: "tem que ser um objeto em Molang, uma entidade, JSON". Ele também pediu algo no nível das imagens que mandou (*Interstellar*, NASA, ESO) e mandou dois vídeos da NASA, que mostram a malha do disco (xadrez) se deformando com a câmera.

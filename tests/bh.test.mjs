@@ -152,17 +152,22 @@ test("bh: pacote fecha (geometrias, ossos do part_visibility, texturas, materiai
       bytes += statSync(file).size;
       const g = JSON.parse(readFileSync(file, "utf8"))["minecraft:geometry"][0];
       assert.equal(g.description.identifier, ident);
+      // v0.3.2: o grande sumia de longe com visible_bounds 130; o pequeno (60) aparecia
+      assert.ok(g.description.visible_bounds_width <= 64 && g.description.visible_bounds_height <= 64, `${ident}: bounds`);
       geos[`Geometry.${key}`] = new Set(g.bones.map((b) => b.name));
       for (const b of g.bones) if (b.poly_mesh) assert.ok(b.poly_mesh.polys.length > 0 && b.poly_mesh.normalized_uvs, b.name);
     }
     const rcs = json(`RP/render_controllers/${id}.render_controllers.json`).render_controllers;
     assert.deepEqual(d.render_controllers, Object.keys(rcs));
-    assert.match(d.render_controllers[0], /_core$/, "a sombra (core) primeiro");
+    // v0.3.2: a sombra no começo e no fim (no jogo o disco da frente furava a sombra: a ordem não é a da lista)
+    assert.match(d.render_controllers[0], /_a_shadow$/);
+    assert.match(d.render_controllers.at(-1), /_z_shadow$/);
     for (const [name, rc] of Object.entries(rcs)) {
       const bones = geos[rc.geometry];
       assert.ok(bones, `${name}: ${rc.geometry}`);
       for (const pv of rc.part_visibility) for (const b of Object.keys(pv)) assert.ok(bones.has(b), `${name}: osso ${b}`);
       if (/flow\d$/.test(name)) assert.ok(rc.uv_anim && /v\.t\b/.test(rc.uv_anim.offset[0]), `${name}: uv_anim`);
+      for (const t of rc.textures) assert.ok(t.replace("Texture.", "") in d.textures, `${name}: ${t}`);
     }
     // P-29: faixas float com literal float; P-28: client_sync
     const bpText = readFileSync(new URL(`BP/entities/${id}.json`, ROOT), "utf8");
@@ -175,9 +180,22 @@ test("bh: pacote fecha (geometrias, ossos do part_visibility, texturas, materiai
   assert.ok(bytes < 7e6, `geometria ${(bytes / 1e6).toFixed(1)} MB`);
   // cada bin tem sombra e anel; cada anel do disco tem malha em todo bin
   const core = json("RP/models/entity/sgx_bh_core.geo.json")["minecraft:geometry"][0].bones.map((b) => b.name);
-  for (let j = 0; j < LENS.bins.length; j++) for (const p of ["s", "p"]) assert.ok(core.includes(`${p}${j}`), `${p}${j}`);
+  const sh = json("RP/models/entity/sgx_bh_shadow.geo.json")["minecraft:geometry"][0].bones.map((b) => b.name);
+  for (let j = 0; j < LENS.bins.length; j++) assert.ok(core.includes(`p${j}`) && sh.includes(`s${j}`), `bin ${j}`);
   for (let k = 0; k < 5; k++) {
     const f = json(`RP/models/entity/sgx_bh_flow${k}.geo.json`)["minecraft:geometry"][0].bones.map((b) => b.name);
     for (let j = 0; j < LENS.bins.length; j++) assert.ok(f.includes(`f${j}_${k}`), `f${j}_${k}`);
   }
+});
+
+test("bh: S-12, as sondas de visibilidade existem (BP + RP) e diferem no que devem diferir", () => {
+  const bounds = [];
+  for (let n = 1; n <= 7; n++) {
+    assert.ok(existsSync(new URL(`BP/entities/sgx_probe_${n}.json`, ROOT)), `BP ${n}`);
+    const d = json(`RP/entity/sgx_probe_${n}.entity.json`)["minecraft:client_entity"].description;
+    const g = json(`RP/models/entity/sgx_probe_${n}_0.geo.json`)["minecraft:geometry"][0].description;
+    bounds.push(g.visible_bounds_width);
+    if (n === 7) assert.equal(d.render_controllers.length, 6);
+  }
+  assert.deepEqual(bounds, [16, 64, 120, 130, 256, 64, 64]);
 });

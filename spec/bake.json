@@ -11,7 +11,9 @@
     "beta_scale": 2.0,
     "exposure": 1.9,
     "lum_exponent": 2.6,
-    "ring_glow": 0.35
+    "ring_glow": 0.35,
+    "spin": 0.67,
+    "spin_why": "T-26: o buraco negro final é de Kerr. O remanescente do GW150914 tem χ = a/M ≈ 0,67 (LIGO), e a Gargântua do Interstellar também gira. A e B ficam de Schwarzschild (a malha pequena). O disco continua de 3 a 15 r_s (o storyboard e o HUD dizem ISCO 3 r_s; com a = 0,67 a ISCO prógrada é 1,77 r_s, e o disco aqui fica truncado em 3)."
   },
   "lens": {
     "why": "Mapa da lente por vértice (bh_lens.py): a malha do disco em (r, ψ) vai para onde a sua imagem aparece. Um conjunto de malhas por faixa de elevação da câmera (bins); o script escolhe o bin pela câmera e o cliente vira a malha para a câmera (q.rotation_to_camera) a cada quadro. O giro do disco é a textura andando (uv_anim, como o creeper carregado do vanilla), por anel (Kepler).",
@@ -96,7 +98,10 @@
         33,
         43,
         55
-      ]
-    }
+      ],
+      "bounds_blocks": 60
+    },
+    "bounds_blocks": 64,
+    "kerr_angles": 240
   }
 }
