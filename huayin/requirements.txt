@@ -1,0 +1,9 @@
+# 华音 Huayin — dependências do motor
+# Instale com:  pip install -r requirements.txt
+# (no Linux com Python do sistema:  pip install --break-system-packages -r requirements.txt)
+
+numpy>=1.26        # vetores de áudio, FFT
+scipy>=1.11        # filtros IIR (corpo dos instrumentos, EQ)
+numba>=0.59        # compila os laços de amostra (cordas, arco, sopro, reverb) — sem ele roda 50–200× mais lento
+soundfile>=0.12    # grava WAV/FLAC/OGG (o OGG serve direto para o Minecraft)
+mido>=1.3          # importa e exporta MIDI

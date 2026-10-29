@@ -1,0 +1,3 @@
+# Extras opcionais
+sounddevice>=0.4   # tocar o áudio direto na caixa de som (hy.tocar(...)), precisa de PortAudio
+matplotlib>=3.7    # desenhar espectrogramas e curvas (huayin.analise.espectrograma)
